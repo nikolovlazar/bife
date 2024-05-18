@@ -76,7 +76,7 @@ export default function Home() {
           <BentoGrid className="mx-auto mt-8 max-w-4xl auto-rows-[18rem] md:grid-cols-2">
             <BentoGridItem
               title="Infinite collections"
-              description="You're not stuck with just a single collection. Buffet lets you create infinite collections for all of your links and events."
+              description="You're not stuck with just a single collection. Bife lets you create infinite collections for all of your links and events."
               header={
                 <Scroller speed="slow" pauseOnHover={false}>
                   <div className="flex w-[1794px] flex-wrap gap-2">
@@ -101,7 +101,7 @@ export default function Home() {
             />
             <BentoGridItem
               title="Analytics"
-              description="Buffet lets you know how many visitors landed on each of your collections, where they are from, what device they used, etc..."
+              description="Bife lets you know how many visitors landed on each of your collections, where they are from, what device they used, etc..."
               header={<AnalyticsChart />}
               className="md:col-span-2"
               icon={<LineChartIcon className="text-neutral-400" />}
