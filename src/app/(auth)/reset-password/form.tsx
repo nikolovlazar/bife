@@ -16,7 +16,7 @@ import {
 import { Input } from '@/components/ui/input'
 
 import { resetPassword } from '../actions'
-import { resetPasswordSchema } from '../validationSchemas'
+import { resetPasswordSchema } from '../validation-schemas'
 
 export const ResetPasswordForm = () => {
   const form = useForm<z.infer<typeof resetPasswordSchema>>({

@@ -20,7 +20,7 @@ import {
 import { Input } from '@/components/ui/input'
 
 import { forgotPassword } from '../actions'
-import { forgotPasswordSchema } from '../validationSchemas'
+import { forgotPasswordSchema } from '../validation-schemas'
 
 export const ForgotPasswordForm = () => {
   const [sent, setSent] = useState(false)

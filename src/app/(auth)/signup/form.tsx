@@ -18,7 +18,7 @@ import {
 import { Input } from '@/components/ui/input'
 
 import { signup } from '../actions'
-import { signupSchema } from '../validationSchemas'
+import { signupSchema } from '../validation-schemas'
 
 export const SignUpForm = () => {
   const [tsToken, setTsToken] = useState<string | undefined>()

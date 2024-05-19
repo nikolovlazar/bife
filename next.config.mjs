@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         source: '/app',
-        destination: '/app/links',
+        destination: '/app/collections',
         permanent: true,
       },
     ]

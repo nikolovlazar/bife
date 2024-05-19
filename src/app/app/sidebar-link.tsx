@@ -6,23 +6,24 @@ import { ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
 
-export const SidebarLink = (
-  {
-    href,
-    children,
-    className,
-  }: {
-    href: string
-    children: ReactNode
-    className?: string
-  }
-) => {
+export const SidebarLink = ({
+  href,
+  children,
+  className,
+}: {
+  href: string
+  children: ReactNode
+  className?: string
+}) => {
   const pathname = usePathname()
   return (
     <Link
       href={href}
       data-current={pathname === href}
-      className={cn(className, 'data-[current=true]:text-primary')}
+      className={cn(
+        className,
+        'data-[current=true]:bg-muted data-[current=true]:text-foreground'
+      )}
     >
       {children}
     </Link>

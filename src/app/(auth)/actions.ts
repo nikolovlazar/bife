@@ -9,7 +9,7 @@ import {
   resetPasswordSchema,
   signinSchema,
   signupSchema,
-} from './validationSchemas'
+} from './validation-schemas'
 import { createClient } from '@/utils/supabase/server'
 
 const externalProviders = ['google', 'github']

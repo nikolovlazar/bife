@@ -1,11 +1,4 @@
-import {
-  CircleUser,
-  Drumstick,
-  Home,
-  LineChart,
-  Menu,
-  Utensils,
-} from 'lucide-react'
+import { LineChart, LinkIcon, Menu, Utensils } from 'lucide-react'
 import Link from 'next/link'
 import { ReactNode, Suspense } from 'react'
 
@@ -37,20 +30,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             </Link>
           </div>
           <div className="flex-1">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+            <nav className="grid items-start pt-2 px-2 text-sm font-medium lg:px-4">
               <SidebarLink
-                href="/app/links"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                href="/app/collections"
+                className="flex items-center gap-3 rounded-lg p-3 text-muted-foreground transition-all hover:text-primary"
               >
-                <Home className="h-4 w-4" />
-                Links
-              </SidebarLink>
-              <SidebarLink
-                href="/app/analytics"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <LineChart className="h-4 w-4" />
-                Analytics
+                <LinkIcon className="h-5 w-5" />
+                Collections
               </SidebarLink>
             </nav>
           </div>
@@ -80,18 +66,11 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                   <span className="sr-only">Bife</span>
                 </SidebarLink>
                 <SidebarLink
-                  href="/app/links"
+                  href="/app/collections"
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
-                  <Home className="h-5 w-5" />
-                  Links
-                </SidebarLink>
-                <SidebarLink
-                  href="/app/analytics"
-                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-                >
-                  <LineChart className="h-5 w-5" />
-                  Analytics
+                  <LinkIcon className="h-5 w-5" />
+                  Collections
                 </SidebarLink>
               </nav>
             </SheetContent>
@@ -117,9 +96,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          {children}
-        </main>
+        <main className="flex flex-1 flex-col p-4 lg:p-6">{children}</main>
       </div>
     </div>
   )

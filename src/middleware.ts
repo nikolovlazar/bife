@@ -6,7 +6,10 @@ const protectedRoutes: string[] = ['/reset-password', '/app']
 export async function middleware(request: NextRequest) {
   let { user, response } = await updateSession(request)
 
-  if (!user && protectedRoutes.includes(request.nextUrl.pathname)) {
+  if (
+    !user &&
+    protectedRoutes.some((pr) => request.nextUrl.pathname.startsWith(pr))
+  ) {
     response = NextResponse.redirect(new URL('/signin', request.url))
   } else {
     response = NextResponse.next()

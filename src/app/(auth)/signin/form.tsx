@@ -20,7 +20,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 import { signin } from '../actions'
-import { signinSchema } from '../validationSchemas'
+import { signinSchema } from '../validation-schemas'
 
 export const SignInForm = () => {
   const [tsToken, setTsToken] = useState<string | undefined>()
