@@ -7,7 +7,7 @@ import {
   Utensils,
 } from 'lucide-react'
 import Link from 'next/link'
-import { ReactNode } from 'react'
+import { ReactNode, Suspense } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -21,6 +21,8 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
 import { SidebarLink } from './sidebar-link'
+import { SignOut } from './signout'
+import { UserAvatar } from './user-avatar'
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (
@@ -101,8 +103,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 size="icon"
                 className="justify-self-end rounded-full"
               >
-                <CircleUser className="h-5 w-5" />
-                <span className="sr-only">Toggle user menu</span>
+                <Suspense fallback={<span>...</span>}>
+                  <UserAvatar />
+                </Suspense>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -110,7 +113,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <DropdownMenuSeparator />
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <SignOut />
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

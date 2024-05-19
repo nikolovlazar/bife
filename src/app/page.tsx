@@ -1,12 +1,15 @@
 import { Infinity, ChevronRight, LineChartIcon, QrCode } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
 import { thirtyRandomSlugs } from '@/lib/fake-data'
 
 import { BentoGrid, BentoGridItem } from '@/components/custom/bento'
 import { FallingLogos } from '@/components/custom/falling-logos'
 import { Scroller } from '@/components/custom/scroller'
+
+import { NavCTA } from './cta-nav'
 
 const AnalyticsChart = dynamic(
   () => import('../components/custom/analytics-chart'),
@@ -33,13 +36,9 @@ export default function Home() {
           >
             <span className="text-sm">Features</span>
           </Link>
-          <Link
-            href="/signin"
-            className="relative rounded-full border border-white/[0.2] bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/80"
-          >
-            <span>Sign in</span>
-            <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-white to-transparent" />
-          </Link>
+          <Suspense fallback={<span />}>
+            <NavCTA />
+          </Suspense>
         </nav>
         <div className="relative z-10 mx-auto flex h-max w-max max-w-7xl flex-col items-center p-4 px-4 pt-12 md:pt-32 xl:pt-48">
           <h2 className="bg-opacity-50 bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text py-1 text-center text-4xl font-semibold text-transparent md:text-5xl">
