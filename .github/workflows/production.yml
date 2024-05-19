@@ -13,7 +13,7 @@ permissions:
   contents: read # This is required for actions/checkout
 
 jobs:
-  deploy:
+  apply-migrations:
     runs-on: ubuntu-latest
 
     env:
