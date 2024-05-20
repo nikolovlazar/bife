@@ -41,7 +41,6 @@ export interface Database {
           created_by: string
           description: string | null
           id: number
-          meta_data: Json | null
           url: string
           visible: boolean
         }
@@ -51,7 +50,6 @@ export interface Database {
           created_by: string
           description?: string | null
           id?: number
-          meta_data?: Json | null
           url: string
           visible?: boolean
         }
@@ -61,7 +59,6 @@ export interface Database {
           created_by?: string
           description?: string | null
           id?: number
-          meta_data?: Json | null
           url?: string
           visible?: boolean
         }
