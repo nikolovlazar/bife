@@ -19,9 +19,9 @@ import { LinkVisibilitySwitch } from './link-visibility-switch'
 import type { Database } from '~/supabase/types.gen'
 
 import { DeleteLinkConfirmation } from '../delete-link'
-import { UpdateLink } from '../update-link'
+import { EditLink } from '../edit-link'
 
-type Link = Database['public']['Tables']['link']['Row']
+export type Link = Database['public']['Tables']['link']['Row']
 
 export const linkColumns: ColumnDef<Link>[] = [
   {
@@ -63,9 +63,7 @@ export const linkColumns: ColumnDef<Link>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <UpdateLink
+            <EditLink
               linkId={link.id}
               description={link.description}
               url={link.url}
@@ -75,9 +73,9 @@ export const linkColumns: ColumnDef<Link>[] = [
                 className="cursor-pointer"
                 onSelect={(e) => e.preventDefault()}
               >
-                Update link
+                Edit link
               </DropdownMenuItem>
-            </UpdateLink>
+            </EditLink>
             <DeleteLinkConfirmation linkId={link.id}>
               <DropdownMenuItem
                 onSelect={(e) => e.preventDefault()}

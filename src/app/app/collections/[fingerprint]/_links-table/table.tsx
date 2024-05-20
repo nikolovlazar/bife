@@ -6,7 +6,6 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { useState } from 'react'
 
 import {
   Table,
@@ -17,12 +16,14 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import type { Link } from './columns'
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
 }
 
-export function LinksDataTable<TData, TValue>({
+export function LinksDataTable<TData extends Link, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -63,7 +64,7 @@ export function LinksDataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={row.id}
+                  key={(row.original as Link).url}
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => {

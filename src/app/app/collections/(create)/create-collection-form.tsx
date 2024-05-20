@@ -24,7 +24,7 @@ export default function CreateCollectionForm() {
         <Input id="description" name="description" type="text" placeholder="" />
       </div>
       <SubmitButton className="mt-4" type="submit">
-        Submit
+        Create
       </SubmitButton>
     </form>
   )

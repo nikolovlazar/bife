@@ -12,8 +12,6 @@ import {
 } from '@tanstack/react-table'
 import { useState } from 'react'
 
-import { cn } from '@/lib/utils'
-
 import { Input } from '@/components/ui/input'
 import {
   Table,
@@ -24,12 +22,14 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import type { Collection } from './columns'
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
 }
 
-export function CollectionsDataTable<TData, TValue>({
+export function CollectionsDataTable<TData extends Collection, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -91,7 +91,7 @@ export function CollectionsDataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={row.id}
+                  key={row.original.fingerprint}
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => {

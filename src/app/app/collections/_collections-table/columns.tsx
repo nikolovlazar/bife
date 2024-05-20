@@ -6,14 +6,11 @@ import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
@@ -22,7 +19,7 @@ import type { Database } from '~/supabase/types.gen'
 
 import { DeleteCollectionConfirmation } from '../[fingerprint]/delete-collection'
 
-type Collection = Database['public']['Tables']['link_collection']['Row']
+export type Collection = Database['public']['Tables']['link_collection']['Row']
 
 export const collectionColumns: ColumnDef<Collection>[] = [
   {
@@ -81,7 +78,6 @@ export const collectionColumns: ColumnDef<Collection>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => {
