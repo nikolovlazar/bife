@@ -1,3 +1,7 @@
+import { ExternalLink } from 'lucide-react'
+import Link from 'next/link'
+
+import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -30,6 +34,15 @@ export default async function CollectionDetails({
         <h1 className="text-lg font-semibold md:text-2xl">
           Edit {data?.title}
         </h1>
+        <Button asChild variant="ghost">
+          <Link
+            href={`/${data?.fingerprint}`}
+            target="_blank"
+            className="flex items-center gap-2"
+          >
+            View collection page <ExternalLink className="w-4" />
+          </Link>
+        </Button>
       </div>
       <div className="flex flex-col xl:flex-row gap-4">
         <form action={updateCollection} className="mt-4 w-full xl:max-w-lg">

@@ -81,7 +81,7 @@ export const collectionColumns: ColumnDef<Collection>[] = [
             <DropdownMenuItem
               onClick={() =>
                 navigator.clipboard.writeText(
-                  `https://bife.sh/${collection.fingerprint}`
+                  `${window.location.origin}/${collection.fingerprint}`
                 )
               }
             >

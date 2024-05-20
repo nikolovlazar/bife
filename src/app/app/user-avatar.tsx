@@ -1,4 +1,4 @@
-import { CircleUser } from 'lucide-react'
+import { CircleUser, User } from 'lucide-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
@@ -14,7 +14,9 @@ export async function UserAvatar() {
     <Avatar>
       <AvatarImage src={user.user_metadata['avatar_url']} />
       <AvatarFallback>
-        {user.user_metadata['name'].split(' ').map((w: string) => w[0])}
+        {user.user_metadata['name']?.split(' ').map((w: string) => w[0]) ?? (
+          <User />
+        )}
       </AvatarFallback>
     </Avatar>
   ) : (

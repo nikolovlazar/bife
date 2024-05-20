@@ -1,5 +1,6 @@
 import { Utensils } from 'lucide-react'
 import Link from 'next/link'
+import { notFound, redirect } from 'next/navigation'
 
 import {
   Card,
@@ -16,14 +17,13 @@ export default async function PublicCollectionPage({
   params: { fingerprint: string }
 }) {
   const supabase = createClient()
-  const { data: collection, error: collectionError } = await supabase
+  const { data: collections, error: collectionError } = await supabase
     .from('link_collection')
     .select('*')
     .eq('fingerprint', params.fingerprint)
-    .single()
+  const collection = collections?.[0]
 
   if (collectionError) {
-    console.error(collectionError)
     return (
       <Card>
         <CardHeader>
@@ -49,7 +49,7 @@ export default async function PublicCollectionPage({
   }
 
   if (!collection) {
-    return <p>Collection not found.</p>
+    return notFound()
   }
 
   const { data: links, error: linksError } = await supabase
