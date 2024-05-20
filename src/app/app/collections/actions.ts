@@ -81,6 +81,7 @@ export async function updateCollection(formData: FormData) {
     .from('link_collection')
     .select()
     .eq('fingerprint', formValues.fingerprint)
+    .eq('created_by', user.id)
     .single()
 
   if (error) {
@@ -101,6 +102,7 @@ export async function updateCollection(formData: FormData) {
     .from('link_collection')
     .update(newData)
     .eq('fingerprint', formValues.fingerprint)
+    .eq('created_by', user.id)
     .select()
     .single()
 
@@ -199,6 +201,7 @@ export async function toggleCollectionPublished(formData: FormData) {
     .from('link_collection')
     .update({ published: formValues.checked })
     .eq('fingerprint', formValues.fingerprint)
+    .eq('created_by', user.id)
     .select()
     .single()
 
@@ -239,6 +242,7 @@ export async function createLink(formData: FormData) {
     .from('link_collection')
     .select()
     .eq('fingerprint', formValues.fingerprint)
+    .eq('created_by', user.id)
     .single()
 
   if (error) {
@@ -418,6 +422,7 @@ export async function toggleLinkVisibility(formData: FormData) {
     .from('link')
     .update({ visible: formValues.checked })
     .eq('id', formValues.id)
+    .eq('created_by', user.id)
     .select()
     .single()
 
