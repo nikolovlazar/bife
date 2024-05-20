@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 import Link from 'next/link'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -36,6 +37,20 @@ export const collectionColumns: ColumnDef<Collection>[] = [
         {row.original.title}
       </Link>
     ),
+  },
+  {
+    accessorKey: 'description',
+    header: 'Description',
+  },
+  {
+    accessorKey: 'published',
+    header: 'Published',
+    cell: ({ row }) =>
+      row.original.published ? (
+        <Badge>Yes</Badge>
+      ) : (
+        <Badge variant="secondary">No</Badge>
+      ),
   },
   {
     accessorKey: 'created_at',

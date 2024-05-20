@@ -13,7 +13,7 @@ export const SubmitButton = forwardRef<HTMLButtonElement, ButtonProps>(
     const { pending } = useFormStatus()
     return (
       <Button disabled={pending} className={cn(className)} {...props} ref={ref}>
-        {pending && <LoaderCircleIcon className="animate-spin" />}
+        {pending && <LoaderCircleIcon className="animate-spin mr-2" />}
         {children}
       </Button>
     )
