@@ -2,10 +2,9 @@
 
 import { ColumnDef } from '@tanstack/react-table'
 import dayjs from 'dayjs'
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
+import { MoreHorizontal } from 'lucide-react'
 import Link from 'next/link'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -16,8 +15,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-import { VisibilitySwitch } from './visibility-switch'
+import { LinkVisibilitySwitch } from './link-visibility-switch'
 import type { Database } from '~/supabase/types.gen'
+
+import { DeleteLinkConfirmation } from '../delete-link'
+import { UpdateLink } from '../update-link'
 
 type Link = Database['public']['Tables']['link']['Row']
 
@@ -34,7 +36,7 @@ export const linkColumns: ColumnDef<Link>[] = [
     accessorKey: 'visible',
     header: 'Visible',
     cell: ({ row }) => (
-      <VisibilitySwitch
+      <LinkVisibilitySwitch
         linkId={row.original.id}
         checked={row.original.visible}
       />
@@ -53,7 +55,7 @@ export const linkColumns: ColumnDef<Link>[] = [
       const link = row.original
 
       return (
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
@@ -63,8 +65,27 @@ export const linkColumns: ColumnDef<Link>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Update link</DropdownMenuItem>
-            <DropdownMenuItem>Delete link</DropdownMenuItem>
+            <UpdateLink
+              linkId={link.id}
+              description={link.description}
+              url={link.url}
+              visible={link.visible}
+            >
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onSelect={(e) => e.preventDefault()}
+              >
+                Update link
+              </DropdownMenuItem>
+            </UpdateLink>
+            <DeleteLinkConfirmation linkId={link.id}>
+              <DropdownMenuItem
+                onSelect={(e) => e.preventDefault()}
+                className="text-destructive cursor-pointer"
+              >
+                Delete link
+              </DropdownMenuItem>
+            </DeleteLinkConfirmation>
           </DropdownMenuContent>
         </DropdownMenu>
       )

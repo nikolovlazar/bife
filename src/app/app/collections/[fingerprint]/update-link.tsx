@@ -1,10 +1,11 @@
 'use client'
 
-import { Loader2, PlusIcon } from 'lucide-react'
-import { FormEventHandler, useState } from 'react'
+import { Loader2 } from 'lucide-react'
+import { FormEventHandler, ReactNode, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Dialog,
   DialogClose,
@@ -16,19 +17,30 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-import { createLink } from '../actions'
+import { updateLink } from '../actions'
 
-export function AddLink({ fingerprint }: { fingerprint: string }) {
-  const [opened, setOpened] = useState(false)
+export function UpdateLink({
+  linkId,
+  url,
+  visible,
+  description,
+  children,
+}: {
+  linkId: number
+  url: string
+  visible: boolean
+  description: string | null
+  children: ReactNode
+}) {
   const [loading, setLoading] = useState(false)
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault()
     try {
       setLoading(true)
       const data = new FormData(event.currentTarget)
-      await createLink(data)
+      await updateLink(data)
       setLoading(false)
-      setOpened(false)
+      toast.success('Link updated')
     } catch (error) {
       if (error instanceof Error) {
         setLoading(false)
@@ -45,19 +57,21 @@ export function AddLink({ fingerprint }: { fingerprint: string }) {
   }
 
   return (
-    <Dialog open={opened} onOpenChange={setOpened}>
-      <DialogTrigger asChild>
-        <Button variant="secondary">
-          <PlusIcon className="w-4" /> Add link
-        </Button>
-      </DialogTrigger>
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add link to collection</DialogTitle>
+          <DialogTitle>Update link</DialogTitle>
           <form onSubmit={handleSubmit} className="grid gap-2">
             <div className="gap-1.5">
               <Label htmlFor="url">URL</Label>
-              <Input id="url" name="url" type="url" placeholder="https://..." />
+              <Input
+                id="url"
+                name="url"
+                type="url"
+                defaultValue={url}
+                placeholder="https://..."
+              />
             </div>
             <div className="gap-1.5">
               <Label htmlFor="description">Description</Label>
@@ -65,23 +79,33 @@ export function AddLink({ fingerprint }: { fingerprint: string }) {
                 id="description"
                 name="description"
                 type="description"
+                defaultValue={description ?? ''}
                 placeholder=""
               />
             </div>
+            <div className="flex gap-1.5 items-center">
+              <Checkbox
+                name="visible"
+                id="visible"
+                defaultChecked={visible}
+                className="w-6 h-6"
+              />
+              <Label htmlFor="visible">Visible</Label>
+            </div>
             <input
-              name="fingerprint"
+              name="id"
               readOnly
               type="text"
               hidden
               aria-hidden
               aria-readonly
-              value={fingerprint}
+              value={linkId}
               className="hidden"
             />
             <DialogClose asChild>
               <Button disabled={loading} type="submit">
                 {loading && <Loader2 className="animate-spin w-4 mr-2" />}
-                Submit
+                Update
               </Button>
             </DialogClose>
           </form>

@@ -1,36 +1,35 @@
 'use client'
 
-import { X } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { Switch } from '@/components/ui/switch'
 
-import { toggleLinkVisibility } from '../../actions'
+import { toggleCollectionPublished } from '../actions'
 
-export function VisibilitySwitch({
-  linkId,
+export function CollectionPublishedSwitch({
+  fingerprint,
   checked,
 }: {
-  linkId: number
+  fingerprint: string
   checked: boolean
 }) {
   const [loading, setLoading] = useState(false)
-  const handleVisibilityChange = async (value: boolean) => {
+  const handleCheckedChange = async (value: boolean) => {
     try {
       setLoading(true)
       const formData = new FormData()
-      formData.append('id', linkId + '')
+      formData.append('fingerprint', fingerprint)
       formData.append('checked', value ? 'true' : 'false')
 
-      await toggleLinkVisibility(formData)
+      await toggleCollectionPublished(formData)
       setLoading(false)
-      toast.success('Link visibility updated')
+      toast.success('Collection ' + (value ? 'published' : 'unpublished'))
     } catch (e) {
       console.error(e)
       setLoading(false)
       if (e instanceof Error) {
-        toast.error('Failed to update link visibility', {
+        toast.error(`Failed to ${value ? 'publish' : 'unpublish'} collection`, {
           description: e.message,
         })
       }
@@ -40,7 +39,7 @@ export function VisibilitySwitch({
     <Switch
       disabled={loading}
       defaultChecked={checked}
-      onCheckedChange={handleVisibilityChange}
+      onCheckedChange={handleCheckedChange}
     />
   )
 }

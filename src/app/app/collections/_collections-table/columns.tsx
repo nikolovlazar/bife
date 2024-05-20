@@ -17,9 +17,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
+import { CollectionPublishedSwitch } from './collection-published-switch'
 import type { Database } from '~/supabase/types.gen'
 
-import { DeleteCollectionConfirmation } from '../[fingerprint]/delete-collection-button'
+import { DeleteCollectionConfirmation } from '../[fingerprint]/delete-collection'
 
 type Collection = Database['public']['Tables']['link_collection']['Row']
 
@@ -48,12 +49,12 @@ export const collectionColumns: ColumnDef<Collection>[] = [
   {
     accessorKey: 'published',
     header: 'Published',
-    cell: ({ row }) =>
-      row.original.published ? (
-        <Badge>Yes</Badge>
-      ) : (
-        <Badge variant="secondary">No</Badge>
-      ),
+    cell: ({ row }) => (
+      <CollectionPublishedSwitch
+        fingerprint={row.original.fingerprint}
+        checked={row.original.published}
+      />
+    ),
   },
   {
     accessorKey: 'created_at',
@@ -100,6 +101,16 @@ export const collectionColumns: ColumnDef<Collection>[] = [
                 Edit collection
               </Link>
             </DropdownMenuItem>
+            <DeleteCollectionConfirmation
+              fingerprint={row.original.fingerprint}
+            >
+              <DropdownMenuItem
+                onSelect={(e) => e.preventDefault()}
+                className="text-destructive cursor-pointer"
+              >
+                Delete collection
+              </DropdownMenuItem>
+            </DeleteCollectionConfirmation>
           </DropdownMenuContent>
         </DropdownMenu>
       )

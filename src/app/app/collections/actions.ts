@@ -128,13 +128,14 @@ export async function deleteCollection(formData: FormData) {
   }
 
   if (!formValues.fingerprint) {
-    throw new Error('Fingerprint is required')
+    throw new Error('Collection is required')
   }
 
   const { data: existingCollection, error } = await supabase
     .from('link_collection')
     .select()
     .eq('fingerprint', formValues.fingerprint)
+    .eq('created_by', user.id)
     .single()
 
   if (error) {
@@ -149,6 +150,7 @@ export async function deleteCollection(formData: FormData) {
     .from('link_collection')
     .delete()
     .eq('fingerprint', formValues.fingerprint)
+    .eq('created_by', user.id)
 
   if (deleteError) {
     throw new Error('Failed to delete collection', { cause: deleteError })
@@ -158,7 +160,57 @@ export async function deleteCollection(formData: FormData) {
   redirect('/app/collections')
 }
 
-export async function createLinkForCollection(formData: FormData) {
+export async function toggleCollectionPublished(formData: FormData) {
+  const supabase = createClient()
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
+
+  if (userError || !user) {
+    redirect('/signin')
+  }
+
+  const formValues = {
+    fingerprint: formData.get('fingerprint')?.toString(),
+    checked: formData.get('checked')?.toString() === 'true',
+  }
+
+  if (!formValues.fingerprint) {
+    throw new Error('Collection is required')
+  }
+
+  const { data: existingCollection, error } = await supabase
+    .from('link_collection')
+    .select()
+    .eq('fingerprint', formValues.fingerprint)
+    .eq('created_by', user.id)
+    .single()
+
+  if (error) {
+    throw new Error('Failed to fetch collection', { cause: error })
+  }
+
+  if (!existingCollection) {
+    throw new Error('Collection not found')
+  }
+
+  const { data: updatedCollection, error: updateError } = await supabase
+    .from('link_collection')
+    .update({ published: formValues.checked })
+    .eq('fingerprint', formValues.fingerprint)
+    .select()
+    .single()
+
+  if (updateError) {
+    throw new Error('Failed to update collection', { cause: updateError })
+  }
+
+  revalidatePath(`/app/collections/${existingCollection.fingerprint}`)
+  return updatedCollection
+}
+
+export async function createLink(formData: FormData) {
   const supabase = createClient()
   const {
     data: { user },
@@ -215,6 +267,116 @@ export async function createLinkForCollection(formData: FormData) {
 
   revalidatePath(`/app/collections/${existingCollection.fingerprint}`)
   return data
+}
+
+export async function updateLink(formData: FormData) {
+  const supabase = createClient()
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
+
+  if (userError || !user) {
+    redirect('/signin')
+  }
+
+  const formValues = {
+    id: formData.get('id')?.toString(),
+    visible: formData.get('visible')?.toString() === 'on',
+    url: formData.get('url')?.toString(),
+    description: formData.get('description')?.toString(),
+  }
+
+  if (!formValues.id) {
+    throw new Error('Link is required')
+  }
+
+  if (!formValues.url) {
+    throw new Error('URL is required')
+  }
+
+  const { data: existingLink, error } = await supabase
+    .from('link')
+    .select()
+    .eq('id', formValues.id)
+    .eq('created_by', user.id)
+    .single()
+
+  if (error) {
+    throw new Error('Failed to fetch link', { cause: error })
+  }
+
+  if (!existingLink) {
+    throw new Error('Link not found')
+  }
+
+  const newData = {
+    url: formValues.url ?? existingLink.url,
+    description: formValues.description ?? existingLink.description,
+    visible: formValues.visible ?? existingLink.visible,
+  }
+
+  const { data: updatedLink, error: updateError } = await supabase
+    .from('link')
+    .update(newData)
+    .eq('id', formValues.id)
+    .eq('created_by', user.id)
+    .select()
+    .single()
+
+  if (updateError) {
+    throw new Error('Failed to update link', { cause: updateError })
+  }
+
+  revalidatePath(`/app/collections/${existingLink.collection}`)
+  return updatedLink
+}
+
+export async function deleteLink(formData: FormData) {
+  const supabase = createClient()
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
+
+  if (userError || !user) {
+    redirect('/signin')
+  }
+
+  const formValues = {
+    id: formData.get('id')?.toString(),
+  }
+
+  if (!formValues.id) {
+    throw new Error('Link is required')
+  }
+
+  const { data: existingLink, error } = await supabase
+    .from('link')
+    .select()
+    .eq('id', formValues.id)
+    .eq('created_by', user.id)
+    .single()
+
+  if (error) {
+    throw new Error('Failed to fetch link', { cause: error })
+  }
+
+  if (!existingLink) {
+    throw new Error('Link not found')
+  }
+
+  const { error: deleteError } = await supabase
+    .from('link')
+    .delete()
+    .eq('id', formValues.id)
+    .eq('created_by', user.id)
+
+  if (deleteError) {
+    throw new Error('Failed to delete link', { cause: deleteError })
+  }
+
+  revalidatePath(`/app/collections/${existingLink.collection}`)
 }
 
 export async function toggleLinkVisibility(formData: FormData) {

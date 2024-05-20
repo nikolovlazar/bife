@@ -1,7 +1,7 @@
 'use client'
 
 import { Loader2 } from 'lucide-react'
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { toast } from 'sonner'
 
 import {
@@ -17,20 +17,22 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 
-import { deleteCollection } from '../actions'
+import { deleteLink } from '../actions'
 
-export function DeleteCollectionConfirmation({
-  fingerprint,
+export function DeleteLinkConfirmation({
+  linkId,
+  children,
 }: {
-  fingerprint: string
+  linkId: number
+  children: ReactNode
 }) {
   const [loading, setLoading] = useState(false)
   const handleDeletion = async () => {
     try {
       setLoading(true)
       const data = new FormData()
-      data.append('fingerprint', fingerprint)
-      await deleteCollection(data)
+      data.append('id', linkId + '')
+      await deleteLink(data)
     } catch (error) {
       if (error instanceof Error) {
         setLoading(false)
@@ -47,23 +49,25 @@ export function DeleteCollectionConfirmation({
   }
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button className="w-full" variant="destructive">
-          Delete
-        </Button>
-      </AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will delete the collection and all of its links.
+            This will delete the link, for real.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction disabled={loading} onClick={handleDeletion}>
-            {loading && <Loader2 className="animate-spin mr-2 w-4" />}
-            Yes, delete the collection
+          <AlertDialogAction asChild>
+            <Button
+              className="bg-destructive hover:bg-destructive/80"
+              disabled={loading}
+              onClick={handleDeletion}
+            >
+              {loading && <Loader2 className="animate-spin mr-2 w-4" />}
+              Yes, delete the link
+            </Button>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

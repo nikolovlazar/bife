@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { SubmitButton } from '@/components/ui/submit'
 
 import { AddLink } from './add-link'
-import { DeleteCollectionConfirmation } from './delete-collection-button'
+import { DeleteCollectionConfirmation } from './delete-collection'
 import { LinksList } from './links-list'
 import { createClient } from '@/utils/supabase/server'
 
@@ -90,7 +90,9 @@ export default async function CollectionDetails({
               className="hidden"
             />
             <SubmitButton>Update</SubmitButton>
-            <DeleteCollectionConfirmation fingerprint={params.fingerprint} />
+            <DeleteCollectionConfirmation fingerprint={params.fingerprint}>
+              <Button variant="destructive">Delete</Button>
+            </DeleteCollectionConfirmation>
           </fieldset>
         </form>
         <form className="mt-4 flex-1">
