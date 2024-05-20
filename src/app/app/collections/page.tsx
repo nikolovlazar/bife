@@ -20,6 +20,7 @@ async function getCollections() {
   const { data, error: collectionError } = await supabase
     .from('link_collection')
     .select()
+    .eq('created_by', user.id)
   if (collectionError) {
     throw new Error('Failed to fetch collections')
   }
