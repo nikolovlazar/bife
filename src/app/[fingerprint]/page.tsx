@@ -52,10 +52,16 @@ export default async function PublicCollectionPage({
     return notFound()
   }
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
   const { data: links, error: linksError } = await supabase
     .from('link')
     .select('*')
     .eq('collection', collection.fingerprint)
+
+  const canSeeHiddenLinks = user && collection.created_by === user.id
 
   if (linksError) {
     console.error(linksError)
@@ -72,21 +78,23 @@ export default async function PublicCollectionPage({
       </Card>
       <div className="flex-1 flex flex-col justify-between gap-8">
         <div className="flex flex-1 flex-col gap-4">
-          {links.map((link) => (
-            <a
-              key={link.id}
-              href={link.url}
-              target="_blank"
-              rel="noopener nofollow"
-              className="flex flex-row gap-4 group font-semibold items-center bg-background shadow rounded-sm py-2 px-4"
-            >
-              <span>🔗</span>
-              <span>{link.description}</span>
-              <span className="text-xs text-muted-foreground group-hover:text-purple-500 font-normal">
-                {link.url}
-              </span>
-            </a>
-          ))}
+          {links
+            .filter((link) => (!link.visible ? canSeeHiddenLinks : true))
+            .map((link) => (
+              <a
+                key={link.id}
+                href={link.url}
+                target="_blank"
+                rel="noopener nofollow"
+                className="flex flex-row gap-4 group font-semibold items-center bg-background shadow rounded-sm py-2 px-4"
+              >
+                <span>🔗</span>
+                <span>{link.description}</span>
+                <span className="text-xs text-muted-foreground group-hover:text-purple-500 font-normal">
+                  {link.url}
+                </span>
+              </a>
+            ))}
         </div>
         <Link
           href="/"
