@@ -216,3 +216,53 @@ export async function createLinkForCollection(formData: FormData) {
   revalidatePath(`/app/collections/${existingCollection.fingerprint}`)
   return data
 }
+
+export async function toggleLinkVisibility(formData: FormData) {
+  const supabase = createClient()
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
+
+  if (userError || !user) {
+    redirect('/signin')
+  }
+
+  const formValues = {
+    id: formData.get('id')?.toString(),
+    checked: formData.get('checked')?.toString() === 'true',
+  }
+
+  if (!formValues.id) {
+    throw new Error('Link is required')
+  }
+
+  const { data: existingLink, error } = await supabase
+    .from('link')
+    .select()
+    .eq('id', formValues.id)
+    .eq('created_by', user.id)
+    .single()
+
+  if (error) {
+    throw new Error('Failed to fetch link', { cause: error })
+  }
+
+  if (!existingLink) {
+    throw new Error('Link not found')
+  }
+
+  const { data: updatedLink, error: updateError } = await supabase
+    .from('link')
+    .update({ visible: formValues.checked })
+    .eq('id', formValues.id)
+    .select()
+    .single()
+
+  if (updateError) {
+    throw new Error('Failed to update link', { cause: updateError })
+  }
+
+  revalidatePath(`/app/collections/${existingLink.collection}`)
+  return updatedLink
+}

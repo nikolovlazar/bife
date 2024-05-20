@@ -4,6 +4,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import dayjs from 'dayjs'
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -17,6 +18,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 import type { Database } from '~/supabase/types.gen'
+
+import { DeleteCollectionConfirmation } from '../[fingerprint]/delete-collection-button'
 
 type Collection = Database['public']['Tables']['link_collection']['Row']
 
@@ -79,17 +82,24 @@ export const collectionColumns: ColumnDef<Collection>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() =>
+              className="cursor-pointer"
+              onClick={() => {
                 navigator.clipboard.writeText(
                   `${window.location.origin}/${collection.fingerprint}`
                 )
-              }
+                toast.success('URL copied to clipboard')
+              }}
             >
               Copy URL
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View collection</DropdownMenuItem>
-            <DropdownMenuItem>Delete collection</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link
+                className="cursor-pointer"
+                href={`/app/collections/${row.original.fingerprint}`}
+              >
+                Edit collection
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

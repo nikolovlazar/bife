@@ -15,7 +15,6 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { SubmitButton } from '@/components/ui/submit'
 
 import { createLinkForCollection } from '../actions'
 
@@ -48,7 +47,7 @@ export function AddLink({ fingerprint }: { fingerprint: string }) {
   return (
     <Dialog open={opened} onOpenChange={setOpened}>
       <DialogTrigger asChild>
-        <Button>
+        <Button variant="secondary">
           <PlusIcon className="w-4" /> Add link
         </Button>
       </DialogTrigger>

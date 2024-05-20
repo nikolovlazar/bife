@@ -19,7 +19,7 @@ import { Button } from '@/components/ui/button'
 
 import { deleteCollection } from '../actions'
 
-export function DeleteCollectionButton({
+export function DeleteCollectionConfirmation({
   fingerprint,
 }: {
   fingerprint: string
@@ -48,7 +48,9 @@ export function DeleteCollectionButton({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete</Button>
+        <Button className="w-full" variant="destructive">
+          Delete
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

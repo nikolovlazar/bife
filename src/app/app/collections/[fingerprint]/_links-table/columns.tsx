@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
+import { VisibilitySwitch } from './visibility-switch'
 import type { Database } from '~/supabase/types.gen'
 
 type Link = Database['public']['Tables']['link']['Row']
@@ -32,12 +33,12 @@ export const linkColumns: ColumnDef<Link>[] = [
   {
     accessorKey: 'visible',
     header: 'Visible',
-    cell: ({ row }) =>
-      row.original.visible ? (
-        <Badge>Yes</Badge>
-      ) : (
-        <Badge variant="secondary">No</Badge>
-      ),
+    cell: ({ row }) => (
+      <VisibilitySwitch
+        linkId={row.original.id}
+        checked={row.original.visible}
+      />
+    ),
   },
   {
     accessorKey: 'created_at',
@@ -49,7 +50,7 @@ export const linkColumns: ColumnDef<Link>[] = [
     size: 35,
     meta: { headerClassName: 'w-14', cellClassName: 'w-14' },
     cell: ({ row }) => {
-      const collection = row.original
+      const link = row.original
 
       return (
         <DropdownMenu>

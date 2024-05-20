@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 import { linkColumns } from './_links-table/columns'
 import { LinksDataTable } from './_links-table/table'
 import { createClient } from '@/utils/supabase/server'
