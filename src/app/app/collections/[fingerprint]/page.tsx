@@ -2,9 +2,10 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { SubmitButton } from '@/components/ui/submit'
-import { Switch } from '@/components/ui/switch'
 
+import { AddLink } from './add-link'
 import { DeleteCollectionButton } from './delete-collection-button'
+import { LinksList } from './links-list'
 import { createClient } from '@/utils/supabase/server'
 
 import { updateCollection } from '../actions'
@@ -82,7 +83,8 @@ export default async function CollectionDetails({
         <form className="mt-4 flex-1">
           <fieldset className="grid gap-4 rounded-lg border p-4 items-start">
             <legend className="-ml-1 px-1 text-sm font-medium">Links</legend>
-            {/* TODO: display links here */}
+            <AddLink fingerprint={params.fingerprint} />
+            <LinksList fingerprint={params.fingerprint} />
           </fieldset>
         </form>
       </div>

@@ -157,3 +157,62 @@ export async function deleteCollection(formData: FormData) {
   revalidatePath('/app/collections')
   redirect('/app/collections')
 }
+
+export async function createLinkForCollection(formData: FormData) {
+  const supabase = createClient()
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
+
+  if (userError || !user) {
+    redirect('/signin')
+  }
+
+  const formValues = {
+    fingerprint: formData.get('fingerprint')?.toString(),
+    url: formData.get('url')?.toString(),
+    description: formData.get('description')?.toString(),
+  }
+
+  if (!formValues.fingerprint) {
+    throw new Error('Collection is required')
+  }
+
+  if (!formValues.url) {
+    throw new Error('URL is required')
+  }
+
+  const { data: existingCollection, error } = await supabase
+    .from('link_collection')
+    .select()
+    .eq('fingerprint', formValues.fingerprint)
+    .single()
+
+  if (error) {
+    throw new Error('Failed to fetch collection', { cause: error })
+  }
+
+  if (!existingCollection) {
+    throw new Error('Collection not found')
+  }
+
+  const { data, error: creationError } = await supabase
+    .from('link')
+    .insert({
+      created_at: new Date().toUTCString(),
+      created_by: user.id,
+      collection: existingCollection.fingerprint,
+      url: formValues.url,
+      description: formValues.description,
+    })
+    .select()
+    .single()
+
+  if (creationError) {
+    throw new Error('Failed to create link', { cause: creationError })
+  }
+
+  revalidatePath(`/app/collections/${existingCollection.fingerprint}`)
+  return data
+}
