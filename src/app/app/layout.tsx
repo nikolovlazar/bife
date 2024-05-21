@@ -1,4 +1,4 @@
-import { LineChart, LinkIcon, Menu, Utensils } from 'lucide-react'
+import { LinkIcon, Menu, Utensils } from 'lucide-react'
 import Link from 'next/link'
 import { ReactNode, Suspense } from 'react'
 
@@ -8,13 +8,19 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuRadioGroup,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
 import { SidebarLink } from './sidebar-link'
 import { SignOut } from './signout'
+import { ThemeSwitcher } from './theme-switcher'
 import { UserAvatar } from './user-avatar'
 
 export default function AppLayout({ children }: { children: ReactNode }) {
@@ -90,7 +96,14 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <ThemeSwitcher />
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
               <DropdownMenuSeparator />
               <SignOut />
             </DropdownMenuContent>
