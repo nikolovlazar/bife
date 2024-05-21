@@ -79,7 +79,7 @@ export const SignInForm = () => {
                     <Label htmlFor="password">Password</Label>
                     <Link
                       href="/forgot-password"
-                      className="ml-auto inline-block text-sm underline text-foreground"
+                      className="ml-auto inline-block text-sm text-foreground underline"
                     >
                       Forgot your password?
                     </Link>

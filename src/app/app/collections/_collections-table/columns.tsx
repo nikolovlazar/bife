@@ -102,7 +102,7 @@ export const collectionColumns: ColumnDef<Collection>[] = [
             >
               <DropdownMenuItem
                 onSelect={(e) => e.preventDefault()}
-                className="text-destructive cursor-pointer"
+                className="cursor-pointer text-destructive"
               >
                 Delete collection
               </DropdownMenuItem>

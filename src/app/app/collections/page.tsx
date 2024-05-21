@@ -37,7 +37,7 @@ export default async function Collections() {
         <h1 className="text-lg font-semibold md:text-2xl">Collections</h1>
         <Button asChild>
           <Link href="/app/collections/create">
-            <PlusIcon className="w-4 mr-2 h-4" />
+            <PlusIcon className="mr-2 h-4 w-4" />
             Create new
           </Link>
         </Button>

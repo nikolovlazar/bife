@@ -65,7 +65,7 @@ export function DeleteCollectionConfirmation({
               disabled={loading}
               onClick={handleDeletion}
             >
-              {loading && <Loader2 className="animate-spin mr-2 w-4" />}
+              {loading && <Loader2 className="mr-2 w-4 animate-spin" />}
               Yes, delete the collection
             </Button>
           </AlertDialogAction>

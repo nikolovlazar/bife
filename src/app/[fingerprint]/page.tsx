@@ -80,7 +80,7 @@ export default async function PublicCollectionPage({
           <CardDescription>{collection.description}</CardDescription>
         </CardHeader>
       </Card>
-      <div className="flex-1 flex flex-col justify-between gap-8">
+      <div className="flex flex-1 flex-col justify-between gap-8">
         <div className="flex flex-1 flex-col gap-4">
           {displayedLinks.map((link) => (
             <a
@@ -88,11 +88,14 @@ export default async function PublicCollectionPage({
               href={link.url}
               target="_blank"
               rel="noopener nofollow"
-              className="flex flex-row gap-4 group font-semibold items-center bg-background shadow rounded-sm py-2 px-4"
+              className="group flex flex-row items-center justify-between gap-2 overflow-hidden rounded-sm bg-background px-4 py-2 font-semibold shadow max-md:flex-col max-md:items-start md:gap-4"
             >
-              <span>🔗</span>
-              <span>{link.description}</span>
-              <span className="text-xs text-muted-foreground group-hover:text-purple-500 font-normal">
+              <div className="flex gap-4">
+                <span>🔗</span>
+                <span className="shrink-0">{link.description}</span>
+              </div>
+              <span className="w-max max-w-full truncate text-xs font-normal text-muted-foreground group-hover:text-purple-500">
+                {link.url}
                 {link.url}
               </span>
             </a>
@@ -100,10 +103,10 @@ export default async function PublicCollectionPage({
         </div>
         <Link
           href="/"
-          className="bg-background rounded-md shadow flex px-3 py-2 w-max self-center"
+          className="flex w-max self-center rounded-md bg-background px-3 py-2 shadow"
         >
           Create your own{' '}
-          <span className="text-purple-500 flex mx-1">
+          <span className="mx-1 flex text-purple-500">
             Bife <Utensils className="ml-1" />
           </span>{' '}
           collection

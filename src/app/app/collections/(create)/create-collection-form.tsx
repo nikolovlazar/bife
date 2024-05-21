@@ -7,7 +7,7 @@ import { createCollection } from '../actions'
 export default function CreateCollectionForm() {
   return (
     <form
-      className="grid w-full gap-3 max-w-sm items-center"
+      className="grid w-full max-w-sm items-center gap-3"
       action={createCollection}
     >
       <div className="gap-1.5">

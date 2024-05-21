@@ -85,12 +85,12 @@ export function EditLink({
               placeholder=""
             />
           </div>
-          <div className="flex gap-1.5 items-center">
+          <div className="flex items-center gap-1.5">
             <Checkbox
               name="visible"
               id="visible"
               defaultChecked={visible}
-              className="w-6 h-6"
+              className="h-6 w-6"
             />
             <Label htmlFor="visible">Visible</Label>
           </div>
@@ -106,7 +106,7 @@ export function EditLink({
           />
           <DialogClose asChild>
             <Button disabled={loading} type="submit" className="mt-4">
-              {loading && <Loader2 className="animate-spin w-4 mr-2" />}
+              {loading && <Loader2 className="mr-2 w-4 animate-spin" />}
               Update
             </Button>
           </DialogClose>

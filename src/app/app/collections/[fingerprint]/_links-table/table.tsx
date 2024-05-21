@@ -38,7 +38,7 @@ export function LinksDataTable<TData extends Link, TValue>({
 
   return (
     <>
-      <div className="rounded-md border w-full">
+      <div className="grid rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

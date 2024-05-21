@@ -85,7 +85,7 @@ export function AddLink({ fingerprint }: { fingerprint: string }) {
           />
           <DialogClose asChild>
             <Button disabled={loading} type="submit" className="mt-4">
-              {loading && <Loader2 className="animate-spin w-4 mr-2" />}
+              {loading && <Loader2 className="mr-2 w-4 animate-spin" />}
               Submit
             </Button>
           </DialogClose>

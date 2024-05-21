@@ -101,7 +101,7 @@ export const ForgotPasswordForm = () => {
     </Form>
   ) : (
     <div className="flex flex-col items-center gap-y-2">
-      <CheckCheck className="animate-bounce text-green-500 w-14 h-14" />
+      <CheckCheck className="h-14 w-14 animate-bounce text-green-500" />
       <h2>Password reset requested! Check your email!</h2>
     </div>
   )

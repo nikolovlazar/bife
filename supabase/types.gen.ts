@@ -64,17 +64,17 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "link_collection_fkey"
-            columns: ["collection"]
-            referencedRelation: "link_collection"
-            referencedColumns: ["fingerprint"]
+            foreignKeyName: 'link_collection_fkey'
+            columns: ['collection']
+            referencedRelation: 'link_collection'
+            referencedColumns: ['fingerprint']
           },
           {
-            foreignKeyName: "link_created_by_fkey"
-            columns: ["created_by"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
+            foreignKeyName: 'link_created_by_fkey'
+            columns: ['created_by']
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
         ]
       }
       link_collection: {
@@ -104,11 +104,11 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "link_collection_created_by_fkey"
-            columns: ["created_by"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
+            foreignKeyName: 'link_collection_created_by_fkey'
+            columns: ['created_by']
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
         ]
       }
     }
@@ -229,11 +229,11 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "objects_bucketId_fkey"
-            columns: ["bucket_id"]
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
-          }
+            foreignKeyName: 'objects_bucketId_fkey'
+            columns: ['bucket_id']
+            referencedRelation: 'buckets'
+            referencedColumns: ['id']
+          },
         ]
       }
       s3_multipart_uploads: {
@@ -269,11 +269,11 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "s3_multipart_uploads_bucket_id_fkey"
-            columns: ["bucket_id"]
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
-          }
+            foreignKeyName: 's3_multipart_uploads_bucket_id_fkey'
+            columns: ['bucket_id']
+            referencedRelation: 'buckets'
+            referencedColumns: ['id']
+          },
         ]
       }
       s3_multipart_uploads_parts: {
@@ -315,17 +315,17 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "s3_multipart_uploads_parts_bucket_id_fkey"
-            columns: ["bucket_id"]
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
+            foreignKeyName: 's3_multipart_uploads_parts_bucket_id_fkey'
+            columns: ['bucket_id']
+            referencedRelation: 'buckets'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "s3_multipart_uploads_parts_upload_id_fkey"
-            columns: ["upload_id"]
-            referencedRelation: "s3_multipart_uploads"
-            referencedColumns: ["id"]
-          }
+            foreignKeyName: 's3_multipart_uploads_parts_upload_id_fkey'
+            columns: ['upload_id']
+            referencedRelation: 's3_multipart_uploads'
+            referencedColumns: ['id']
+          },
         ]
       }
     }
@@ -427,4 +427,3 @@ export interface Database {
     }
   }
 }
-

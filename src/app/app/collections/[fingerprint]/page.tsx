@@ -39,7 +39,7 @@ export default async function CollectionDetails({
   return (
     <>
       <div className="flex items-center justify-between">
-        <Breadcrumb>
+        <Breadcrumb className="max-md:hidden">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
@@ -58,13 +58,14 @@ export default async function CollectionDetails({
             target="_blank"
             className="flex items-center gap-2"
           >
-            View collection page <ExternalLink className="w-4" />
+            View collection page
+            <ExternalLink className="w-4" />
           </Link>
         </Button>
       </div>
-      <div className="flex flex-col xl:flex-row gap-4">
+      <div className="flex flex-col gap-4 xl:flex-row">
         <form action={updateCollection} className="mt-4 w-full xl:max-w-lg">
-          <fieldset className="grid gap-4 rounded-lg border p-4 items-start">
+          <fieldset className="grid items-start gap-4 rounded-lg border p-4">
             <legend className="-ml-1 px-1 text-sm font-medium">
               Collection details
             </legend>
@@ -88,12 +89,12 @@ export default async function CollectionDetails({
                 defaultValue={data?.description ?? ''}
               />
             </div>
-            <div className="flex gap-1.5 items-center">
+            <div className="flex items-center gap-1.5">
               <Checkbox
                 name="published"
                 id="published"
                 defaultChecked={data?.published}
-                className="w-6 h-6"
+                className="h-6 w-6"
               />
               <Label htmlFor="published">Published</Label>
             </div>
@@ -114,7 +115,7 @@ export default async function CollectionDetails({
           </fieldset>
         </form>
         <form className="mt-4 flex-1">
-          <fieldset className="grid gap-4 rounded-lg border p-4 items-start">
+          <fieldset className="grid items-start gap-4 rounded-lg border p-4">
             <legend className="-ml-1 px-1 text-sm font-medium">Links</legend>
             <AddLink fingerprint={params.fingerprint} />
             <LinksList fingerprint={params.fingerprint} />

@@ -30,7 +30,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             </Link>
           </div>
           <div className="flex-1">
-            <nav className="grid items-start pt-2 px-2 text-sm font-medium lg:px-4">
+            <nav className="grid items-start px-2 pt-2 text-sm font-medium lg:px-4">
               <SidebarLink
                 href="/app/collections"
                 className="flex items-center gap-3 rounded-lg p-3 text-muted-foreground transition-all hover:text-primary"
@@ -42,7 +42,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col overflow-hidden">
         <header className="flex h-14 items-center justify-between gap-4 border-b bg-muted/40 px-4 md:flex-row-reverse lg:h-[60px] lg:px-6">
           {/* Mobile sidebar */}
           <Sheet>
@@ -63,7 +63,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                   className="flex items-center gap-2 text-lg font-semibold"
                 >
                   <Utensils className="h-6 w-6" />
-                  <span className="sr-only">Bife</span>
+                  <span className="">Bife</span>
                 </SidebarLink>
                 <SidebarLink
                   href="/app/collections"

@@ -10,7 +10,7 @@ import CreateCollectionForm from '../create-collection-form'
 
 export default function CreateCollection() {
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="flex h-full w-full items-center justify-center">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Create a new collection</CardTitle>

@@ -4,20 +4,18 @@ import React, { type PropsWithChildren, useEffect, useState } from 'react'
 
 import { cn } from '@/lib/utils'
 
-export const Scroller = (
-  {
-    children,
-    direction = 'left',
-    speed = 'fast',
-    pauseOnHover = true,
-    className,
-  }: PropsWithChildren<{
-    direction?: 'left' | 'right'
-    speed?: 'fast' | 'normal' | 'slow'
-    pauseOnHover?: boolean
-    className?: string
-  }>
-) => {
+export const Scroller = ({
+  children,
+  direction = 'left',
+  speed = 'fast',
+  pauseOnHover = true,
+  className,
+}: PropsWithChildren<{
+  direction?: 'left' | 'right'
+  speed?: 'fast' | 'normal' | 'slow'
+  pauseOnHover?: boolean
+  className?: string
+}>) => {
   const containerRef = React.useRef<HTMLDivElement>(null)
   const scrollerRef = React.useRef<HTMLUListElement>(null)
 

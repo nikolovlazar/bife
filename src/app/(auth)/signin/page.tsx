@@ -10,7 +10,7 @@ import { signin } from '../actions'
 
 export default function SignIn() {
   return (
-    <div className="mx-auto flex flex-col justify-center w-[350px] gap-6">
+    <div className="mx-auto flex w-full max-w-[350px] flex-col justify-center gap-6">
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">Sign in</h1>
         <p className="text-balance text-muted-foreground">
@@ -27,7 +27,7 @@ export default function SignIn() {
             type="submit"
           >
             Continue with Google
-            <Icons.google className="w-4 ml-2" />
+            <Icons.google className="ml-2 w-4" />
           </Button>
           <Button
             variant="outline"
@@ -37,7 +37,7 @@ export default function SignIn() {
             type="submit"
           >
             Continue with GitHub
-            <Icons.github className="w-5 ml-2" />
+            <Icons.github className="ml-2 w-5" />
           </Button>
         </div>
       </form>

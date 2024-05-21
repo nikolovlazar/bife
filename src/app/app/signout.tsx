@@ -24,7 +24,7 @@ export function SignOut() {
         <Button
           variant="link"
           type="submit"
-          className="w-full justify-start focus-visible:ring-0 px-2 py-1.5 text-foreground hover:no-underline h-min font-semibold"
+          className="h-min w-full justify-start px-2 py-1.5 font-semibold text-foreground hover:no-underline focus-visible:ring-0"
         >
           Sign out
         </Button>

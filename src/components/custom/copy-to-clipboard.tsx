@@ -24,9 +24,9 @@ export function CopyToClipboard({
       {...rest}
     >
       {state === 'idle' ? (
-        <ClipboardIcon className="w-4 h-4" />
+        <ClipboardIcon className="h-4 w-4" />
       ) : (
-        <Check className="w-4 h-4" />
+        <Check className="h-4 w-4" />
       )}
     </Button>
   )

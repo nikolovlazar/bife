@@ -4,7 +4,7 @@ import { ForgotPasswordForm } from './form'
 
 export default function ForgotPassword() {
   return (
-    <div className="mx-auto flex flex-col justify-center w-[350px] gap-6">
+    <div className="mx-auto flex w-full max-w-[350px] flex-col justify-center gap-6">
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">Forgot Password</h1>
         <p className="text-balance text-muted-foreground">

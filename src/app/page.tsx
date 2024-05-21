@@ -40,7 +40,7 @@ export default function Home() {
             <NavCTA />
           </Suspense>
         </nav>
-        <div className="relative z-10 mx-auto flex h-max w-max max-w-7xl flex-col items-center p-4 px-4 pt-12 md:pt-32 xl:pt-48">
+        <div className="relative z-10 mx-auto flex h-max w-max max-w-7xl flex-col items-center p-4 px-4 pt-32 md:pt-32 xl:pt-48">
           <h2 className="bg-opacity-50 bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text py-1 text-center text-4xl font-semibold text-transparent md:text-5xl">
             All you can link
           </h2>

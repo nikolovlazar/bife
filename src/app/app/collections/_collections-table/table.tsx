@@ -65,7 +65,7 @@ export function CollectionsDataTable<TData extends Collection, TValue>({
           className="max-w-sm"
         />
       </div>
-      <div className="rounded-md border max-w-4xl">
+      <div className="max-w-4xl rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
