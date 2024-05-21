@@ -96,7 +96,6 @@ export default async function PublicCollectionPage({
               </div>
               <span className="w-max max-w-full truncate text-xs font-normal text-muted-foreground group-hover:text-purple-500">
                 {link.url}
-                {link.url}
               </span>
             </a>
           ))}
