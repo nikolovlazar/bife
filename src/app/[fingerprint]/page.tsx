@@ -10,8 +10,7 @@ import {
 } from '@/components/ui/card'
 
 import { createClient } from '@/utils/supabase/server'
-
-import type { Link } from '../app/collections/[fingerprint]/_links-table/columns'
+import type { Link } from '@/utils/types'
 
 export default async function PublicCollectionPage({
   params,
