@@ -2,7 +2,7 @@ drop policy "Authenticated can only remove their own relations" on "public"."col
 
 alter table "public"."link" drop column "description";
 
-alter table "public"."link" add column "label" text not null;
+alter table "public"."link" add column "label" text not null default '';
 
 create policy "Authenticated can only remove their own collection and link rel"
 on "public"."collection_link"

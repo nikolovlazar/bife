@@ -51,7 +51,7 @@ alter table "public"."collection_link" enable row level security;
 
 alter table "public"."link" drop column "id";
 
-alter table "public"."link" add column "fingerprint" text not null;
+alter table "public"."link" add column "fingerprint" text not null default nanoid(10);
 
 CREATE UNIQUE INDEX collection_link_pkey ON public.collection_link USING btree (id);
 
@@ -84,10 +84,6 @@ alter table "public"."collection_link" add constraint "collection_link_link_fkey
 alter table "public"."collection_link" validate constraint "collection_link_link_fkey";
 
 alter table "public"."link" add constraint "link_fingerprint_key" UNIQUE using index "link_fingerprint_key";
-
-alter table "public"."link" add constraint "link_collection_fkey" FOREIGN KEY (collection) REFERENCES collection(fingerprint) ON DELETE CASCADE not valid;
-
-alter table "public"."link" validate constraint "link_collection_fkey";
 
 create policy "Authenticated can delete only their own"
 on "public"."collection"

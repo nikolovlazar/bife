@@ -1,5 +1,3 @@
-alter table "public"."link" drop constraint "link_collection_fkey";
-
 alter table "public"."collection_link" drop constraint "collection_link_pkey";
 
 drop index if exists "public"."collection_link_pkey";
