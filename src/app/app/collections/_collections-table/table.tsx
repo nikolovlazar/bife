@@ -22,7 +22,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import type { Collection } from './columns'
+import type { Collection } from '@/utils/types'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]

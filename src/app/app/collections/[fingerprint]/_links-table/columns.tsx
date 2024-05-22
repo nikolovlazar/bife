@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 import { LinkVisibilitySwitch } from './link-visibility-switch'
-import { Collection, Link } from '@/utils/types'
+import type { Collection, Link } from '@/utils/types'
 
 import { EditLink } from '../edit-link'
 import { RemoveLinkFromCollectionConfirmation } from '../remove-link'

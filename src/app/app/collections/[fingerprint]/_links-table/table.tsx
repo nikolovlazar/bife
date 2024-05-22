@@ -16,7 +16,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import type { Link } from './columns'
+import type { Link } from '@/utils/types'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
