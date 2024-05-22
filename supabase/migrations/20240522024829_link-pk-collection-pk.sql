@@ -1,163 +1,58 @@
+drop policy "Authenticated can only link their own collections and links" on "public"."collection_link";
 
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
+drop policy "Authenticated can only remove their own collection and link rel" on "public"."collection_link";
 
-CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
+alter table "public"."collection_link" drop constraint "collection_link_collection_fkey";
 
-CREATE EXTENSION IF NOT EXISTS "pgsodium" WITH SCHEMA "pgsodium";
+alter table "public"."collection_link" drop constraint "collection_link_link_fkey";
 
-CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
+alter table "public"."collection_link" drop constraint "collection_link_pkey";
 
-CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
+drop index if exists "public"."collection_link_pkey";
 
-CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
+alter table "public"."collection_link" drop column "collection";
 
-CREATE EXTENSION IF NOT EXISTS "pgjwt" WITH SCHEMA "extensions";
+alter table "public"."collection_link" drop column "link";
 
-CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
+alter table "public"."collection_link" add column "collection_pk" text not null;
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
+alter table "public"."collection_link" add column "link_pk" text not null;
 
-SET default_tablespace = '';
+CREATE UNIQUE INDEX collection_link_pkey ON public.collection_link USING btree (collection_pk, link_pk);
 
-SET default_table_access_method = "heap";
+alter table "public"."collection_link" add constraint "collection_link_pkey" PRIMARY KEY using index "collection_link_pkey";
 
-CREATE TABLE IF NOT EXISTS "public"."collection" (
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "created_by" "uuid" NOT NULL,
-    "title" "text" NOT NULL,
-    "description" "text",
-    "fingerprint" "text" NOT NULL,
-    "published" boolean DEFAULT true NOT NULL
-);
+alter table "public"."collection_link" add constraint "collection_link_collection_pk_fkey" FOREIGN KEY (collection_pk) REFERENCES collection(fingerprint) ON DELETE CASCADE not valid;
 
-ALTER TABLE "public"."collection" OWNER TO "postgres";
+alter table "public"."collection_link" validate constraint "collection_link_collection_pk_fkey";
 
-CREATE TABLE IF NOT EXISTS "public"."collection_link" (
-    "collection_pk" "text" NOT NULL,
-    "link_pk" "text" NOT NULL
-);
+alter table "public"."collection_link" add constraint "collection_link_link_pk_fkey" FOREIGN KEY (link_pk) REFERENCES link(fingerprint) ON DELETE CASCADE not valid;
 
-ALTER TABLE "public"."collection_link" OWNER TO "postgres";
+alter table "public"."collection_link" validate constraint "collection_link_link_pk_fkey";
 
-CREATE TABLE IF NOT EXISTS "public"."link" (
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "created_by" "uuid" NOT NULL,
-    "url" "text" NOT NULL,
-    "visible" boolean DEFAULT true NOT NULL,
-    "fingerprint" "text" NOT NULL,
-    "label" "text" NOT NULL
-);
+create policy "Authenticated can only link their own collections and links"
+on "public"."collection_link"
+as permissive
+for insert
+to authenticated
+with check (((( SELECT auth.uid() AS uid) = ( SELECT c.created_by
+   FROM collection c
+  WHERE (c.fingerprint = collection_link.collection_pk))) AND (( SELECT auth.uid() AS uid) = ( SELECT l.created_by
+   FROM link l
+  WHERE (l.fingerprint = collection_link.link_pk)))));
 
-ALTER TABLE "public"."link" OWNER TO "postgres";
 
-ALTER TABLE ONLY "public"."collection_link"
-    ADD CONSTRAINT "collection_link_pkey" PRIMARY KEY ("collection_pk", "link_pk");
+create policy "Authenticated can only remove their own collection and link rel"
+on "public"."collection_link"
+as permissive
+for delete
+to authenticated
+using (((( SELECT auth.uid() AS uid) = ( SELECT c.created_by
+   FROM collection c
+  WHERE (c.fingerprint = collection_link.collection_pk))) AND (( SELECT auth.uid() AS uid) = ( SELECT l.created_by
+   FROM link l
+  WHERE (l.fingerprint = collection_link.link_pk)))));
 
-ALTER TABLE ONLY "public"."collection"
-    ADD CONSTRAINT "link_collection_fingerprint_key" UNIQUE ("fingerprint");
 
-ALTER TABLE ONLY "public"."collection"
-    ADD CONSTRAINT "link_collection_pkey" PRIMARY KEY ("fingerprint");
 
-ALTER TABLE ONLY "public"."link"
-    ADD CONSTRAINT "link_fingerprint_key" UNIQUE ("fingerprint");
 
-ALTER TABLE ONLY "public"."link"
-    ADD CONSTRAINT "link_pkey" PRIMARY KEY ("fingerprint");
-
-ALTER TABLE ONLY "public"."collection"
-    ADD CONSTRAINT "collection_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-
-ALTER TABLE ONLY "public"."collection_link"
-    ADD CONSTRAINT "collection_link_collection_pk_fkey" FOREIGN KEY ("collection_pk") REFERENCES "public"."collection"("fingerprint") ON DELETE CASCADE;
-
-ALTER TABLE ONLY "public"."collection_link"
-    ADD CONSTRAINT "collection_link_link_pk_fkey" FOREIGN KEY ("link_pk") REFERENCES "public"."link"("fingerprint") ON DELETE CASCADE;
-
-ALTER TABLE ONLY "public"."link"
-    ADD CONSTRAINT "link_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-
-CREATE POLICY "Authenticated can delete only their own" ON "public"."collection" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "created_by"));
-
-CREATE POLICY "Authenticated can delete only their own" ON "public"."link" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "created_by"));
-
-CREATE POLICY "Authenticated can insert only as their own" ON "public"."collection" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "created_by"));
-
-CREATE POLICY "Authenticated can insert only as their own" ON "public"."link" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "created_by"));
-
-CREATE POLICY "Authenticated can only link their own collections and links" ON "public"."collection_link" FOR INSERT TO "authenticated" WITH CHECK (((( SELECT "auth"."uid"() AS "uid") = ( SELECT "c"."created_by"
-   FROM "public"."collection" "c"
-  WHERE ("c"."fingerprint" = "collection_link"."collection_pk"))) AND (( SELECT "auth"."uid"() AS "uid") = ( SELECT "l"."created_by"
-   FROM "public"."link" "l"
-  WHERE ("l"."fingerprint" = "collection_link"."link_pk")))));
-
-CREATE POLICY "Authenticated can only remove their own collection and link rel" ON "public"."collection_link" FOR DELETE TO "authenticated" USING (((( SELECT "auth"."uid"() AS "uid") = ( SELECT "c"."created_by"
-   FROM "public"."collection" "c"
-  WHERE ("c"."fingerprint" = "collection_link"."collection_pk"))) AND (( SELECT "auth"."uid"() AS "uid") = ( SELECT "l"."created_by"
-   FROM "public"."link" "l"
-  WHERE ("l"."fingerprint" = "collection_link"."link_pk")))));
-
-CREATE POLICY "Authenticated can read only their own" ON "public"."collection" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "created_by"));
-
-CREATE POLICY "Authenticated can read only their own" ON "public"."link" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "created_by"));
-
-CREATE POLICY "Authenticated can update only their own" ON "public"."collection" FOR UPDATE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "created_by")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "created_by"));
-
-CREATE POLICY "Authenticated can update only their own" ON "public"."link" FOR UPDATE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "created_by")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "created_by"));
-
-CREATE POLICY "Public can only read published" ON "public"."collection" FOR SELECT USING (("published" = true));
-
-CREATE POLICY "Public can read it all" ON "public"."collection_link" FOR SELECT USING (true);
-
-CREATE POLICY "Public can read only visible" ON "public"."link" FOR SELECT USING (("visible" = true));
-
-CREATE POLICY "Service role can read all" ON "public"."collection" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "created_by"));
-
-ALTER TABLE "public"."collection" ENABLE ROW LEVEL SECURITY;
-
-ALTER TABLE "public"."collection_link" ENABLE ROW LEVEL SECURITY;
-
-ALTER TABLE "public"."link" ENABLE ROW LEVEL SECURITY;
-
-GRANT USAGE ON SCHEMA "public" TO "postgres";
-GRANT USAGE ON SCHEMA "public" TO "anon";
-GRANT USAGE ON SCHEMA "public" TO "authenticated";
-GRANT USAGE ON SCHEMA "public" TO "service_role";
-
-GRANT ALL ON TABLE "public"."collection" TO "anon";
-GRANT ALL ON TABLE "public"."collection" TO "authenticated";
-GRANT ALL ON TABLE "public"."collection" TO "service_role";
-
-GRANT ALL ON TABLE "public"."collection_link" TO "anon";
-GRANT ALL ON TABLE "public"."collection_link" TO "authenticated";
-GRANT ALL ON TABLE "public"."collection_link" TO "service_role";
-
-GRANT ALL ON TABLE "public"."link" TO "anon";
-GRANT ALL ON TABLE "public"."link" TO "authenticated";
-GRANT ALL ON TABLE "public"."link" TO "service_role";
-
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "anon";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "authenticated";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "service_role";
-
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "anon";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "authenticated";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "service_role";
-
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "anon";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "authenticated";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "service_role";
-
-RESET ALL;
