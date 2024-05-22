@@ -79,7 +79,7 @@ export const linkColumns: ColumnDef<Link>[] = [
             <DeleteLinkConfirmation linkId={link.id}>
               <DropdownMenuItem
                 onSelect={(e) => e.preventDefault()}
-                className="cursor-pointer text-destructive"
+                className="cursor-pointer text-red-500"
               >
                 Delete link
               </DropdownMenuItem>
