@@ -1,4 +1,4 @@
-import { ChevronLeft, ExternalLink } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 
 import {
@@ -29,7 +29,7 @@ export default async function CollectionDetails({
 }) {
   const supabase = createClient()
   const { data, error } = await supabase
-    .from('link_collection')
+    .from('collection')
     .select('*')
     .eq('fingerprint', params.fingerprint)
     .single()
@@ -117,7 +117,7 @@ export default async function CollectionDetails({
         <form className="mt-4 flex-1">
           <fieldset className="grid items-start gap-4 rounded-lg border p-4">
             <legend className="-ml-1 px-1 text-sm font-medium">Links</legend>
-            <AddLink fingerprint={params.fingerprint} />
+            <AddLink collectionFingerprint={params.fingerprint} />
             <LinksList fingerprint={params.fingerprint} />
           </fieldset>
         </form>

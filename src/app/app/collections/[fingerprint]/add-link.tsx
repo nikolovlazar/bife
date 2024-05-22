@@ -19,7 +19,11 @@ import { Label } from '@/components/ui/label'
 
 import { createLink } from '../actions'
 
-export function AddLink({ fingerprint }: { fingerprint: string }) {
+export function AddLink({
+  collectionFingerprint,
+}: {
+  collectionFingerprint?: string
+}) {
   const [opened, setOpened] = useState(false)
   const [loading, setLoading] = useState(false)
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
@@ -54,7 +58,9 @@ export function AddLink({ fingerprint }: { fingerprint: string }) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add link to collection</DialogTitle>
+          <DialogTitle>
+            Add link{collectionFingerprint && ' to collection'}
+          </DialogTitle>
           <DialogDescription>
             Only the visible links will show up on the page.
           </DialogDescription>
@@ -65,22 +71,17 @@ export function AddLink({ fingerprint }: { fingerprint: string }) {
             <Input id="url" name="url" type="url" placeholder="https://..." />
           </div>
           <div className="gap-1.5">
-            <Label htmlFor="description">Description</Label>
-            <Input
-              id="description"
-              name="description"
-              type="description"
-              placeholder=""
-            />
+            <Label htmlFor="label">Label</Label>
+            <Input id="label" name="label" type="label" placeholder="" />
           </div>
           <input
-            name="fingerprint"
+            name="collection"
             readOnly
             type="text"
             hidden
             aria-hidden
             aria-readonly
-            value={fingerprint}
+            value={collectionFingerprint}
             className="hidden"
           />
           <DialogClose asChild>

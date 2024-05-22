@@ -8,10 +8,10 @@ import { Switch } from '@/components/ui/switch'
 import { toggleLinkVisibility } from '../../actions'
 
 export function LinkVisibilitySwitch({
-  linkId,
+  fingerprint,
   checked,
 }: {
-  linkId: number
+  fingerprint: string
   checked: boolean
 }) {
   const [loading, setLoading] = useState(false)
@@ -19,7 +19,7 @@ export function LinkVisibilitySwitch({
     try {
       setLoading(true)
       const formData = new FormData()
-      formData.append('id', linkId + '')
+      formData.append('fingerprint', fingerprint)
       formData.append('checked', value ? 'true' : 'false')
 
       await toggleLinkVisibility(formData)

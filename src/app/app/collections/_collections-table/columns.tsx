@@ -15,11 +15,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 import { CollectionPublishedSwitch } from './collection-published-switch'
-import type { Database } from '~/supabase/types.gen'
+import type { Collection } from '@/utils/types'
 
 import { DeleteCollectionConfirmation } from '../[fingerprint]/delete-collection'
-
-export type Collection = Database['public']['Tables']['link_collection']['Row']
 
 export const collectionColumns: ColumnDef<Collection>[] = [
   {

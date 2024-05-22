@@ -1,4 +1,4 @@
-import { LinkIcon, Menu, Utensils } from 'lucide-react'
+import { LinkIcon, Menu, Scroll, Utensils } from 'lucide-react'
 import Link from 'next/link'
 import { ReactNode, Suspense } from 'react'
 
@@ -6,10 +6,8 @@ import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuPortal,
-  DropdownMenuRadioGroup,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -41,8 +39,15 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 href="/app/collections"
                 className="flex items-center gap-3 rounded-lg p-3 text-muted-foreground transition-all hover:text-primary"
               >
-                <LinkIcon className="h-5 w-5" />
+                <Scroll className="h-5 w-5" />
                 Collections
+              </SidebarLink>
+              <SidebarLink
+                href="/app/links"
+                className="flex items-center gap-3 rounded-lg p-3 text-muted-foreground transition-all hover:text-primary"
+              >
+                <LinkIcon className="h-5 w-5" />
+                Links
               </SidebarLink>
             </nav>
           </div>
@@ -75,8 +80,15 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                   href="/app/collections"
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
-                  <LinkIcon className="h-5 w-5" />
+                  <Scroll className="h-5 w-5" />
                   Collections
+                </SidebarLink>
+                <SidebarLink
+                  href="/app/links"
+                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                >
+                  <LinkIcon className="h-5 w-5" />
+                  Links
                 </SidebarLink>
               </nav>
             </SheetContent>

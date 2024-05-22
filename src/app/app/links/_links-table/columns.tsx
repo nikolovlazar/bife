@@ -12,15 +12,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-import { LinkVisibilitySwitch } from './link-visibility-switch'
-import { Collection, Link } from '@/utils/types'
+import { Link } from '@/utils/types'
 
-import { EditLink } from '../edit-link'
-import { RemoveLinkFromCollectionConfirmation } from '../remove-link'
+import { DeleteLinkConfirmation } from '../../collections/[fingerprint]/delete-link'
+import { EditLink } from '../../collections/[fingerprint]/edit-link'
 
-export const linkColumns: ColumnDef<
-  Link & { collectionFingerprint: Collection['fingerprint'] }
->[] = [
+export const linkColumns: ColumnDef<Link>[] = [
   {
     accessorKey: 'url',
     header: 'URL',
@@ -28,17 +25,6 @@ export const linkColumns: ColumnDef<
   {
     accessorKey: 'label',
     header: 'Label',
-  },
-  {
-    accessorKey: 'visible',
-    header: 'Visible',
-    cell: ({ row }) => (
-      // TODO: separate Visible into the junction table
-      <LinkVisibilitySwitch
-        fingerprint={row.original.fingerprint}
-        checked={row.original.visible}
-      />
-    ),
   },
   {
     accessorKey: 'created_at',
@@ -74,17 +60,14 @@ export const linkColumns: ColumnDef<
                 Edit link
               </DropdownMenuItem>
             </EditLink>
-            <RemoveLinkFromCollectionConfirmation
-              linkFingerprint={link.fingerprint}
-              collectionFingerprint={link.collectionFingerprint}
-            >
+            <DeleteLinkConfirmation fingerprint={link.fingerprint}>
               <DropdownMenuItem
                 onSelect={(e) => e.preventDefault()}
                 className="cursor-pointer text-red-500"
               >
-                Remove from collection
+                Delete link
               </DropdownMenuItem>
-            </RemoveLinkFromCollectionConfirmation>
+            </DeleteLinkConfirmation>
           </DropdownMenuContent>
         </DropdownMenu>
       )

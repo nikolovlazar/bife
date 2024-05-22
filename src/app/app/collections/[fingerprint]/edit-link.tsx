@@ -21,16 +21,16 @@ import { Label } from '@/components/ui/label'
 import { updateLink } from '../actions'
 
 export function EditLink({
-  linkId,
+  fingerprint,
   url,
   visible,
-  description,
+  label,
   children,
 }: {
-  linkId: number
+  fingerprint: string
   url: string
   visible: boolean
-  description: string | null
+  label: string
   children: ReactNode
 }) {
   const [loading, setLoading] = useState(false)
@@ -76,12 +76,12 @@ export function EditLink({
             />
           </div>
           <div className="gap-1.5">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="label">Label</Label>
             <Input
-              id="description"
-              name="description"
-              type="description"
-              defaultValue={description ?? ''}
+              id="label"
+              name="label"
+              type="label"
+              defaultValue={label}
               placeholder=""
             />
           </div>
@@ -95,13 +95,13 @@ export function EditLink({
             <Label htmlFor="visible">Visible</Label>
           </div>
           <input
-            name="id"
+            name="fingerprint"
             readOnly
             type="text"
             hidden
             aria-hidden
             aria-readonly
-            value={linkId}
+            value={fingerprint}
             className="hidden"
           />
           <DialogClose asChild>

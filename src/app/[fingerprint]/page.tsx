@@ -1,5 +1,5 @@
 import { Utensils } from 'lucide-react'
-import Link from 'next/link'
+import NextLink from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 
 import {
@@ -11,6 +11,8 @@ import {
 
 import { createClient } from '@/utils/supabase/server'
 
+import type { Link } from '../app/collections/[fingerprint]/_links-table/columns'
+
 export default async function PublicCollectionPage({
   params,
 }: {
@@ -18,7 +20,7 @@ export default async function PublicCollectionPage({
 }) {
   const supabase = createClient()
   const { data: collections, error: collectionError } = await supabase
-    .from('link_collection')
+    .from('collection')
     .select('*')
     .eq('fingerprint', params.fingerprint)
   const collection = collections?.[0]
@@ -49,6 +51,7 @@ export default async function PublicCollectionPage({
   }
 
   if (!collection) {
+    // TODO: could be a shortlink, check for that an redirect accordingly
     return notFound()
   }
 
@@ -57,20 +60,21 @@ export default async function PublicCollectionPage({
   } = await supabase.auth.getUser()
 
   const { data: links, error: linksError } = await supabase
-    .from('link')
-    .select('*')
-    .eq('collection', collection.fingerprint)
-
-  const canSeeHiddenLinks = user && collection.created_by === user.id
+    .from('collection_link')
+    .select('link(*)')
+    .eq('collection_pk', collection.fingerprint)
 
   if (linksError) {
     console.error(linksError)
     return <p>Error loading links.</p>
   }
 
-  const displayedLinks = links.filter((link) =>
-    !link.visible ? canSeeHiddenLinks : true
-  )
+  const canSeeHiddenLinks = user && collection.created_by === user.id
+
+  const displayedLinks = links
+    .map(({ link }) => link)
+    .filter((link) => (!link?.visible ? canSeeHiddenLinks : true))
+    .filter(Boolean) as Link[]
 
   return (
     <>
@@ -84,7 +88,7 @@ export default async function PublicCollectionPage({
         <div className="flex flex-1 flex-col gap-4">
           {displayedLinks.map((link) => (
             <a
-              key={link.id}
+              key={link.fingerprint}
               href={link.url}
               target="_blank"
               rel="noopener nofollow"
@@ -92,7 +96,7 @@ export default async function PublicCollectionPage({
             >
               <div className="flex gap-4">
                 <span>🔗</span>
-                <span className="shrink-0">{link.description}</span>
+                <span className="shrink-0">{link.label}</span>
               </div>
               <span className="w-max max-w-full truncate text-xs font-normal text-muted-foreground group-hover:text-purple-500">
                 {link.url}
@@ -100,7 +104,7 @@ export default async function PublicCollectionPage({
             </a>
           ))}
         </div>
-        <Link
+        <NextLink
           href="/"
           className="flex w-max self-center rounded-md bg-background px-3 py-2 shadow"
         >
@@ -109,7 +113,7 @@ export default async function PublicCollectionPage({
             Bife <Utensils className="ml-1" />
           </span>{' '}
           collection
-        </Link>
+        </NextLink>
       </div>
     </>
   )

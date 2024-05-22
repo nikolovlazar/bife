@@ -1,13 +1,14 @@
-import { PlusIcon } from 'lucide-react'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
 
-import { collectionColumns } from './_collections-table/columns'
-import { CollectionsDataTable } from './_collections-table/table'
+import { linkColumns } from './_links-table/columns'
+import { LinksDataTable } from './_links-table/table'
 import { createClient } from '@/utils/supabase/server'
 
-async function getCollections() {
+import { AddLink } from '../collections/[fingerprint]/add-link'
+
+async function getLinks() {
   const supabase = createClient()
   const {
     data: { user },
@@ -18,32 +19,26 @@ async function getCollections() {
   }
 
   const { data, error: collectionError } = await supabase
-    .from('collection')
+    .from('link')
     .select()
     .eq('created_by', user.id)
   if (collectionError) {
-    throw new Error('Failed to fetch collections')
+    throw new Error('Failed to fetch links')
   }
 
   return data
 }
-
-export default async function Collections() {
-  const collections = await getCollections()
+export default async function LinksPage() {
+  const links = await getLinks()
 
   return (
     <>
-      <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold md:text-2xl">Collections</h1>
-        <Button asChild>
-          <Link href="/app/collections/create">
-            <PlusIcon className="mr-2 h-4 w-4" />
-            Create new
-          </Link>
-        </Button>
+      <div className="mb-4 flex items-center justify-between">
+        <h1 className="text-lg font-semibold md:text-2xl">Links</h1>
+        <AddLink />
       </div>
-      {collections && collections.length > 0 ? (
-        <CollectionsDataTable columns={collectionColumns} data={collections} />
+      {links && links.length > 0 ? (
+        <LinksDataTable columns={linkColumns} data={links} />
       ) : (
         <div className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-1 text-center">

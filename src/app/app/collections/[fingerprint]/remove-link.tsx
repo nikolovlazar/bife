@@ -17,22 +17,25 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 
-import { deleteLink } from '../actions'
+import { removeLinkFromCollection } from '../actions'
 
-export function DeleteLinkConfirmation({
-  fingerprint,
+export function RemoveLinkFromCollectionConfirmation({
+  linkFingerprint,
+  collectionFingerprint,
   children,
 }: {
-  fingerprint: string
+  linkFingerprint: string
+  collectionFingerprint: string
   children: ReactNode
 }) {
   const [loading, setLoading] = useState(false)
-  const handleDeletion = async () => {
+  const handleRemoval = async () => {
     try {
       setLoading(true)
       const data = new FormData()
-      data.append('fingerprint', fingerprint)
-      await deleteLink(data)
+      data.append('link_fingerprint', linkFingerprint)
+      data.append('collection_fingerprint', collectionFingerprint)
+      await removeLinkFromCollection(data)
     } catch (error) {
       if (error instanceof Error) {
         setLoading(false)
@@ -52,9 +55,10 @@ export function DeleteLinkConfirmation({
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>You sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will delete the link, for real.
+            This will not delete the link itself, just remove it from this
+            collection. You can always add it back later.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -63,10 +67,10 @@ export function DeleteLinkConfirmation({
             <Button
               className="bg-destructive hover:bg-destructive/80"
               disabled={loading}
-              onClick={handleDeletion}
+              onClick={handleRemoval}
             >
               {loading && <Loader2 className="mr-2 w-4 animate-spin" />}
-              Yes, delete the link
+              Yes, remove it
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>
