@@ -5,7 +5,6 @@ import { FormEventHandler, ReactNode, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   Dialog,
   DialogClose,
@@ -23,13 +22,11 @@ import { updateLink } from '../actions'
 export function EditLink({
   fingerprint,
   url,
-  visible,
   label,
   children,
 }: {
   fingerprint: string
   url: string
-  visible: boolean
   label: string
   children: ReactNode
 }) {
@@ -84,15 +81,6 @@ export function EditLink({
               defaultValue={label}
               placeholder=""
             />
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Checkbox
-              name="visible"
-              id="visible"
-              defaultChecked={visible}
-              className="h-6 w-6"
-            />
-            <Label htmlFor="visible">Visible</Label>
           </div>
           <input
             name="fingerprint"

@@ -1,6 +1,6 @@
 import { Utensils } from 'lucide-react'
 import NextLink from 'next/link'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 
 import {
   Card,
@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/card'
 
 import { createClient } from '@/utils/supabase/server'
-import type { Link } from '@/utils/types'
 
 export default async function PublicCollectionPage({
   params,
@@ -60,7 +59,7 @@ export default async function PublicCollectionPage({
 
   const { data: links, error: linksError } = await supabase
     .from('collection_link')
-    .select('link(*)')
+    .select('visible, link(*)')
     .eq('collection_pk', collection.fingerprint)
 
   if (linksError) {
@@ -71,9 +70,8 @@ export default async function PublicCollectionPage({
   const canSeeHiddenLinks = user && collection.created_by === user.id
 
   const displayedLinks = links
-    .map(({ link }) => link)
+    .map(({ link, visible }) => ({ ...link, visible }))
     .filter((link) => (!link?.visible ? canSeeHiddenLinks : true))
-    .filter(Boolean) as Link[]
 
   return (
     <>

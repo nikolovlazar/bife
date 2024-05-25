@@ -1,5 +1,6 @@
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
 import {
   Breadcrumb,
@@ -15,7 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { SubmitButton } from '@/components/ui/submit'
 
-import { AddLink } from './add-link'
+import { AddOrCreateLink } from './add-create-link'
 import { DeleteCollectionConfirmation } from './delete-collection'
 import { LinksList } from './links-list'
 import { createClient } from '@/utils/supabase/server'
@@ -28,14 +29,39 @@ export default async function CollectionDetails({
   params: { fingerprint: string }
 }) {
   const supabase = createClient()
-  const { data, error } = await supabase
+  const { data: collection, error } = await supabase
     .from('collection')
     .select('*')
     .eq('fingerprint', params.fingerprint)
     .single()
+
   if (error) {
     console.error(error)
   }
+
+  if (!collection) {
+    return notFound()
+  }
+
+  const { data: userLinks, error: linksError } = await supabase
+    .from('link')
+    .select('*')
+
+  if (linksError) {
+    console.error(linksError)
+  }
+
+  const { data: collectionLinks, error: collectionLinksError } = await supabase
+    .from('collection_link')
+    .select('link(*)')
+    .eq('collection_pk', params.fingerprint)
+
+  if (collectionLinksError) {
+    console.error(collectionLinksError)
+  }
+
+  const linksInCollection = collectionLinks?.map(({ link }) => link!)
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -48,13 +74,13 @@ export default async function CollectionDetails({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>{data?.title}</BreadcrumbPage>
+              <BreadcrumbPage>{collection?.title}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
         <Button asChild variant="ghost">
           <Link
-            href={`/${data?.fingerprint}`}
+            href={`/${collection?.fingerprint}`}
             target="_blank"
             className="flex items-center gap-2"
           >
@@ -76,7 +102,7 @@ export default async function CollectionDetails({
                 name="title"
                 type="text"
                 placeholder="ReactConf 2024"
-                defaultValue={data?.title}
+                defaultValue={collection?.title}
               />
             </div>
             <div className="gap-1.5">
@@ -86,14 +112,14 @@ export default async function CollectionDetails({
                 name="description"
                 type="text"
                 placeholder=""
-                defaultValue={data?.description ?? ''}
+                defaultValue={collection?.description ?? ''}
               />
             </div>
             <div className="flex items-center gap-1.5">
               <Checkbox
                 name="published"
                 id="published"
-                defaultChecked={data?.published}
+                defaultChecked={collection?.published}
                 className="h-6 w-6"
               />
               <Label htmlFor="published">Published</Label>
@@ -117,7 +143,11 @@ export default async function CollectionDetails({
         <form className="mt-4 flex-1">
           <fieldset className="grid items-start gap-4 rounded-lg border p-4">
             <legend className="-ml-1 px-1 text-sm font-medium">Links</legend>
-            <AddLink collectionFingerprint={params.fingerprint} />
+            <AddOrCreateLink
+              userLinks={userLinks ?? []}
+              linksInCollection={linksInCollection ?? []}
+              collectionFingerprint={params.fingerprint}
+            />
             <LinksList fingerprint={params.fingerprint} />
           </fieldset>
         </form>

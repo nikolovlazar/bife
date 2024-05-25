@@ -5,13 +5,15 @@ import { toast } from 'sonner'
 
 import { Switch } from '@/components/ui/switch'
 
-import { toggleLinkVisibility } from '../../actions'
+import { toggleLinkVisibility } from '@/app/app/links/actions'
 
 export function LinkVisibilitySwitch({
-  fingerprint,
+  linkFingerprint,
+  collectionFingerprint,
   checked,
 }: {
-  fingerprint: string
+  linkFingerprint: string
+  collectionFingerprint: string
   checked: boolean
 }) {
   const [loading, setLoading] = useState(false)
@@ -19,7 +21,8 @@ export function LinkVisibilitySwitch({
     try {
       setLoading(true)
       const formData = new FormData()
-      formData.append('fingerprint', fingerprint)
+      formData.append('link_pk', linkFingerprint)
+      formData.append('collection_pk', collectionFingerprint)
       formData.append('checked', value ? 'true' : 'false')
 
       await toggleLinkVisibility(formData)

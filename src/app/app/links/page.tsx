@@ -4,9 +4,8 @@ import { Button } from '@/components/ui/button'
 
 import { linkColumns } from './_links-table/columns'
 import { LinksDataTable } from './_links-table/table'
+import { CreateLink } from './create-link'
 import { createClient } from '@/utils/supabase/server'
-
-import { AddLink } from '../collections/[fingerprint]/add-link'
 
 async function getLinks() {
   const supabase = createClient()
@@ -35,7 +34,7 @@ export default async function LinksPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-lg font-semibold md:text-2xl">Links</h1>
-        <AddLink />
+        <CreateLink />
       </div>
       {links && links.length > 0 ? (
         <LinksDataTable columns={linkColumns} data={links} />
@@ -43,14 +42,12 @@ export default async function LinksPage() {
         <div className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-1 text-center">
             <h3 className="text-2xl font-bold tracking-tight">
-              You have no link collections
+              You have no links
             </h3>
             <p className="text-sm text-muted-foreground">
-              Create a collection to get started
+              Create a link to get started
             </p>
-            <Button asChild className="mt-4">
-              <Link href="/app/collections/create">Create collection</Link>
-            </Button>
+            <CreateLink className="mt-4" variant="default" />
           </div>
         </div>
       )}

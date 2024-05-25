@@ -51,7 +51,6 @@ export const linkColumns: ColumnDef<Link>[] = [
               fingerprint={link.fingerprint}
               label={link.label}
               url={link.url}
-              visible={link.visible}
             >
               <DropdownMenuItem
                 className="cursor-pointer"

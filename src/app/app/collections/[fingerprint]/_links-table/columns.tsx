@@ -18,9 +18,11 @@ import type { Collection, Link } from '@/utils/types'
 import { EditLink } from '../edit-link'
 import { RemoveLinkFromCollectionConfirmation } from '../remove-link'
 
-export const linkColumns: ColumnDef<
-  Link & { collectionFingerprint: Collection['fingerprint'] }
->[] = [
+export type ColumnsType = Link & {
+  visible: boolean
+  collectionFingerprint: Collection['fingerprint']
+}
+export const linkColumns: ColumnDef<ColumnsType>[] = [
   {
     accessorKey: 'url',
     header: 'URL',
@@ -33,9 +35,9 @@ export const linkColumns: ColumnDef<
     accessorKey: 'visible',
     header: 'Visible',
     cell: ({ row }) => (
-      // TODO: separate Visible into the junction table
       <LinkVisibilitySwitch
-        fingerprint={row.original.fingerprint}
+        linkFingerprint={row.original.fingerprint}
+        collectionFingerprint={row.original.collectionFingerprint}
         checked={row.original.visible}
       />
     ),
@@ -65,7 +67,6 @@ export const linkColumns: ColumnDef<
               fingerprint={link.fingerprint}
               label={link.label}
               url={link.url}
-              visible={link.visible}
             >
               <DropdownMenuItem
                 className="cursor-pointer"
