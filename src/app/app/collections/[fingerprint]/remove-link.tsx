@@ -32,10 +32,7 @@ export function RemoveLinkFromCollectionConfirmation({
   const handleRemoval = async () => {
     try {
       setLoading(true)
-      const data = new FormData()
-      data.append('link_fingerprint', linkFingerprint)
-      data.append('collection_fingerprint', collectionFingerprint)
-      await removeLinkFromCollection(data)
+      await removeLinkFromCollection(collectionFingerprint, linkFingerprint)
     } catch (error) {
       if (error instanceof Error) {
         setLoading(false)
