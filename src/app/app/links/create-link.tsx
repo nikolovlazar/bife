@@ -79,7 +79,17 @@ export const CreateLink = forwardRef(
             </div>
             <div className="gap-1.5">
               <Label htmlFor="label">Label</Label>
-              <Input id="label" name="label" type="label" placeholder="" />
+              <Input
+                id="label"
+                name="label"
+                type="label"
+                placeholder=""
+                onKeyUp={(event) => {
+                  if (event.key === 'Enter') {
+                    event.currentTarget.form?.requestSubmit()
+                  }
+                }}
+              />
             </div>
             <input
               name="collection"

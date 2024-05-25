@@ -35,7 +35,6 @@ import {
 
 import { ColumnsType } from './columns'
 import { DraggableRow } from './draggable-row'
-import type { Link } from '@/utils/types'
 
 import { updateLinksOrder } from '../../actions'
 
@@ -93,6 +92,7 @@ export function LinksDataTable<TData extends ColumnsType, TValue>({
     <>
       <div className="grid rounded-md border">
         <DndContext
+          id="links-table-dnd-context"
           collisionDetection={closestCenter}
           modifiers={[restrictToVerticalAxis]}
           sensors={sensors}
