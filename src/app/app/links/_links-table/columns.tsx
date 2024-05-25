@@ -14,8 +14,8 @@ import {
 
 import { Link } from '@/utils/types'
 
-import { DeleteLinkConfirmation } from '../../collections/[fingerprint]/delete-link'
-import { EditLink } from '../../collections/[fingerprint]/edit-link'
+import { DeleteLinkConfirmation } from '../delete-link'
+import { EditLink } from '../edit-link'
 
 export const linkColumns: ColumnDef<Link>[] = [
   {

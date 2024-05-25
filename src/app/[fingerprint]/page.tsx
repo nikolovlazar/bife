@@ -59,7 +59,8 @@ export default async function PublicCollectionPage({
 
   const { data: links, error: linksError } = await supabase
     .from('collection_link')
-    .select('visible, link(*)')
+    .select('visible, order, link(*)')
+    .order('order', { ascending: true })
     .eq('collection_pk', collection.fingerprint)
 
   if (linksError) {

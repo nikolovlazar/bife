@@ -9,7 +9,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -17,7 +16,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-import { updateLink } from '../actions'
+import { updateLink } from './actions'
 
 export function EditLink({
   fingerprint,
@@ -27,7 +26,7 @@ export function EditLink({
 }: {
   fingerprint: string
   url: string
-  label: string
+  label: string | null
   children: ReactNode
 }) {
   const [loading, setLoading] = useState(false)
@@ -78,7 +77,7 @@ export function EditLink({
               id="label"
               name="label"
               type="label"
-              defaultValue={label}
+              defaultValue={label ?? ''}
               placeholder=""
             />
           </div>

@@ -73,16 +73,19 @@ export type Database = {
         Row: {
           collection_pk: string
           link_pk: string
+          order: number
           visible: boolean | null
         }
         Insert: {
           collection_pk: string
           link_pk: string
+          order?: number
           visible?: boolean | null
         }
         Update: {
           collection_pk?: string
           link_pk?: string
+          order?: number
           visible?: boolean | null
         }
         Relationships: [
@@ -107,21 +110,21 @@ export type Database = {
           created_at: string
           created_by: string
           fingerprint: string
-          label: string
+          label: string | null
           url: string
         }
         Insert: {
           created_at?: string
           created_by: string
           fingerprint: string
-          label: string
+          label?: string | null
           url: string
         }
         Update: {
           created_at?: string
           created_by?: string
           fingerprint?: string
-          label?: string
+          label?: string | null
           url?: string
         }
         Relationships: [

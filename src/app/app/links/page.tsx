@@ -21,6 +21,7 @@ async function getLinks() {
     .from('link')
     .select()
     .eq('created_by', user.id)
+
   if (collectionError) {
     throw new Error('Failed to fetch links')
   }

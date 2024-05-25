@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 
-import { deleteLink } from '../actions'
+import { deleteLink } from './actions'
 
 export function DeleteLinkConfirmation({
   fingerprint,

@@ -46,67 +46,77 @@ export function AddOrCreateLink({
         <Command
           filter={(value, search) => {
             const link = userLinks.find((link) => link.fingerprint === value)
-            return link?.label.toLowerCase().includes(search.toLowerCase()) ||
+            return link?.label?.toLowerCase().includes(search.toLowerCase()) ||
               link?.url.toLowerCase().includes(search.toLowerCase())
               ? 1
               : 0
           }}
         >
           <CommandInput placeholder="Search link..." className="h-9" />
-          <CommandEmpty>No links found</CommandEmpty>
+          <CommandEmpty className="flex flex-col items-center gap-2 py-4">
+            No links found
+            <CreateLink
+              className="cursor-pointer justify-start"
+              collectionFingerprint={collectionFingerprint}
+            />
+          </CommandEmpty>
           <CommandList>
-            <CommandGroup value={undefined}>
-              <CommandItem asChild>
-                <CreateLink
-                  className="w-full cursor-pointer justify-start"
-                  collectionFingerprint={collectionFingerprint}
-                />
-              </CommandItem>
-            </CommandGroup>
-            <CommandGroup heading="Your links" value={undefined}>
-              {userLinks?.map((link) => {
-                const isInCollection = linksInCollection.some(
-                  ({ fingerprint }) => link.fingerprint === fingerprint
-                )
-                return (
-                  <CommandItem
-                    key={link.url}
-                    value={link.fingerprint}
-                    onSelect={(currentValue) => {
-                      if (currentValue) {
-                        if (isInCollection) {
-                          removeLinkFromCollection(
-                            currentValue,
-                            collectionFingerprint
-                          )
-                        } else {
-                          addLinkToCollection(
-                            currentValue,
-                            collectionFingerprint
-                          )
-                        }
-                      }
-                    }}
-                    className="flex cursor-pointer gap-2"
-                  >
-                    <Check
-                      className={cn(
-                        'h-6 w-6',
-                        isInCollection ? 'opacity-100' : 'opacity-0'
-                      )}
+            {userLinks?.length > 0 && (
+              <>
+                <CommandGroup value={undefined}>
+                  <CommandItem asChild>
+                    <CreateLink
+                      className="w-full cursor-pointer justify-start"
+                      collectionFingerprint={collectionFingerprint}
                     />
-                    <div className="flex flex-col items-start gap-1">
-                      <span className="text-sm font-semibold">
-                        {link.label}
-                      </span>
-                      <span className="text-xs text-foreground/80">
-                        {link.url}
-                      </span>
-                    </div>
                   </CommandItem>
-                )
-              })}
-            </CommandGroup>
+                </CommandGroup>
+                <CommandGroup heading="Your links" value={undefined}>
+                  {userLinks?.map((link) => {
+                    const isInCollection = linksInCollection.some(
+                      ({ fingerprint }) => link.fingerprint === fingerprint
+                    )
+                    return (
+                      <CommandItem
+                        key={link.url}
+                        value={link.fingerprint}
+                        onSelect={(currentValue) => {
+                          if (currentValue) {
+                            if (isInCollection) {
+                              removeLinkFromCollection(
+                                currentValue,
+                                collectionFingerprint
+                              )
+                            } else {
+                              addLinkToCollection(
+                                currentValue,
+                                collectionFingerprint
+                              )
+                            }
+                          }
+                        }}
+                        className="flex cursor-pointer gap-2"
+                      >
+                        <Check
+                          className={cn(
+                            'h-6 w-6',
+                            isInCollection ? 'opacity-100' : 'opacity-0'
+                          )}
+                        />
+                        <div className="flex flex-col items-start gap-1">
+                          <span className="text-sm font-semibold">
+                            {link.label}
+                          </span>
+                          <span className="text-xs text-foreground/80">
+                            {link.url}
+                          </span>
+                        </div>
+                      </CommandItem>
+                    )
+                  })}
+                </CommandGroup>
+              </>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>

@@ -12,17 +12,26 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
+import { EditLink } from '@/app/app/links/edit-link'
+
 import { LinkVisibilitySwitch } from './link-visibility-switch'
+import { RowDragHandle } from './row-drag-handle'
 import type { Collection, Link } from '@/utils/types'
 
-import { EditLink } from '../edit-link'
 import { RemoveLinkFromCollectionConfirmation } from '../remove-link'
 
 export type ColumnsType = Link & {
   visible: boolean
+  order: number
   collectionFingerprint: Collection['fingerprint']
 }
 export const linkColumns: ColumnDef<ColumnsType>[] = [
+  {
+    accessorKey: 'order',
+    header: '#',
+    cell: ({ row }) => <RowDragHandle rowId={row.id} />,
+    meta: { headerClassName: 'w-10 text-center', cellClassName: 'w-10' },
+  },
   {
     accessorKey: 'url',
     header: 'URL',
@@ -49,7 +58,6 @@ export const linkColumns: ColumnDef<ColumnsType>[] = [
   },
   {
     id: 'actions',
-    size: 35,
     meta: { headerClassName: 'w-14', cellClassName: 'w-14' },
     cell: ({ row }) => {
       const link = row.original

@@ -1,6 +1,6 @@
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 import {
   Breadcrumb,
@@ -29,6 +29,11 @@ export default async function CollectionDetails({
   params: { fingerprint: string }
 }) {
   const supabase = createClient()
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
+
   const { data: collection, error } = await supabase
     .from('collection')
     .select('*')
@@ -39,6 +44,10 @@ export default async function CollectionDetails({
     console.error(error)
   }
 
+  if (userError || !user) {
+    redirect('/signin')
+  }
+
   if (!collection) {
     return notFound()
   }
@@ -46,6 +55,7 @@ export default async function CollectionDetails({
   const { data: userLinks, error: linksError } = await supabase
     .from('link')
     .select('*')
+    .eq('created_by', user.id)
 
   if (linksError) {
     console.error(linksError)
