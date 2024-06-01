@@ -1,7 +1,3 @@
-import Link from 'next/link'
-
-import { Button } from '@/components/ui/button'
-
 import { linkColumns } from './_links-table/columns'
 import { LinksDataTable } from './_links-table/table'
 import { CreateLink } from './create-link'
