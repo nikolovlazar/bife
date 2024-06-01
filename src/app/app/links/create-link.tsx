@@ -1,7 +1,8 @@
 'use client'
 
 import { PlusIcon } from 'lucide-react'
-import { forwardRef, useActionState, useEffect, useState } from 'react'
+import { forwardRef, useEffect, useState } from 'react'
+import { useFormState } from 'react-dom'
 import { toast } from 'sonner'
 
 import { Button, type ButtonProps } from '@/components/ui/button'
@@ -36,7 +37,7 @@ export const CreateLink = forwardRef(
     _
   ) => {
     const [opened, setOpened] = useState(false)
-    const [state, formAction] = useActionState<State, FormData>(createLink, {})
+    const [state, formAction] = useFormState<State, FormData>(createLink, {})
 
     useEffect(() => {
       if (state.message) {
@@ -48,6 +49,7 @@ export const CreateLink = forwardRef(
           },
           duration: 5000,
         })
+        setOpened(false)
       } else if (state.error) {
         const toastId = toast.error(state.error, {
           dismissible: true,
