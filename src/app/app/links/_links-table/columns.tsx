@@ -27,6 +27,10 @@ export const linkColumns: ColumnDef<Link>[] = [
     header: 'Label',
   },
   {
+    accessorKey: 'fingerprint',
+    header: 'Fingerprint',
+  },
+  {
     accessorKey: 'created_at',
     header: 'Date Created',
     cell: ({ row }) => dayjs(row.original.created_at).format('MMM D, YYYY'),

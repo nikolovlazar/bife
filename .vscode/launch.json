@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "Next.js: debug full stack",
-      "type": "node-terminal",
+      "type": "pwa-node",
       "request": "launch",
       "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
       "args": ["dev"],
