@@ -61,8 +61,8 @@ export const linkColumns: ColumnDef<Link>[] = [
             </EditLink>
             <DeleteLinkConfirmation fingerprint={link.fingerprint}>
               <DropdownMenuItem
-                onSelect={(e) => e.preventDefault()}
                 className="cursor-pointer text-red-500"
+                onSelect={(e) => e.preventDefault()}
               >
                 Delete link
               </DropdownMenuItem>

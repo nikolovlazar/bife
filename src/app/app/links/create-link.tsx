@@ -2,13 +2,11 @@
 
 import { PlusIcon } from 'lucide-react'
 import { forwardRef, useEffect, useState } from 'react'
-import { useFormState } from 'react-dom'
-import { toast } from 'sonner'
 
+import { HiddenInput } from '@/components/custom/hidden-input'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -20,11 +18,7 @@ import { Label } from '@/components/ui/label'
 import { SubmitButton } from '@/components/ui/submit'
 
 import { createLink } from './actions'
-
-type State = {
-  message?: string
-  error?: string
-}
+import { useGenericFormState } from '@/hooks/use-toasty-form-state'
 
 export const CreateLink = forwardRef(
   (
@@ -37,28 +31,11 @@ export const CreateLink = forwardRef(
     _
   ) => {
     const [opened, setOpened] = useState(false)
-    const [state, formAction] = useFormState<State, FormData>(createLink, {})
+    const [state, formAction] = useGenericFormState(createLink, {})
 
     useEffect(() => {
       if (state.message) {
-        const toastId = toast.success(state.message, {
-          dismissible: true,
-          action: {
-            label: 'Dismiss',
-            onClick: () => toast.dismiss(toastId),
-          },
-          duration: 5000,
-        })
         setOpened(false)
-      } else if (state.error) {
-        const toastId = toast.error(state.error, {
-          dismissible: true,
-          action: {
-            label: 'Dismiss',
-            onClick: () => toast.dismiss(toastId),
-          },
-          duration: 5000,
-        })
       }
     }, [state])
 
@@ -87,31 +64,10 @@ export const CreateLink = forwardRef(
             </div>
             <div className="gap-1.5">
               <Label htmlFor="label">Label</Label>
-              <Input
-                id="label"
-                name="label"
-                type="label"
-                placeholder=""
-                onKeyUp={(event) => {
-                  if (event.key === 'Enter') {
-                    event.currentTarget.form?.requestSubmit()
-                  }
-                }}
-              />
+              <Input id="label" name="label" type="text" placeholder="" />
             </div>
-            <input
-              name="collection"
-              readOnly
-              type="text"
-              hidden
-              aria-hidden
-              aria-readonly
-              value={collectionFingerprint}
-              className="hidden"
-            />
-            <DialogClose asChild>
-              <SubmitButton>Submit</SubmitButton>
-            </DialogClose>
+            <HiddenInput name="collection" value={collectionFingerprint} />
+            <SubmitButton className="mt-4">Submit</SubmitButton>
           </form>
         </DialogContent>
       </Dialog>

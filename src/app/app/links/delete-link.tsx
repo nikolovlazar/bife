@@ -1,23 +1,20 @@
 'use client'
 
-import { Loader2 } from 'lucide-react'
-import { ReactNode, useState } from 'react'
-import { toast } from 'sonner'
+import { ReactNode, useEffect, useState } from 'react'
 
+import { HiddenInput } from '@/components/custom/hidden-input'
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { SubmitButton } from '@/components/ui/submit'
 
 import { deleteLink } from './actions'
+import { useGenericFormState } from '@/hooks/use-toasty-form-state'
 
 export function DeleteLinkConfirmation({
   fingerprint,
@@ -26,51 +23,30 @@ export function DeleteLinkConfirmation({
   fingerprint: string
   children: ReactNode
 }) {
-  const [loading, setLoading] = useState(false)
-  const handleDeletion = async () => {
-    try {
-      setLoading(true)
-      const data = new FormData()
-      data.append('fingerprint', fingerprint)
-      await deleteLink(data)
-    } catch (error) {
-      if (error instanceof Error) {
-        setLoading(false)
-        const toastId = toast.error(error.message, {
-          dismissible: true,
-          action: {
-            label: 'Dismiss',
-            onClick: () => toast.dismiss(toastId),
-          },
-          duration: 5000,
-        })
-      }
+  const [opened, setOpened] = useState(false)
+  const [state, formAction] = useGenericFormState(deleteLink, {})
+
+  useEffect(() => {
+    if (state.message) {
+      setOpened(false)
     }
-  }
+  }, [state])
+
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
+    <Dialog open={opened} onOpenChange={setOpened}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogDescription>
             This will delete the link, for real.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <Button
-              className="bg-destructive hover:bg-destructive/80"
-              disabled={loading}
-              onClick={handleDeletion}
-            >
-              {loading && <Loader2 className="mr-2 w-4 animate-spin" />}
-              Yes, delete the link
-            </Button>
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </DialogDescription>
+        </DialogHeader>
+        <form action={formAction} className="grid gap-3">
+          <HiddenInput name="fingerprint" value={fingerprint} />
+          <SubmitButton className="mt-4">Yes, delete the link</SubmitButton>
+        </form>
+      </DialogContent>
+    </Dialog>
   )
 }

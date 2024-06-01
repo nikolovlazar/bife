@@ -55,9 +55,8 @@ export function LinksDataTable<TData extends ColumnsType, TValue>({
   const table = useReactTable({
     data: orderedData,
     columns,
-    getRowId: (row) => row.fingerprint,
-    manualSorting: true,
     getCoreRowModel: getCoreRowModel(),
+    getRowId: (row) => row.fingerprint,
   })
 
   const sensors = useSensors(
@@ -66,7 +65,7 @@ export function LinksDataTable<TData extends ColumnsType, TValue>({
     useSensor(KeyboardSensor, {})
   )
 
-  function handleDragEnd(event: DragEndEvent) {
+  async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
     if (active && over && active.id !== over.id) {
       const oldIndex = orderedData.findIndex(
@@ -75,7 +74,8 @@ export function LinksDataTable<TData extends ColumnsType, TValue>({
       const newIndex = orderedData.findIndex(
         ({ fingerprint }) => fingerprint === over.id.toString()
       )
-      const newData = arrayMove(orderedData, oldIndex, newIndex) //this is just a splice util
+      const newData = arrayMove<TData>(orderedData, oldIndex, newIndex) //this is just a splice util
+
       updateLinksOrder(
         collectionFingerprint,
         newData.map((data, index) => ({
@@ -84,7 +84,6 @@ export function LinksDataTable<TData extends ColumnsType, TValue>({
         }))
       )
       startTransition(() => setOrderedData(newData))
-      return newData
     }
   }
 

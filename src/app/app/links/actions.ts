@@ -3,14 +3,11 @@
 import { nanoid } from 'nanoid'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import 'server-only'
 
 import { createClient } from '@/utils/supabase/server'
+import { GenericFormState } from '@/utils/types'
 
-export async function createLink(
-  _: { message?: string; error?: string },
-  formData: FormData
-) {
+export async function createLink(_: GenericFormState, formData: FormData) {
   const supabase = createClient()
   const {
     data: { user },
@@ -86,11 +83,11 @@ export async function createLink(
     revalidatePath(`/app/collections/${existingCollection?.fingerprint}`)
   }
 
-  revalidatePath(`/app/links`)
+  revalidatePath('/app/links')
   return { message: 'Link created successfully' }
 }
 
-export async function updateLink(formData: FormData) {
+export async function updateLink(_: GenericFormState, formData: FormData) {
   const supabase = createClient()
   const {
     data: { user },
@@ -108,15 +105,15 @@ export async function updateLink(formData: FormData) {
   }
 
   if (!formValues.fingerprint) {
-    throw new Error('Link is required')
+    return { error: 'Link is required' }
   }
 
   if (!formValues.url) {
-    throw new Error('URL is required')
+    return { error: 'URL is required' }
   }
 
   if (!formValues.label) {
-    throw new Error('Label is required')
+    return { error: 'Label is required' }
   }
 
   const { data: existingLink, error } = await supabase
@@ -127,11 +124,11 @@ export async function updateLink(formData: FormData) {
     .single()
 
   if (error) {
-    throw new Error('Failed to fetch link', { cause: error })
+    return { error: 'Failed to fetch link' }
   }
 
   if (!existingLink) {
-    throw new Error('Link not found')
+    return { error: 'Link not found' }
   }
 
   const newData = {
@@ -139,7 +136,7 @@ export async function updateLink(formData: FormData) {
     label: formValues.label ?? existingLink.label,
   }
 
-  const { data: updatedLink, error: updateError } = await supabase
+  const { error: updateError } = await supabase
     .from('link')
     .update(newData)
     .eq('fingerprint', formValues.fingerprint)
@@ -148,14 +145,14 @@ export async function updateLink(formData: FormData) {
     .single()
 
   if (updateError) {
-    throw new Error('Failed to update link', { cause: updateError })
+    return { error: 'Failed to update link' }
   }
 
   revalidatePath('/app/links')
-  return updatedLink
+  return { message: 'Link updated successfully' }
 }
 
-export async function deleteLink(formData: FormData) {
+export async function deleteLink(_: GenericFormState, formData: FormData) {
   const supabase = createClient()
   const {
     data: { user },
@@ -171,7 +168,7 @@ export async function deleteLink(formData: FormData) {
   }
 
   if (!formValues.fingerprint) {
-    throw new Error('Link is required')
+    return { error: 'Link is required' }
   }
 
   const { data: existingLink, error } = await supabase
@@ -182,11 +179,11 @@ export async function deleteLink(formData: FormData) {
     .single()
 
   if (error) {
-    throw new Error('Failed to fetch link', { cause: error })
+    return { error: 'Failed to fetch link' }
   }
 
   if (!existingLink) {
-    throw new Error('Link not found')
+    return { error: 'Link not found' }
   }
 
   const { error: deleteError } = await supabase
@@ -196,10 +193,11 @@ export async function deleteLink(formData: FormData) {
     .eq('created_by', user.id)
 
   if (deleteError) {
-    throw new Error('Failed to delete link', { cause: deleteError })
+    return { error: 'Failed to delete link' }
   }
 
   revalidatePath('/app/links')
+  return { message: 'Link deleted successfully' }
 }
 
 export async function toggleLinkVisibility(formData: FormData) {

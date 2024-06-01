@@ -1,13 +1,10 @@
 'use client'
 
-import { Loader2 } from 'lucide-react'
-import { FormEventHandler, ReactNode, useState } from 'react'
-import { toast } from 'sonner'
+import { ReactNode, useEffect, useState } from 'react'
 
-import { Button } from '@/components/ui/button'
+import { HiddenInput } from '@/components/custom/hidden-input'
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -15,8 +12,10 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { SubmitButton } from '@/components/ui/submit'
 
 import { updateLink } from './actions'
+import { useGenericFormState } from '@/hooks/use-toasty-form-state'
 
 export function EditLink({
   fingerprint,
@@ -29,38 +28,23 @@ export function EditLink({
   label: string | null
   children: ReactNode
 }) {
-  const [loading, setLoading] = useState(false)
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
-    event.preventDefault()
-    try {
-      setLoading(true)
-      const data = new FormData(event.currentTarget)
-      await updateLink(data)
-      setLoading(false)
-      toast.success('Link updated')
-    } catch (error) {
-      if (error instanceof Error) {
-        setLoading(false)
-        const toastId = toast.error(error.message, {
-          dismissible: true,
-          action: {
-            label: 'Dismiss',
-            onClick: () => toast.dismiss(toastId),
-          },
-          duration: 5000,
-        })
-      }
+  const [opened, setOpened] = useState(false)
+  const [state, formAction] = useGenericFormState(updateLink, {})
+
+  useEffect(() => {
+    if (state.message) {
+      setOpened(false)
     }
-  }
+  }, [state])
 
   return (
-    <Dialog>
+    <Dialog open={opened} onOpenChange={setOpened}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit link</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="grid gap-3">
+        <form action={formAction} className="grid gap-3">
           <div className="gap-1.5">
             <Label htmlFor="url">URL</Label>
             <Input
@@ -81,22 +65,8 @@ export function EditLink({
               placeholder=""
             />
           </div>
-          <input
-            name="fingerprint"
-            readOnly
-            type="text"
-            hidden
-            aria-hidden
-            aria-readonly
-            value={fingerprint}
-            className="hidden"
-          />
-          <DialogClose asChild>
-            <Button disabled={loading} type="submit" className="mt-4">
-              {loading && <Loader2 className="mr-2 w-4 animate-spin" />}
-              Update
-            </Button>
-          </DialogClose>
+          <HiddenInput name="fingerprint" value={fingerprint} />
+          <SubmitButton className="mt-4">Update</SubmitButton>
         </form>
       </DialogContent>
     </Dialog>

@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '@/utils/supabase/server'
+import { GenericFormState } from '@/utils/types'
 
 export async function createCollection(formData: FormData) {
   const supabase = createClient()
@@ -271,8 +272,8 @@ export async function addLinkToCollection(
 }
 
 export async function removeLinkFromCollection(
-  linkFingerprint: string,
-  collectionFingerprint: string
+  _: GenericFormState,
+  formData: FormData
 ) {
   const supabase = createClient()
   const {
@@ -284,41 +285,43 @@ export async function removeLinkFromCollection(
     redirect('/signin')
   }
 
-  if (!linkFingerprint || !collectionFingerprint) {
-    throw new Error('Both Link and Colleciton are required')
+  const formValues = {
+    linkFingerprint: formData.get('link_fingerprint')?.toString(),
+    collectionFingerprint: formData.get('collection_fingerprint')?.toString(),
+  }
+
+  if (!formValues.linkFingerprint || !formValues.collectionFingerprint) {
+    return { error: 'Both Link and Colleciton are required' }
   }
 
   const { data: existingJunction, error } = await supabase
     .from('collection_link')
     .select()
-    .eq('link_pk', linkFingerprint)
-    .eq('collection_pk', collectionFingerprint)
+    .eq('link_pk', formValues.linkFingerprint)
+    .eq('collection_pk', formValues.collectionFingerprint)
     .single()
 
   if (error) {
-    throw new Error('Failed to fetch link <> collection relation', {
-      cause: error,
-    })
+    return { error: 'Failed to fetch link <> collection relation' }
   }
 
   if (!existingJunction) {
-    throw new Error('Link not found in collection')
+    return { error: 'Link not found in collection' }
   }
 
   const { error: deleteError } = await supabase
     .from('collection_link')
     .delete()
-    .eq('link_pk', linkFingerprint)
-    .eq('collection_pk', collectionFingerprint)
+    .eq('link_pk', formValues.linkFingerprint)
+    .eq('collection_pk', formValues.collectionFingerprint)
     .select()
 
   if (deleteError) {
-    throw new Error('Failed to remove link from collection', {
-      cause: deleteError,
-    })
+    return { error: 'Failed to remove link from collection' }
   }
 
-  revalidatePath(`/app/collections/${collectionFingerprint}`)
+  revalidatePath(`/app/collections/${formValues.collectionFingerprint}`)
+  return { message: 'Link removed from collection successfully' }
 }
 
 export async function updateLinksOrder(
@@ -339,7 +342,7 @@ export async function updateLinksOrder(
     throw new Error('Both Link and Colleciton are required')
   }
 
-  const { data: updatedOrder, error: updatedOrderError } = await supabase
+  const { error: updatedOrderError } = await supabase
     .from('collection_link')
     .upsert(
       linksOrder.map(({ fingerprint, order }) => ({
@@ -358,5 +361,4 @@ export async function updateLinksOrder(
   }
 
   revalidatePath(`/app/collections/${collectionFingerprint}`)
-  return updatedOrder
 }

@@ -150,7 +150,7 @@ export default async function CollectionDetails({
             </DeleteCollectionConfirmation>
           </fieldset>
         </form>
-        <form className="mt-4 flex-1">
+        <div className="mt-4 flex-1">
           <fieldset className="grid items-start gap-4 rounded-lg border p-4">
             <legend className="-ml-1 px-1 text-sm font-medium">Links</legend>
             <AddOrCreateLink
@@ -160,7 +160,7 @@ export default async function CollectionDetails({
             />
             <LinksList fingerprint={params.fingerprint} />
           </fieldset>
-        </form>
+        </div>
       </div>
     </>
   )

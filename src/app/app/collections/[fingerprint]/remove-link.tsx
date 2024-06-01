@@ -1,21 +1,20 @@
 'use client'
 
-import { Loader2 } from 'lucide-react'
-import { ReactNode, useState } from 'react'
-import { toast } from 'sonner'
+import { ReactNode } from 'react'
 
+import { HiddenInput } from '@/components/custom/hidden-input'
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { SubmitButton } from '@/components/ui/submit'
+
+import { useGenericFormState } from '@/hooks/use-toasty-form-state'
 
 import { removeLinkFromCollection } from '../actions'
 
@@ -28,50 +27,31 @@ export function RemoveLinkFromCollectionConfirmation({
   collectionFingerprint: string
   children: ReactNode
 }) {
-  const [loading, setLoading] = useState(false)
-  const handleRemoval = async () => {
-    try {
-      setLoading(true)
-      await removeLinkFromCollection(collectionFingerprint, linkFingerprint)
-    } catch (error) {
-      if (error instanceof Error) {
-        setLoading(false)
-        const toastId = toast.error(error.message, {
-          dismissible: true,
-          action: {
-            label: 'Dismiss',
-            onClick: () => toast.dismiss(toastId),
-          },
-          duration: 5000,
-        })
-      }
-    }
-  }
+  const [_, formAction] = useGenericFormState(removeLinkFromCollection, {})
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>You sure?</AlertDialogTitle>
-          <AlertDialogDescription>
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>You sure?</DialogTitle>
+          <DialogDescription>
             This will not delete the link itself, just remove it from this
             collection. You can always add it back later.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <Button
-              className="bg-destructive hover:bg-destructive/80"
-              disabled={loading}
-              onClick={handleRemoval}
-            >
-              {loading && <Loader2 className="mr-2 w-4 animate-spin" />}
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <form action={formAction}>
+            <HiddenInput
+              name="collection_fingerprint"
+              value={collectionFingerprint}
+            />
+            <HiddenInput name="link_fingerprint" value={linkFingerprint} />
+            <SubmitButton className="bg-destructive hover:bg-destructive/80">
               Yes, remove it
-            </Button>
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+            </SubmitButton>
+          </form>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

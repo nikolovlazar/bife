@@ -1,7 +1,6 @@
 'use client'
 
 import { Check, ChevronsUpDown } from 'lucide-react'
-import { useState } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -83,10 +82,13 @@ export function AddOrCreateLink({
                         onSelect={(currentValue) => {
                           if (currentValue) {
                             if (isInCollection) {
-                              removeLinkFromCollection(
-                                currentValue,
+                              const data = new FormData()
+                              data.append('link_fingerprint', currentValue)
+                              data.append(
+                                'collection_fingerprint',
                                 collectionFingerprint
                               )
+                              removeLinkFromCollection({}, data)
                             } else {
                               addLinkToCollection(
                                 currentValue,
