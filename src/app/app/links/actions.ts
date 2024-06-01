@@ -3,11 +3,14 @@
 import { nanoid } from 'nanoid'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import 'server-only'
 
 import { createClient } from '@/utils/supabase/server'
-import type { Collection, Link } from '@/utils/types'
 
-export async function createLink(formData: FormData) {
+export async function createLink(
+  _: { message?: string; error?: string },
+  formData: FormData
+) {
   const supabase = createClient()
   const {
     data: { user },
@@ -25,11 +28,11 @@ export async function createLink(formData: FormData) {
   }
 
   if (!formValues.url) {
-    throw new Error('URL is required')
+    return { error: 'URL is required' }
   }
 
   if (!formValues.label) {
-    throw new Error('Label is required')
+    return { error: 'Label is required' }
   }
 
   const fingerprint = nanoid(8)
@@ -49,7 +52,7 @@ export async function createLink(formData: FormData) {
     .single()
 
   if (creationError) {
-    throw new Error('Failed to create link', { cause: creationError })
+    return { error: 'Failed to create link' }
   }
 
   if (formValues.collection) {
@@ -61,11 +64,11 @@ export async function createLink(formData: FormData) {
       .single()
 
     if (error) {
-      throw new Error('Failed to fetch collection', { cause: error })
+      return { error: 'Failed to fetch collection' }
     }
 
     if (!existingCollection) {
-      throw new Error('Collection not found')
+      return { error: 'Collection not found' }
     }
 
     const { error: collectionLinkError } = await supabase
@@ -77,14 +80,14 @@ export async function createLink(formData: FormData) {
       })
 
     if (collectionLinkError) {
-      throw new Error('Failed to add link to collection', { cause: error })
+      return { error: 'Failed to add link to collection' }
     }
 
     revalidatePath(`/app/collections/${existingCollection?.fingerprint}`)
   }
 
   revalidatePath(`/app/links`)
-  return createdLink
+  return { message: 'Link created successfully' }
 }
 
 export async function updateLink(formData: FormData) {

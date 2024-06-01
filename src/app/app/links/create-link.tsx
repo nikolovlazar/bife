@@ -1,7 +1,7 @@
 'use client'
 
-import { Loader2, PlusIcon } from 'lucide-react'
-import { FormEventHandler, forwardRef, useState } from 'react'
+import { PlusIcon } from 'lucide-react'
+import { forwardRef, useActionState, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button, type ButtonProps } from '@/components/ui/button'
@@ -16,8 +16,14 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { SubmitButton } from '@/components/ui/submit'
 
 import { createLink } from './actions'
+
+type State = {
+  message?: string
+  error?: string
+}
 
 export const CreateLink = forwardRef(
   (
@@ -27,32 +33,32 @@ export const CreateLink = forwardRef(
     }: ButtonProps & {
       collectionFingerprint?: string
     },
-    ref
+    _
   ) => {
     const [opened, setOpened] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
-      event.preventDefault()
-      try {
-        setLoading(true)
-        const data = new FormData(event.currentTarget)
-        await createLink(data)
-        setLoading(false)
-        setOpened(false)
-      } catch (error) {
-        if (error instanceof Error) {
-          setLoading(false)
-          const toastId = toast.error(error.message, {
-            dismissible: true,
-            action: {
-              label: 'Dismiss',
-              onClick: () => toast.dismiss(toastId),
-            },
-            duration: 5000,
-          })
-        }
+    const [state, formAction] = useActionState<State, FormData>(createLink, {})
+
+    useEffect(() => {
+      if (state.message) {
+        const toastId = toast.success(state.message, {
+          dismissible: true,
+          action: {
+            label: 'Dismiss',
+            onClick: () => toast.dismiss(toastId),
+          },
+          duration: 5000,
+        })
+      } else if (state.error) {
+        const toastId = toast.error(state.error, {
+          dismissible: true,
+          action: {
+            label: 'Dismiss',
+            onClick: () => toast.dismiss(toastId),
+          },
+          duration: 5000,
+        })
       }
-    }
+    }, [state])
 
     return (
       <Dialog open={opened} onOpenChange={setOpened}>
@@ -72,7 +78,7 @@ export const CreateLink = forwardRef(
               </DialogDescription>
             )}
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="grid gap-2">
+          <form action={formAction} className="grid gap-2">
             <div className="gap-1.5">
               <Label htmlFor="url">URL</Label>
               <Input id="url" name="url" type="url" placeholder="https://..." />
@@ -102,10 +108,7 @@ export const CreateLink = forwardRef(
               className="hidden"
             />
             <DialogClose asChild>
-              <Button disabled={loading} type="submit" className="mt-4">
-                {loading && <Loader2 className="mr-2 w-4 animate-spin" />}
-                Submit
-              </Button>
+              <SubmitButton>Submit</SubmitButton>
             </DialogClose>
           </form>
         </DialogContent>
