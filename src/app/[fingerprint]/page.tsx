@@ -92,11 +92,8 @@ export default async function PublicCollectionPage({
             href="/"
             className="flex w-max self-center rounded-md bg-background px-3 py-2 shadow"
           >
-            Create your own{' '}
-            <span className="mx-1 flex text-purple-500">
-              Bife <Utensils className="ml-1" />
-            </span>{' '}
-            collection
+            <Utensils className="mr-1" />
+            Create your own Bife collection
           </NextLink>
         </div>
       </>
