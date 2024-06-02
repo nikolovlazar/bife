@@ -57,8 +57,8 @@ export default async function PublicCollectionPage({
     const canSeeHiddenLinks = user && collection.created_by === user.id
 
     const displayedLinks = links
-      .map(({ link, visible }) => ({ ...link, visible }))
-      .filter((link) => (!link?.visible ? canSeeHiddenLinks : true))
+      .filter((link) => link.visible || canSeeHiddenLinks)
+      .map((link) => ({ ...link.link, visible: true }))
 
     return (
       <>
