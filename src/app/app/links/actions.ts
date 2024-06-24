@@ -5,15 +5,15 @@ import { revalidatePath } from 'next/cache'
 
 import { authenticatedAction } from '@/lib/safe-action'
 import {
-  createLinkSchema,
-  deleteLinkSchema,
-  toggleLinkVisibilitySchema,
-  updateLinkSchema,
+  createLinkInputSchema,
+  deleteLinkInputSchema,
+  toggleLinkVisibilityInputSchema,
+  updateLinkInputSchema,
 } from '@/lib/validation-schemas/links'
 
 export const createLink = authenticatedAction
   .createServerAction()
-  .input(createLinkSchema)
+  .input(createLinkInputSchema)
   .handler(async ({ input, ctx }) => {
     const { user, supabase } = ctx
 
@@ -74,7 +74,7 @@ export const createLink = authenticatedAction
 
 export const updateLink = authenticatedAction
   .createServerAction()
-  .input(updateLinkSchema)
+  .input(updateLinkInputSchema)
   .handler(async ({ input, ctx }) => {
     const { user, supabase } = ctx
     const { data: existingLink, error } = await supabase
@@ -115,7 +115,7 @@ export const updateLink = authenticatedAction
 
 export const deleteLink = authenticatedAction
   .createServerAction()
-  .input(deleteLinkSchema)
+  .input(deleteLinkInputSchema)
   .handler(async ({ input, ctx }) => {
     const { user, supabase } = ctx
 
@@ -150,7 +150,7 @@ export const deleteLink = authenticatedAction
 
 export const toggleLinkVisibility = authenticatedAction
   .createServerAction()
-  .input(toggleLinkVisibilitySchema)
+  .input(toggleLinkVisibilityInputSchema)
   .handler(async ({ input, ctx }) => {
     const { supabase } = ctx
     const { data: existingRelation, error } = await supabase

@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
-import { updateLinkSchema } from '@/lib/validation-schemas/links'
+import { updateLinkInputSchema } from '@/lib/validation-schemas/links'
 
 import { HiddenInput } from '@/components/custom/hidden-input'
 import {
@@ -42,8 +42,8 @@ export function EditLink({
   children: ReactNode
 }) {
   const [opened, setOpened] = useState(false)
-  const form = useForm<z.infer<typeof updateLinkSchema>>({
-    resolver: zodResolver(updateLinkSchema),
+  const form = useForm<z.infer<typeof updateLinkInputSchema>>({
+    resolver: zodResolver(updateLinkInputSchema),
     defaultValues: {
       label,
       url,

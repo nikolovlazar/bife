@@ -8,7 +8,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
-import { createCollectionSchema } from '@/lib/validation-schemas/collections'
+import { createCollectionInputSchema } from '@/lib/validation-schemas/collections'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -35,8 +35,8 @@ import { createCollection } from './actions'
 export default function CreateCollection() {
   const [opened, setOpened] = useState(false)
 
-  const form = useForm<z.infer<typeof createCollectionSchema>>({
-    resolver: zodResolver(createCollectionSchema),
+  const form = useForm<z.infer<typeof createCollectionInputSchema>>({
+    resolver: zodResolver(createCollectionInputSchema),
     defaultValues: {
       title: '',
     },

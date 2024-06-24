@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
-import { updateCollectionSchema } from '@/lib/validation-schemas/collections'
+import { updateCollectionInputSchema } from '@/lib/validation-schemas/collections'
 
 import { HiddenInput } from '@/components/custom/hidden-input'
 import { Button } from '@/components/ui/button'
@@ -37,8 +37,8 @@ export default function UpdateOrDeleteCollection({
   fingerprint: string
   published: boolean
 }) {
-  const form = useForm<z.infer<typeof updateCollectionSchema>>({
-    resolver: zodResolver(updateCollectionSchema),
+  const form = useForm<z.infer<typeof updateCollectionInputSchema>>({
+    resolver: zodResolver(updateCollectionInputSchema),
     defaultValues: {
       title,
       description,

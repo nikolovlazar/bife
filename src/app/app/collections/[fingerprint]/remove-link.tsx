@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
-import { removeLinkFromCollectionSchema } from '@/lib/validation-schemas/collections'
+import { removeLinkFromCollectionInputSchema } from '@/lib/validation-schemas/collections'
 
 import { HiddenInput } from '@/components/custom/hidden-input'
 import {
@@ -34,8 +34,8 @@ export function RemoveLinkFromCollectionConfirmation({
 }) {
   const [opened, setOpened] = useState(false)
 
-  const form = useForm<z.infer<typeof removeLinkFromCollectionSchema>>({
-    resolver: zodResolver(removeLinkFromCollectionSchema),
+  const form = useForm<z.infer<typeof removeLinkFromCollectionInputSchema>>({
+    resolver: zodResolver(removeLinkFromCollectionInputSchema),
     defaultValues: {
       collectionFingerprint,
       linkFingerprint,

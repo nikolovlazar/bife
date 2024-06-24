@@ -1,37 +1,37 @@
 import { z } from 'zod'
 
-export const createCollectionSchema = z.object({
+export const createCollectionInputSchema = z.object({
   title: z.string(),
   description: z.string().optional(),
 })
 
-export const updateCollectionSchema = z.object({
+export const updateCollectionInputSchema = z.object({
   title: z.string(),
   description: z.string().optional(),
   published: z.boolean(),
   fingerprint: z.string(),
 })
 
-export const deleteCollectionSchema = z.object({
+export const deleteCollectionInputSchema = z.object({
   fingerprint: z.string(),
 })
 
-export const toggleCollectionPublishedSchema = z.object({
+export const toggleCollectionPublishedInputSchema = z.object({
   fingerprint: z.string(),
   checked: z.boolean(),
 })
 
-export const addLinkToCollectionSchema = z.object({
+export const addLinkToCollectionInputSchema = z.object({
   linkFingerprint: z.string(),
   collectionFingerprint: z.string(),
 })
 
-export const removeLinkFromCollectionSchema = z.object({
+export const removeLinkFromCollectionInputSchema = z.object({
   linkFingerprint: z.string(),
   collectionFingerprint: z.string(),
 })
 
-export const updateLinksOrderSchema = z.object({
+export const updateLinksOrderInputSchema = z.object({
   collectionFingerprint: z.string(),
   linksOrder: z.array(
     z.object({

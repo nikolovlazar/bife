@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
-import { deleteLinkSchema } from '@/lib/validation-schemas/links'
+import { deleteLinkInputSchema } from '@/lib/validation-schemas/links'
 
 import { HiddenInput } from '@/components/custom/hidden-input'
 import {
@@ -32,8 +32,8 @@ export function DeleteLinkConfirmation({
 }) {
   const [opened, setOpened] = useState(false)
 
-  const form = useForm<z.infer<typeof deleteLinkSchema>>({
-    resolver: zodResolver(deleteLinkSchema),
+  const form = useForm<z.infer<typeof deleteLinkInputSchema>>({
+    resolver: zodResolver(deleteLinkInputSchema),
     defaultValues: {
       fingerprint,
     },

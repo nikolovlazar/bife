@@ -8,7 +8,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
-import { createLinkSchema } from '@/lib/validation-schemas/links'
+import { createLinkInputSchema } from '@/lib/validation-schemas/links'
 
 import { HiddenInput } from '@/components/custom/hidden-input'
 import { Button, type ButtonProps } from '@/components/ui/button'
@@ -45,8 +45,8 @@ export const CreateLink = forwardRef(
   ) => {
     const [opened, setOpened] = useState(false)
 
-    const form = useForm<z.infer<typeof createLinkSchema>>({
-      resolver: zodResolver(createLinkSchema),
+    const form = useForm<z.infer<typeof createLinkInputSchema>>({
+      resolver: zodResolver(createLinkInputSchema),
       defaultValues: {
         label: '',
         url: '',

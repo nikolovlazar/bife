@@ -6,18 +6,18 @@ import { redirect } from 'next/navigation'
 
 import { authenticatedAction } from '@/lib/safe-action'
 import {
-  addLinkToCollectionSchema,
-  createCollectionSchema,
-  deleteCollectionSchema,
-  removeLinkFromCollectionSchema,
-  toggleCollectionPublishedSchema,
-  updateCollectionSchema,
-  updateLinksOrderSchema,
+  addLinkToCollectionInputSchema,
+  createCollectionInputSchema,
+  deleteCollectionInputSchema,
+  removeLinkFromCollectionInputSchema,
+  toggleCollectionPublishedInputSchema,
+  updateCollectionInputSchema,
+  updateLinksOrderInputSchema,
 } from '@/lib/validation-schemas/collections'
 
 export const createCollection = authenticatedAction
   .createServerAction()
-  .input(createCollectionSchema)
+  .input(createCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
     const { user, supabase } = ctx
 
@@ -48,7 +48,7 @@ export const createCollection = authenticatedAction
 
 export const updateCollection = authenticatedAction
   .createServerAction()
-  .input(updateCollectionSchema)
+  .input(updateCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
     const { user, supabase } = ctx
 
@@ -91,7 +91,7 @@ export const updateCollection = authenticatedAction
 
 export const deleteCollection = authenticatedAction
   .createServerAction()
-  .input(deleteCollectionSchema)
+  .input(deleteCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
     const { user, supabase } = ctx
 
@@ -126,7 +126,7 @@ export const deleteCollection = authenticatedAction
 
 export const toggleCollectionPublished = authenticatedAction
   .createServerAction()
-  .input(toggleCollectionPublishedSchema)
+  .input(toggleCollectionPublishedInputSchema)
   .handler(async ({ input, ctx }) => {
     const { user, supabase } = ctx
 
@@ -163,7 +163,7 @@ export const toggleCollectionPublished = authenticatedAction
 
 export const addLinkToCollection = authenticatedAction
   .createServerAction()
-  .input(addLinkToCollectionSchema)
+  .input(addLinkToCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
     const { user, supabase } = ctx
 
@@ -212,7 +212,7 @@ export const addLinkToCollection = authenticatedAction
 
 export const removeLinkFromCollection = authenticatedAction
   .createServerAction()
-  .input(removeLinkFromCollectionSchema)
+  .input(removeLinkFromCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
     const { supabase } = ctx
 
@@ -248,7 +248,7 @@ export const removeLinkFromCollection = authenticatedAction
 
 export const updateLinksOrder = authenticatedAction
   .createServerAction()
-  .input(updateLinksOrderSchema)
+  .input(updateLinksOrderInputSchema)
   .handler(async ({ input, ctx }) => {
     const { supabase } = ctx
     const { collectionFingerprint, linksOrder } = input
