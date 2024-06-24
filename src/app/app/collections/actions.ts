@@ -13,7 +13,10 @@ import {
   updateCollectionInputSchema,
   updateLinksOrderInputSchema,
 } from '@/lib/validation-schemas/collections'
-import { authenticatedProcedure } from '@/lib/zsa-procedures'
+import {
+  authenticatedProcedure,
+  ownsCollectionProcedure,
+} from '@/lib/zsa-procedures'
 
 export const createCollection = authenticatedProcedure
   .createServerAction()
@@ -46,26 +49,11 @@ export const createCollection = authenticatedProcedure
     redirect(`/app/collections/${newCollection.fingerprint}`)
   })
 
-export const updateCollection = authenticatedProcedure
+export const updateCollection = ownsCollectionProcedure
   .createServerAction()
   .input(updateCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
-    const { user, supabase } = ctx
-
-    const { data: existingCollection, error } = await supabase
-      .from('collection')
-      .select()
-      .eq('fingerprint', input.fingerprint)
-      .eq('created_by', user.id)
-      .single()
-
-    if (error) {
-      throw new Error('Failed to fetch collection', { cause: error })
-    }
-
-    if (!existingCollection) {
-      throw new Error('Collection not found')
-    }
+    const { existingCollection, user, supabase } = ctx
 
     const newData = {
       title: input.title ?? existingCollection.title,
@@ -89,26 +77,11 @@ export const updateCollection = authenticatedProcedure
     return updatedCollection
   })
 
-export const deleteCollection = authenticatedProcedure
+export const deleteCollection = ownsCollectionProcedure
   .createServerAction()
   .input(deleteCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
     const { user, supabase } = ctx
-
-    const { data: existingCollection, error } = await supabase
-      .from('collection')
-      .select()
-      .eq('fingerprint', input.fingerprint)
-      .eq('created_by', user.id)
-      .single()
-
-    if (error) {
-      throw new Error('Failed to fetch collection', { cause: error })
-    }
-
-    if (!existingCollection) {
-      throw new Error('Collection not found')
-    }
 
     const { error: deleteError } = await supabase
       .from('collection')
@@ -124,26 +97,11 @@ export const deleteCollection = authenticatedProcedure
     redirect('/app/collections')
   })
 
-export const toggleCollectionPublished = authenticatedProcedure
+export const toggleCollectionPublished = ownsCollectionProcedure
   .createServerAction()
   .input(toggleCollectionPublishedInputSchema)
   .handler(async ({ input, ctx }) => {
-    const { user, supabase } = ctx
-
-    const { data: existingCollection, error } = await supabase
-      .from('collection')
-      .select()
-      .eq('fingerprint', input.fingerprint)
-      .eq('created_by', user.id)
-      .single()
-
-    if (error) {
-      throw new Error('Failed to fetch collection', { cause: error })
-    }
-
-    if (!existingCollection) {
-      throw new Error('Collection not found')
-    }
+    const { user, supabase, existingCollection } = ctx
 
     const { data: updatedCollection, error: updateError } = await supabase
       .from('collection')
@@ -161,11 +119,11 @@ export const toggleCollectionPublished = authenticatedProcedure
     return updatedCollection
   })
 
-export const addLinkToCollection = authenticatedProcedure
+export const addLinkToCollection = ownsCollectionProcedure
   .createServerAction()
   .input(addLinkToCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
-    const { user, supabase } = ctx
+    const { user, supabase, existingCollection } = ctx
 
     const { data: existingLink, error } = await supabase
       .from('link')
@@ -180,21 +138,6 @@ export const addLinkToCollection = authenticatedProcedure
 
     if (!existingLink) {
       throw new Error('Link not found')
-    }
-
-    const { data: existingCollection, error: collectionError } = await supabase
-      .from('collection')
-      .select()
-      .eq('fingerprint', input.collectionFingerprint)
-      .eq('created_by', user.id)
-      .single()
-
-    if (collectionError) {
-      throw new Error('Failed to fetch collection', { cause: collectionError })
-    }
-
-    if (!existingCollection) {
-      throw new Error('Collection not found')
     }
 
     const { error: linkError } = await supabase.from('collection_link').insert({
