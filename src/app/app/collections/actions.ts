@@ -4,361 +4,272 @@ import { nanoid } from 'nanoid'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { createClient } from '@/utils/supabase/server'
-import { GenericFormState } from '@/utils/types'
+import { authenticatedAction } from '@/lib/safe-action'
+import {
+  addLinkToCollectionSchema,
+  createCollectionSchema,
+  deleteCollectionSchema,
+  removeLinkFromCollectionSchema,
+  toggleCollectionPublishedSchema,
+  updateCollectionSchema,
+  updateLinksOrderSchema,
+} from '@/lib/validation-schemas/collections'
 
-export async function createCollection(formData: FormData) {
-  const supabase = createClient()
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser()
+export const createCollection = authenticatedAction
+  .createServerAction()
+  .input(createCollectionSchema)
+  .handler(async ({ input, ctx }) => {
+    const { user, supabase } = ctx
 
-  if (userError || !user) {
-    redirect('/signin')
-  }
+    const fingerprint = nanoid(8)
 
-  const formValues = {
-    title: formData.get('title')?.toString(),
-    description: formData.get('description')?.toString(),
-  }
+    // TODO: check collision
 
-  if (!formValues.title) {
-    throw new Error('Title is required')
-  }
+    const { data, error: creationError } = await supabase
+      .from('collection')
+      .insert({
+        created_at: new Date().toUTCString(),
+        created_by: user.id,
+        title: input.title,
+        description: input.description,
+        fingerprint,
+      })
+      .select()
 
-  const fingerprint = nanoid(8)
+    if (creationError) {
+      throw new Error('Failed to create collection', { cause: creationError })
+    }
 
-  // TODO: check collision
+    const newCollection = data[0]
 
-  const { data, error: creationError } = await supabase
-    .from('collection')
-    .insert({
-      created_at: new Date().toUTCString(),
-      created_by: user.id,
-      title: formValues.title,
-      description: formValues.description,
-      fingerprint,
-    })
-    .select()
-
-  if (creationError) {
-    throw new Error('Failed to create collection', { cause: creationError })
-  }
-
-  const newCollection = data[0]
-
-  revalidatePath('/app/collections')
-  redirect(`/app/collections/${newCollection.fingerprint}`)
-}
-
-export async function updateCollection(formData: FormData) {
-  const supabase = createClient()
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser()
-
-  if (userError || !user) {
-    redirect('/signin')
-  }
-
-  const formValues = {
-    title: formData.get('title')?.toString(),
-    published: formData.get('published')?.toString() === 'on',
-    description: formData.get('description')?.toString(),
-    fingerprint: formData.get('fingerprint')?.toString(),
-  }
-
-  if (!formValues.fingerprint) {
-    throw new Error('Fingerprint is required')
-  }
-
-  if (!formValues.title) {
-    throw new Error('Title is required')
-  }
-
-  const { data: existingCollection, error } = await supabase
-    .from('collection')
-    .select()
-    .eq('fingerprint', formValues.fingerprint)
-    .eq('created_by', user.id)
-    .single()
-
-  if (error) {
-    throw new Error('Failed to fetch collection', { cause: error })
-  }
-
-  if (!existingCollection) {
-    throw new Error('Collection not found')
-  }
-
-  const newData = {
-    title: formValues.title ?? existingCollection.title,
-    description: formValues.description ?? existingCollection.description,
-    published: formValues.published ?? existingCollection.published,
-  }
-
-  const { data: updatedCollection, error: updateError } = await supabase
-    .from('collection')
-    .update(newData)
-    .eq('fingerprint', formValues.fingerprint)
-    .eq('created_by', user.id)
-    .select()
-    .single()
-
-  if (updateError) {
-    throw new Error('Failed to update collection', { cause: updateError })
-  }
-
-  revalidatePath(`/app/collections/${existingCollection.fingerprint}`)
-  return updatedCollection
-}
-
-export async function deleteCollection(formData: FormData) {
-  const supabase = createClient()
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser()
-
-  if (userError || !user) {
-    redirect('/signin')
-  }
-
-  const formValues = {
-    fingerprint: formData.get('fingerprint')?.toString(),
-  }
-
-  if (!formValues.fingerprint) {
-    throw new Error('Collection is required')
-  }
-
-  const { data: existingCollection, error } = await supabase
-    .from('collection')
-    .select()
-    .eq('fingerprint', formValues.fingerprint)
-    .eq('created_by', user.id)
-    .single()
-
-  if (error) {
-    throw new Error('Failed to fetch collection', { cause: error })
-  }
-
-  if (!existingCollection) {
-    throw new Error('Collection not found')
-  }
-
-  const { error: deleteError } = await supabase
-    .from('collection')
-    .delete()
-    .eq('fingerprint', formValues.fingerprint)
-    .eq('created_by', user.id)
-
-  if (deleteError) {
-    throw new Error('Failed to delete collection', { cause: deleteError })
-  }
-
-  revalidatePath('/app/collections')
-  redirect('/app/collections')
-}
-
-export async function toggleCollectionPublished(formData: FormData) {
-  const supabase = createClient()
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser()
-
-  if (userError || !user) {
-    redirect('/signin')
-  }
-
-  const formValues = {
-    fingerprint: formData.get('fingerprint')?.toString(),
-    checked: formData.get('checked')?.toString() === 'true',
-  }
-
-  if (!formValues.fingerprint) {
-    throw new Error('Collection is required')
-  }
-
-  const { data: existingCollection, error } = await supabase
-    .from('collection')
-    .select()
-    .eq('fingerprint', formValues.fingerprint)
-    .eq('created_by', user.id)
-    .single()
-
-  if (error) {
-    throw new Error('Failed to fetch collection', { cause: error })
-  }
-
-  if (!existingCollection) {
-    throw new Error('Collection not found')
-  }
-
-  const { data: updatedCollection, error: updateError } = await supabase
-    .from('collection')
-    .update({ published: formValues.checked })
-    .eq('fingerprint', formValues.fingerprint)
-    .eq('created_by', user.id)
-    .select()
-    .single()
-
-  if (updateError) {
-    throw new Error('Failed to update collection', { cause: updateError })
-  }
-
-  revalidatePath(`/app/collections/${existingCollection.fingerprint}`)
-  return updatedCollection
-}
-
-export async function addLinkToCollection(
-  linkFingerprint: string,
-  collectionFingerprint: string
-) {
-  const supabase = createClient()
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser()
-
-  if (userError || !user) {
-    redirect('/signin')
-  }
-
-  const { data: existingLink, error } = await supabase
-    .from('link')
-    .select()
-    .eq('fingerprint', linkFingerprint)
-    .eq('created_by', user.id)
-    .single()
-
-  if (error) {
-    throw new Error('Failed to fetch link', { cause: error })
-  }
-
-  if (!existingLink) {
-    throw new Error('Link not found')
-  }
-
-  const { data: existingCollection, error: collectionError } = await supabase
-    .from('collection')
-    .select()
-    .eq('fingerprint', collectionFingerprint)
-    .eq('created_by', user.id)
-    .single()
-
-  if (collectionError) {
-    throw new Error('Failed to fetch collection', { cause: collectionError })
-  }
-
-  if (!existingCollection) {
-    throw new Error('Collection not found')
-  }
-
-  const { error: linkError } = await supabase.from('collection_link').insert({
-    link_pk: linkFingerprint,
-    collection_pk: collectionFingerprint,
-    visible: true,
+    revalidatePath('/app/collections')
+    redirect(`/app/collections/${newCollection.fingerprint}`)
   })
 
-  if (linkError) {
-    throw new Error('Failed to add link to collection', { cause: linkError })
-  }
+export const updateCollection = authenticatedAction
+  .createServerAction()
+  .input(updateCollectionSchema)
+  .handler(async ({ input, ctx }) => {
+    const { user, supabase } = ctx
 
-  revalidatePath(`/app/collections/${existingCollection.fingerprint}`)
-}
+    const { data: existingCollection, error } = await supabase
+      .from('collection')
+      .select()
+      .eq('fingerprint', input.fingerprint)
+      .eq('created_by', user.id)
+      .single()
 
-export async function removeLinkFromCollection(
-  _: GenericFormState,
-  formData: FormData
-) {
-  const supabase = createClient()
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser()
+    if (error) {
+      throw new Error('Failed to fetch collection', { cause: error })
+    }
 
-  if (userError || !user) {
-    redirect('/signin')
-  }
+    if (!existingCollection) {
+      throw new Error('Collection not found')
+    }
 
-  const formValues = {
-    linkFingerprint: formData.get('link_fingerprint')?.toString(),
-    collectionFingerprint: formData.get('collection_fingerprint')?.toString(),
-  }
+    const newData = {
+      title: input.title ?? existingCollection.title,
+      description: input.description ?? existingCollection.description,
+      published: input.published ?? existingCollection.published,
+    }
 
-  if (!formValues.linkFingerprint || !formValues.collectionFingerprint) {
-    return { error: 'Both Link and Colleciton are required' }
-  }
+    const { data: updatedCollection, error: updateError } = await supabase
+      .from('collection')
+      .update(newData)
+      .eq('fingerprint', input.fingerprint)
+      .eq('created_by', user.id)
+      .select()
+      .single()
 
-  const { data: existingJunction, error } = await supabase
-    .from('collection_link')
-    .select()
-    .eq('link_pk', formValues.linkFingerprint)
-    .eq('collection_pk', formValues.collectionFingerprint)
-    .single()
+    if (updateError) {
+      throw new Error('Failed to update collection', { cause: updateError })
+    }
 
-  if (error) {
-    return { error: 'Failed to fetch link <> collection relation' }
-  }
+    revalidatePath(`/app/collections/${existingCollection.fingerprint}`)
+    return updatedCollection
+  })
 
-  if (!existingJunction) {
-    return { error: 'Link not found in collection' }
-  }
+export const deleteCollection = authenticatedAction
+  .createServerAction()
+  .input(deleteCollectionSchema)
+  .handler(async ({ input, ctx }) => {
+    const { user, supabase } = ctx
 
-  const { error: deleteError } = await supabase
-    .from('collection_link')
-    .delete()
-    .eq('link_pk', formValues.linkFingerprint)
-    .eq('collection_pk', formValues.collectionFingerprint)
-    .select()
+    const { data: existingCollection, error } = await supabase
+      .from('collection')
+      .select()
+      .eq('fingerprint', input.fingerprint)
+      .eq('created_by', user.id)
+      .single()
 
-  if (deleteError) {
-    return { error: 'Failed to remove link from collection' }
-  }
+    if (error) {
+      throw new Error('Failed to fetch collection', { cause: error })
+    }
 
-  revalidatePath(`/app/collections/${formValues.collectionFingerprint}`)
-  return { message: 'Link removed from collection successfully' }
-}
+    if (!existingCollection) {
+      throw new Error('Collection not found')
+    }
 
-export async function updateLinksOrder(
-  collectionFingerprint: string,
-  linksOrder: { fingerprint: string; order: number }[]
-) {
-  const supabase = createClient()
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser()
+    const { error: deleteError } = await supabase
+      .from('collection')
+      .delete()
+      .eq('fingerprint', input.fingerprint)
+      .eq('created_by', user.id)
 
-  if (userError || !user) {
-    redirect('/signin')
-  }
+    if (deleteError) {
+      throw new Error('Failed to delete collection', { cause: deleteError })
+    }
 
-  if (!collectionFingerprint || !linksOrder) {
-    throw new Error('Both Link and Colleciton are required')
-  }
+    revalidatePath('/app/collections')
+    redirect('/app/collections')
+  })
 
-  const { error: updatedOrderError } = await supabase
-    .from('collection_link')
-    .upsert(
-      linksOrder.map(({ fingerprint, order }) => ({
-        link_pk: fingerprint,
-        collection_pk: collectionFingerprint,
-        order,
-      })),
-      { onConflict: 'link_pk,collection_pk' }
-    )
-    .select('order,visible,link(*)')
+export const toggleCollectionPublished = authenticatedAction
+  .createServerAction()
+  .input(toggleCollectionPublishedSchema)
+  .handler(async ({ input, ctx }) => {
+    const { user, supabase } = ctx
 
-  if (updatedOrderError) {
-    throw new Error('Failed to update links order', {
-      cause: updatedOrderError,
+    const { data: existingCollection, error } = await supabase
+      .from('collection')
+      .select()
+      .eq('fingerprint', input.fingerprint)
+      .eq('created_by', user.id)
+      .single()
+
+    if (error) {
+      throw new Error('Failed to fetch collection', { cause: error })
+    }
+
+    if (!existingCollection) {
+      throw new Error('Collection not found')
+    }
+
+    const { data: updatedCollection, error: updateError } = await supabase
+      .from('collection')
+      .update({ published: input.checked })
+      .eq('fingerprint', input.fingerprint)
+      .eq('created_by', user.id)
+      .select()
+      .single()
+
+    if (updateError) {
+      throw new Error('Failed to update collection', { cause: updateError })
+    }
+
+    revalidatePath(`/app/collections/${existingCollection.fingerprint}`)
+    return updatedCollection
+  })
+
+export const addLinkToCollection = authenticatedAction
+  .createServerAction()
+  .input(addLinkToCollectionSchema)
+  .handler(async ({ input, ctx }) => {
+    const { user, supabase } = ctx
+
+    const { data: existingLink, error } = await supabase
+      .from('link')
+      .select()
+      .eq('fingerprint', input.linkFingerprint)
+      .eq('created_by', user.id)
+      .single()
+
+    if (error) {
+      throw new Error('Failed to fetch link', { cause: error })
+    }
+
+    if (!existingLink) {
+      throw new Error('Link not found')
+    }
+
+    const { data: existingCollection, error: collectionError } = await supabase
+      .from('collection')
+      .select()
+      .eq('fingerprint', input.collectionFingerprint)
+      .eq('created_by', user.id)
+      .single()
+
+    if (collectionError) {
+      throw new Error('Failed to fetch collection', { cause: collectionError })
+    }
+
+    if (!existingCollection) {
+      throw new Error('Collection not found')
+    }
+
+    const { error: linkError } = await supabase.from('collection_link').insert({
+      link_pk: input.linkFingerprint,
+      collection_pk: input.collectionFingerprint,
+      visible: true,
     })
-  }
 
-  revalidatePath(`/app/collections/${collectionFingerprint}`)
-}
+    if (linkError) {
+      throw new Error('Failed to add link to collection', { cause: linkError })
+    }
+
+    revalidatePath(`/app/collections/${existingCollection.fingerprint}`)
+  })
+
+export const removeLinkFromCollection = authenticatedAction
+  .createServerAction()
+  .input(removeLinkFromCollectionSchema)
+  .handler(async ({ input, ctx }) => {
+    const { supabase } = ctx
+
+    const { data: existingJunction, error } = await supabase
+      .from('collection_link')
+      .select()
+      .eq('link_pk', input.linkFingerprint)
+      .eq('collection_pk', input.collectionFingerprint)
+      .single()
+
+    if (error) {
+      return { error: 'Failed to fetch link <> collection relation' }
+    }
+
+    if (!existingJunction) {
+      return { error: 'Link not found in collection' }
+    }
+
+    const { error: deleteError } = await supabase
+      .from('collection_link')
+      .delete()
+      .eq('link_pk', input.linkFingerprint)
+      .eq('collection_pk', input.collectionFingerprint)
+      .select()
+
+    if (deleteError) {
+      return { error: 'Failed to remove link from collection' }
+    }
+
+    revalidatePath(`/app/collections/${input.collectionFingerprint}`)
+    return { message: 'Link removed from collection successfully' }
+  })
+
+export const updateLinksOrder = authenticatedAction
+  .createServerAction()
+  .input(updateLinksOrderSchema)
+  .handler(async ({ input, ctx }) => {
+    const { supabase } = ctx
+    const { collectionFingerprint, linksOrder } = input
+
+    const { error: updatedOrderError } = await supabase
+      .from('collection_link')
+      .upsert(
+        linksOrder.map(({ fingerprint, order }) => ({
+          link_pk: fingerprint,
+          collection_pk: collectionFingerprint,
+          order,
+        })),
+        { onConflict: 'link_pk,collection_pk' }
+      )
+      .select('order,visible,link(*)')
+
+    if (updatedOrderError) {
+      throw new Error('Failed to update links order', {
+        cause: updatedOrderError,
+      })
+    }
+
+    revalidatePath(`/app/collections/${collectionFingerprint}`)
+  })

@@ -110,21 +110,21 @@ export type Database = {
           created_at: string
           created_by: string
           fingerprint: string
-          label: string | null
+          label: string
           url: string
         }
         Insert: {
           created_at?: string
           created_by: string
           fingerprint: string
-          label?: string | null
+          label: string
           url: string
         }
         Update: {
           created_at?: string
           created_by?: string
           fingerprint?: string
-          label?: string | null
+          label?: string
           url?: string
         }
         Relationships: [

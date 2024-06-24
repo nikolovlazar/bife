@@ -11,17 +11,12 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { SubmitButton } from '@/components/ui/submit'
 
-import { AddOrCreateLink } from './add-create-link'
-import { DeleteCollectionConfirmation } from './delete-collection'
-import { LinksList } from './links-list'
 import { createClient } from '@/utils/supabase/server'
 
-import { updateCollection } from '../actions'
+import { AddOrCreateLink } from './add-create-link'
+import { LinksList } from './links-list'
+import UpdateOrDeleteCollection from './update-collection'
 
 export default async function CollectionDetails({
   params,
@@ -100,56 +95,12 @@ export default async function CollectionDetails({
         </Button>
       </div>
       <div className="flex flex-col gap-4 xl:flex-row">
-        <form action={updateCollection} className="mt-4 w-full xl:max-w-lg">
-          <fieldset className="grid items-start gap-4 rounded-lg border p-4">
-            <legend className="-ml-1 px-1 text-sm font-medium">
-              Collection details
-            </legend>
-            <div className="gap-1.5">
-              <Label htmlFor="title">Title</Label>
-              <Input
-                id="title"
-                name="title"
-                type="text"
-                placeholder="ReactConf 2024"
-                defaultValue={collection?.title}
-              />
-            </div>
-            <div className="gap-1.5">
-              <Label htmlFor="description">Description</Label>
-              <Input
-                id="description"
-                name="description"
-                type="text"
-                placeholder=""
-                defaultValue={collection?.description ?? ''}
-              />
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Checkbox
-                name="published"
-                id="published"
-                defaultChecked={collection?.published}
-                className="h-6 w-6"
-              />
-              <Label htmlFor="published">Published</Label>
-            </div>
-            <input
-              name="fingerprint"
-              readOnly
-              type="text"
-              hidden
-              aria-hidden
-              aria-readonly
-              value={params.fingerprint}
-              className="hidden"
-            />
-            <SubmitButton>Update</SubmitButton>
-            <DeleteCollectionConfirmation fingerprint={params.fingerprint}>
-              <Button variant="destructive">Delete</Button>
-            </DeleteCollectionConfirmation>
-          </fieldset>
-        </form>
+        <UpdateOrDeleteCollection
+          title={collection.title}
+          description={collection.description ?? undefined}
+          fingerprint={collection.fingerprint}
+          published={collection.published}
+        />
         <div className="mt-4 flex-1">
           <fieldset className="grid items-start gap-4 rounded-lg border p-4">
             <legend className="-ml-1 px-1 text-sm font-medium">Links</legend>

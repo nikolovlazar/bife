@@ -1,20 +1,25 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ReactNode, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+import { useServerAction } from 'zsa-react'
+
+import { removeLinkFromCollectionSchema } from '@/lib/validation-schemas/collections'
 
 import { HiddenInput } from '@/components/custom/hidden-input'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { Form, FormField } from '@/components/ui/form'
 import { SubmitButton } from '@/components/ui/submit'
-
-import { useGenericFormState } from '@/hooks/use-toasty-form-state'
 
 import { removeLinkFromCollection } from '../actions'
 
@@ -27,9 +32,27 @@ export function RemoveLinkFromCollectionConfirmation({
   collectionFingerprint: string
   children: ReactNode
 }) {
-  const [_, formAction] = useGenericFormState(removeLinkFromCollection, {})
+  const [opened, setOpened] = useState(false)
+
+  const form = useForm<z.infer<typeof removeLinkFromCollectionSchema>>({
+    resolver: zodResolver(removeLinkFromCollectionSchema),
+    defaultValues: {
+      collectionFingerprint,
+      linkFingerprint,
+    },
+  })
+
+  const { execute } = useServerAction(removeLinkFromCollection, {
+    onError: ({ err }) => {
+      toast.error(err.message)
+    },
+    onSuccess: () => {
+      toast.success('Link removed from collection!')
+      setOpened(false)
+    },
+  })
   return (
-    <Dialog>
+    <Dialog open={opened} onOpenChange={setOpened}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -39,18 +62,26 @@ export function RemoveLinkFromCollectionConfirmation({
             collection. You can always add it back later.
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <form action={formAction}>
-            <HiddenInput
-              name="collection_fingerprint"
-              value={collectionFingerprint}
+        <Form {...form}>
+          <form
+            className=""
+            onSubmit={form.handleSubmit((values) => execute(values))}
+          >
+            <FormField
+              control={form.control}
+              name="collectionFingerprint"
+              render={({ field }) => <HiddenInput {...field} />}
             />
-            <HiddenInput name="link_fingerprint" value={linkFingerprint} />
+            <FormField
+              control={form.control}
+              name="linkFingerprint"
+              render={({ field }) => <HiddenInput {...field} />}
+            />
             <SubmitButton className="bg-destructive hover:bg-destructive/80">
               Yes, remove it
             </SubmitButton>
           </form>
-        </DialogFooter>
+        </Form>
       </DialogContent>
     </Dialog>
   )

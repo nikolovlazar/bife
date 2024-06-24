@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { toast } from 'sonner'
+import { useServerAction } from 'zsa-react'
 
 import { Switch } from '@/components/ui/switch'
 
@@ -14,30 +14,27 @@ export function CollectionPublishedSwitch({
   fingerprint: string
   checked: boolean
 }) {
-  const [loading, setLoading] = useState(false)
+  const { isPending, execute } = useServerAction(toggleCollectionPublished, {
+    onError: ({ err }) => {
+      toast.error(`Failed to ${checked ? 'unpublish' : 'publish'} collection`, {
+        description: err.message,
+      })
+    },
+    onSuccess: ({ data }) => {
+      toast.success(
+        'Collection ' + (data.published ? 'published!' : 'unpublished!')
+      )
+    },
+  })
   const handleCheckedChange = async (value: boolean) => {
-    try {
-      setLoading(true)
-      const formData = new FormData()
-      formData.append('fingerprint', fingerprint)
-      formData.append('checked', value ? 'true' : 'false')
-
-      await toggleCollectionPublished(formData)
-      setLoading(false)
-      toast.success('Collection ' + (value ? 'published' : 'unpublished'))
-    } catch (e) {
-      console.error(e)
-      setLoading(false)
-      if (e instanceof Error) {
-        toast.error(`Failed to ${value ? 'publish' : 'unpublish'} collection`, {
-          description: e.message,
-        })
-      }
-    }
+    execute({
+      fingerprint,
+      checked: value,
+    })
   }
   return (
     <Switch
-      disabled={loading}
+      disabled={isPending}
       defaultChecked={checked}
       onCheckedChange={handleCheckedChange}
     />

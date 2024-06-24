@@ -13,12 +13,10 @@ async function getLinks() {
     throw new Error('User not found')
   }
 
-  const { data, error: collectionError } = await supabase
-    .from('link')
-    .select()
-    .eq('created_by', user.id)
+  const { data, error: linksError } = await supabase.from('link').select()
 
-  if (collectionError) {
+  if (linksError) {
+    console.error(linksError)
     throw new Error('Failed to fetch links')
   }
 

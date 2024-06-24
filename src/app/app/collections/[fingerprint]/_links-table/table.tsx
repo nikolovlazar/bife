@@ -23,6 +23,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { startTransition, useOptimistic } from 'react'
+import { toast } from 'sonner'
+import { useServerAction } from 'zsa-react'
 
 import {
   Table,
@@ -33,10 +35,10 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import { updateLinksOrder } from '../../actions'
+
 import { ColumnsType } from './columns'
 import { DraggableRow } from './draggable-row'
-
-import { updateLinksOrder } from '../../actions'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -64,6 +66,11 @@ export function LinksDataTable<TData extends ColumnsType, TValue>({
     useSensor(TouchSensor, {}),
     useSensor(KeyboardSensor, {})
   )
+  const { execute } = useServerAction(updateLinksOrder, {
+    onError: ({ err }) => {
+      toast.error(err.message)
+    },
+  })
 
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
@@ -76,13 +83,13 @@ export function LinksDataTable<TData extends ColumnsType, TValue>({
       )
       const newData = arrayMove<TData>(orderedData, oldIndex, newIndex) //this is just a splice util
 
-      updateLinksOrder(
+      execute({
         collectionFingerprint,
-        newData.map((data, index) => ({
+        linksOrder: newData.map((data, index) => ({
           fingerprint: data.fingerprint,
           order: index + 1,
-        }))
-      )
+        })),
+      })
       startTransition(() => setOrderedData(newData))
     }
   }

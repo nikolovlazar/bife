@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { toast } from 'sonner'
+import { useServerAction } from 'zsa-react'
 
 import { Switch } from '@/components/ui/switch'
 
@@ -16,31 +16,27 @@ export function LinkVisibilitySwitch({
   collectionFingerprint: string
   checked: boolean
 }) {
-  const [loading, setLoading] = useState(false)
-  const handleVisibilityChange = async (value: boolean) => {
-    try {
-      setLoading(true)
-      const formData = new FormData()
-      formData.append('link_pk', linkFingerprint)
-      formData.append('collection_pk', collectionFingerprint)
-      formData.append('checked', value ? 'true' : 'false')
+  const { isPending, execute } = useServerAction(toggleLinkVisibility, {
+    onError: ({ err }) => {
+      toast.error('Failed to update link visibility', {
+        description: err.message,
+      })
+    },
+    onSuccess: () => {
+      toast.success('Link visibility changed!')
+    },
+  })
 
-      await toggleLinkVisibility(formData)
-      setLoading(false)
-      toast.success('Link visibility updated')
-    } catch (e) {
-      console.error(e)
-      setLoading(false)
-      if (e instanceof Error) {
-        toast.error('Failed to update link visibility', {
-          description: e.message,
-        })
-      }
-    }
+  const handleVisibilityChange = async (value: boolean) => {
+    execute({
+      link_pk: linkFingerprint,
+      collection_pk: collectionFingerprint,
+      checked: value,
+    })
   }
   return (
     <Switch
-      disabled={loading}
+      disabled={isPending}
       defaultChecked={checked}
       onCheckedChange={handleVisibilityChange}
     />

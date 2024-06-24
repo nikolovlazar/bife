@@ -1,6 +1,13 @@
 'use client'
 
-import { ReactNode, useEffect, useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ReactNode, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+import { useServerAction } from 'zsa-react'
+
+import { deleteLinkSchema } from '@/lib/validation-schemas/links'
 
 import { HiddenInput } from '@/components/custom/hidden-input'
 import {
@@ -11,10 +18,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { Form, FormField } from '@/components/ui/form'
 import { SubmitButton } from '@/components/ui/submit'
 
 import { deleteLink } from './actions'
-import { useGenericFormState } from '@/hooks/use-toasty-form-state'
 
 export function DeleteLinkConfirmation({
   fingerprint,
@@ -24,13 +31,23 @@ export function DeleteLinkConfirmation({
   children: ReactNode
 }) {
   const [opened, setOpened] = useState(false)
-  const [state, formAction] = useGenericFormState(deleteLink, {})
 
-  useEffect(() => {
-    if (state.message) {
+  const form = useForm<z.infer<typeof deleteLinkSchema>>({
+    resolver: zodResolver(deleteLinkSchema),
+    defaultValues: {
+      fingerprint,
+    },
+  })
+
+  const { execute } = useServerAction(deleteLink, {
+    onError: ({ err }) => {
+      toast.error(err.message)
+    },
+    onSuccess: () => {
+      toast.success('Link deleted!')
       setOpened(false)
-    }
-  }, [state])
+    },
+  })
 
   return (
     <Dialog open={opened} onOpenChange={setOpened}>
@@ -42,10 +59,19 @@ export function DeleteLinkConfirmation({
             This will delete the link, for real.
           </DialogDescription>
         </DialogHeader>
-        <form action={formAction} className="grid gap-3">
-          <HiddenInput name="fingerprint" value={fingerprint} />
-          <SubmitButton className="mt-4">Yes, delete the link</SubmitButton>
-        </form>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit((values) => execute(values))}
+            className="grid gap-3"
+          >
+            <FormField
+              control={form.control}
+              name="fingerprint"
+              render={({ field }) => <HiddenInput {...field} />}
+            />
+            <SubmitButton className="mt-4">Yes, delete the link</SubmitButton>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   )

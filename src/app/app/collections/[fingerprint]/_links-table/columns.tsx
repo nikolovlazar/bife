@@ -14,11 +14,12 @@ import {
 
 import { EditLink } from '@/app/app/links/edit-link'
 
-import { LinkVisibilitySwitch } from './link-visibility-switch'
-import { RowDragHandle } from './row-drag-handle'
 import type { Collection, Link } from '@/utils/types'
 
 import { RemoveLinkFromCollectionConfirmation } from '../remove-link'
+
+import { LinkVisibilitySwitch } from './link-visibility-switch'
+import { RowDragHandle } from './row-drag-handle'
 
 export type ColumnsType = Link & {
   visible: boolean
@@ -33,12 +34,12 @@ export const linkColumns: ColumnDef<ColumnsType>[] = [
     meta: { headerClassName: 'w-10 text-center', cellClassName: 'w-10' },
   },
   {
-    accessorKey: 'url',
-    header: 'URL',
-  },
-  {
     accessorKey: 'label',
     header: 'Label',
+  },
+  {
+    accessorKey: 'url',
+    header: 'URL',
   },
   {
     accessorKey: 'visible',

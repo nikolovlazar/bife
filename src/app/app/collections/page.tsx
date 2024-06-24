@@ -1,11 +1,8 @@
-import { PlusIcon } from 'lucide-react'
-import Link from 'next/link'
-
-import { Button } from '@/components/ui/button'
+import { createClient } from '@/utils/supabase/server'
 
 import { collectionColumns } from './_collections-table/columns'
 import { CollectionsDataTable } from './_collections-table/table'
-import { createClient } from '@/utils/supabase/server'
+import CreateCollection from './create-collection'
 
 async function getCollections() {
   const supabase = createClient()
@@ -35,12 +32,7 @@ export default async function Collections() {
     <>
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold md:text-2xl">Collections</h1>
-        <Button asChild>
-          <Link href="/app/collections/create">
-            <PlusIcon className="mr-2 h-4 w-4" />
-            Create new
-          </Link>
-        </Button>
+        <CreateCollection />
       </div>
       {collections && collections.length > 0 ? (
         <CollectionsDataTable columns={collectionColumns} data={collections} />
@@ -50,12 +42,10 @@ export default async function Collections() {
             <h3 className="text-2xl font-bold tracking-tight">
               You have no link collections
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="mb-4 text-sm text-muted-foreground">
               Create a collection to get started
             </p>
-            <Button asChild className="mt-4">
-              <Link href="/app/collections/create">Create collection</Link>
-            </Button>
+            <CreateCollection />
           </div>
         </div>
       )}

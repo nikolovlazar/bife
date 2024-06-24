@@ -81,19 +81,14 @@ export function AddOrCreateLink({
                         value={link.fingerprint}
                         onSelect={(currentValue) => {
                           if (currentValue) {
+                            const data = {
+                              linkFingerprint: currentValue,
+                              collectionFingerprint,
+                            }
                             if (isInCollection) {
-                              const data = new FormData()
-                              data.append('link_fingerprint', currentValue)
-                              data.append(
-                                'collection_fingerprint',
-                                collectionFingerprint
-                              )
-                              removeLinkFromCollection({}, data)
+                              removeLinkFromCollection(data)
                             } else {
-                              addLinkToCollection(
-                                currentValue,
-                                collectionFingerprint
-                              )
+                              addLinkToCollection(data)
                             }
                           }
                         }}

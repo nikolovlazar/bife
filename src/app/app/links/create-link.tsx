@@ -1,7 +1,14 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
 import { PlusIcon } from 'lucide-react'
-import { forwardRef, useEffect, useState } from 'react'
+import { forwardRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+import { useServerAction } from 'zsa-react'
+
+import { createLinkSchema } from '@/lib/validation-schemas/links'
 
 import { HiddenInput } from '@/components/custom/hidden-input'
 import { Button, type ButtonProps } from '@/components/ui/button'
@@ -13,12 +20,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { SubmitButton } from '@/components/ui/submit'
 
 import { createLink } from './actions'
-import { useGenericFormState } from '@/hooks/use-toasty-form-state'
 
 export const CreateLink = forwardRef(
   (
@@ -31,18 +44,30 @@ export const CreateLink = forwardRef(
     _
   ) => {
     const [opened, setOpened] = useState(false)
-    const [state, formAction] = useGenericFormState(createLink, {})
 
-    useEffect(() => {
-      if (state.message) {
+    const form = useForm<z.infer<typeof createLinkSchema>>({
+      resolver: zodResolver(createLinkSchema),
+      defaultValues: {
+        label: '',
+        url: '',
+        collection: collectionFingerprint,
+      },
+    })
+
+    const { execute } = useServerAction(createLink, {
+      onError: ({ err }) => {
+        toast.error(err.message)
+      },
+      onSuccess: () => {
+        toast.success('Link created!')
         setOpened(false)
-      }
-    }, [state])
+      },
+    })
 
     return (
       <Dialog open={opened} onOpenChange={setOpened}>
         <DialogTrigger asChild>
-          <Button variant="secondary" {...props}>
+          <Button {...props}>
             <PlusIcon className="mr-2 w-4" /> Create a link
           </Button>
         </DialogTrigger>
@@ -57,18 +82,45 @@ export const CreateLink = forwardRef(
               </DialogDescription>
             )}
           </DialogHeader>
-          <form action={formAction} className="grid gap-2">
-            <div className="gap-1.5">
-              <Label htmlFor="url">URL</Label>
-              <Input id="url" name="url" type="url" placeholder="https://..." />
-            </div>
-            <div className="gap-1.5">
-              <Label htmlFor="label">Label</Label>
-              <Input id="label" name="label" type="text" placeholder="" />
-            </div>
-            <HiddenInput name="collection" value={collectionFingerprint} />
-            <SubmitButton className="mt-4">Submit</SubmitButton>
-          </form>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit((values) => execute(values))}
+              className="grid gap-2"
+            >
+              <FormField
+                control={form.control}
+                name="url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>URL</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="label"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Label</FormLabel>
+                    <FormControl>
+                      <Input placeholder="" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="collection"
+                render={({ field }) => <HiddenInput {...field} />}
+              />
+              <SubmitButton className="mt-4">Submit</SubmitButton>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     )

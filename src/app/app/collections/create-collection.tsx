@@ -1,18 +1,20 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ReactNode, useState } from 'react'
+import { PlusIcon } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
-import { updateLinkSchema } from '@/lib/validation-schemas/links'
+import { createCollectionSchema } from '@/lib/validation-schemas/collections'
 
-import { HiddenInput } from '@/components/custom/hidden-input'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -28,59 +30,55 @@ import {
 import { Input } from '@/components/ui/input'
 import { SubmitButton } from '@/components/ui/submit'
 
-import { updateLink } from './actions'
+import { createCollection } from './actions'
 
-export function EditLink({
-  fingerprint,
-  url,
-  label,
-  children,
-}: {
-  fingerprint: string
-  url: string
-  label: string
-  children: ReactNode
-}) {
+export default function CreateCollection() {
   const [opened, setOpened] = useState(false)
-  const form = useForm<z.infer<typeof updateLinkSchema>>({
-    resolver: zodResolver(updateLinkSchema),
+
+  const form = useForm<z.infer<typeof createCollectionSchema>>({
+    resolver: zodResolver(createCollectionSchema),
     defaultValues: {
-      label,
-      url,
-      fingerprint,
+      title: '',
     },
   })
 
-  const { execute } = useServerAction(updateLink, {
+  const { execute } = useServerAction(createCollection, {
     onError: ({ err }) => {
       toast.error(err.message)
     },
     onSuccess: () => {
-      toast.success('Link updated!')
+      toast.success('Collection created!')
       setOpened(false)
     },
   })
 
   return (
     <Dialog open={opened} onOpenChange={setOpened}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogTrigger asChild>
+        <Button>
+          <PlusIcon className="mr-2 w-4" /> Create a collection
+        </Button>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit link</DialogTitle>
+          <DialogTitle>Create collection</DialogTitle>
+          <DialogDescription>
+            Collections are shareable lists of links.
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit((values) => execute(values))}
-            className="grid gap-2"
+            className="grid w-full items-center gap-3"
           >
             <FormField
               control={form.control}
-              name="url"
+              name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>URL</FormLabel>
+                  <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://..." {...field} />
+                    <Input placeholder="ReactConf 2024" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -88,10 +86,10 @@ export function EditLink({
             />
             <FormField
               control={form.control}
-              name="label"
+              name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Label</FormLabel>
+                  <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Input placeholder="" {...field} />
                   </FormControl>
@@ -99,12 +97,9 @@ export function EditLink({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="fingerprint"
-              render={({ field }) => <HiddenInput {...field} />}
-            />
-            <SubmitButton className="mt-4">Submit</SubmitButton>
+            <SubmitButton className="mt-4" type="submit">
+              Create
+            </SubmitButton>
           </form>
         </Form>
       </DialogContent>
