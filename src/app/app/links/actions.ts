@@ -3,15 +3,15 @@
 import { nanoid } from 'nanoid'
 import { revalidatePath } from 'next/cache'
 
-import { authenticatedAction } from '@/lib/safe-action'
 import {
   createLinkInputSchema,
   deleteLinkInputSchema,
   toggleLinkVisibilityInputSchema,
   updateLinkInputSchema,
 } from '@/lib/validation-schemas/links'
+import { authenticatedProcedure } from '@/lib/zsa-procedures'
 
-export const createLink = authenticatedAction
+export const createLink = authenticatedProcedure
   .createServerAction()
   .input(createLinkInputSchema)
   .handler(async ({ input, ctx }) => {
@@ -72,7 +72,7 @@ export const createLink = authenticatedAction
     return { message: 'Link created successfully' }
   })
 
-export const updateLink = authenticatedAction
+export const updateLink = authenticatedProcedure
   .createServerAction()
   .input(updateLinkInputSchema)
   .handler(async ({ input, ctx }) => {
@@ -113,7 +113,7 @@ export const updateLink = authenticatedAction
     return { message: 'Link updated successfully' }
   })
 
-export const deleteLink = authenticatedAction
+export const deleteLink = authenticatedProcedure
   .createServerAction()
   .input(deleteLinkInputSchema)
   .handler(async ({ input, ctx }) => {
@@ -148,7 +148,7 @@ export const deleteLink = authenticatedAction
     return { message: 'Link deleted successfully' }
   })
 
-export const toggleLinkVisibility = authenticatedAction
+export const toggleLinkVisibility = authenticatedProcedure
   .createServerAction()
   .input(toggleLinkVisibilityInputSchema)
   .handler(async ({ input, ctx }) => {

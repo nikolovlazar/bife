@@ -1,8 +1,9 @@
-import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { createServerActionProcedure } from 'zsa'
 
-export const authenticatedAction = createServerActionProcedure().handler(
+import { createClient } from '@/utils/supabase/server'
+
+export const authenticatedProcedure = createServerActionProcedure().handler(
   async () => {
     const supabase = createClient()
     const {

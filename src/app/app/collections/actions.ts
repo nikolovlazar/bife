@@ -4,7 +4,6 @@ import { nanoid } from 'nanoid'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { authenticatedAction } from '@/lib/safe-action'
 import {
   addLinkToCollectionInputSchema,
   createCollectionInputSchema,
@@ -14,8 +13,9 @@ import {
   updateCollectionInputSchema,
   updateLinksOrderInputSchema,
 } from '@/lib/validation-schemas/collections'
+import { authenticatedProcedure } from '@/lib/zsa-procedures'
 
-export const createCollection = authenticatedAction
+export const createCollection = authenticatedProcedure
   .createServerAction()
   .input(createCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
@@ -46,7 +46,7 @@ export const createCollection = authenticatedAction
     redirect(`/app/collections/${newCollection.fingerprint}`)
   })
 
-export const updateCollection = authenticatedAction
+export const updateCollection = authenticatedProcedure
   .createServerAction()
   .input(updateCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
@@ -89,7 +89,7 @@ export const updateCollection = authenticatedAction
     return updatedCollection
   })
 
-export const deleteCollection = authenticatedAction
+export const deleteCollection = authenticatedProcedure
   .createServerAction()
   .input(deleteCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
@@ -124,7 +124,7 @@ export const deleteCollection = authenticatedAction
     redirect('/app/collections')
   })
 
-export const toggleCollectionPublished = authenticatedAction
+export const toggleCollectionPublished = authenticatedProcedure
   .createServerAction()
   .input(toggleCollectionPublishedInputSchema)
   .handler(async ({ input, ctx }) => {
@@ -161,7 +161,7 @@ export const toggleCollectionPublished = authenticatedAction
     return updatedCollection
   })
 
-export const addLinkToCollection = authenticatedAction
+export const addLinkToCollection = authenticatedProcedure
   .createServerAction()
   .input(addLinkToCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
@@ -210,7 +210,7 @@ export const addLinkToCollection = authenticatedAction
     revalidatePath(`/app/collections/${existingCollection.fingerprint}`)
   })
 
-export const removeLinkFromCollection = authenticatedAction
+export const removeLinkFromCollection = authenticatedProcedure
   .createServerAction()
   .input(removeLinkFromCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
@@ -246,7 +246,7 @@ export const removeLinkFromCollection = authenticatedAction
     return { message: 'Link removed from collection successfully' }
   })
 
-export const updateLinksOrder = authenticatedAction
+export const updateLinksOrder = authenticatedProcedure
   .createServerAction()
   .input(updateLinksOrderInputSchema)
   .handler(async ({ input, ctx }) => {
