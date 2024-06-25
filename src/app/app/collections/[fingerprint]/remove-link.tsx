@@ -37,7 +37,7 @@ export function RemoveLinkFromCollectionConfirmation({
   const form = useForm<z.infer<typeof removeLinkFromCollectionInputSchema>>({
     resolver: zodResolver(removeLinkFromCollectionInputSchema),
     defaultValues: {
-      collectionFingerprint,
+      fingerprint: collectionFingerprint,
       linkFingerprint,
     },
   })
@@ -69,7 +69,7 @@ export function RemoveLinkFromCollectionConfirmation({
           >
             <FormField
               control={form.control}
-              name="collectionFingerprint"
+              name="fingerprint"
               render={({ field }) => <HiddenInput {...field} />}
             />
             <FormField

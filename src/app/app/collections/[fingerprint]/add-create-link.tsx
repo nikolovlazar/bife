@@ -83,7 +83,7 @@ export function AddOrCreateLink({
                           if (currentValue) {
                             const data = {
                               linkFingerprint: currentValue,
-                              collectionFingerprint,
+                              fingerprint: collectionFingerprint,
                             }
                             if (isInCollection) {
                               removeLinkFromCollection(data)

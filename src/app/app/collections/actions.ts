@@ -142,7 +142,7 @@ export const addLinkToCollection = ownsCollectionProcedure
 
     const { error: linkError } = await supabase.from('collection_link').insert({
       link_pk: input.linkFingerprint,
-      collection_pk: input.collectionFingerprint,
+      collection_pk: input.fingerprint,
       visible: true,
     })
 
@@ -153,7 +153,7 @@ export const addLinkToCollection = ownsCollectionProcedure
     revalidatePath(`/app/collections/${existingCollection.fingerprint}`)
   })
 
-export const removeLinkFromCollection = authenticatedProcedure
+export const removeLinkFromCollection = ownsCollectionProcedure
   .createServerAction()
   .input(removeLinkFromCollectionInputSchema)
   .handler(async ({ input, ctx }) => {
@@ -163,7 +163,7 @@ export const removeLinkFromCollection = authenticatedProcedure
       .from('collection_link')
       .select()
       .eq('link_pk', input.linkFingerprint)
-      .eq('collection_pk', input.collectionFingerprint)
+      .eq('collection_pk', input.fingerprint)
       .single()
 
     if (error) {
@@ -178,30 +178,30 @@ export const removeLinkFromCollection = authenticatedProcedure
       .from('collection_link')
       .delete()
       .eq('link_pk', input.linkFingerprint)
-      .eq('collection_pk', input.collectionFingerprint)
+      .eq('collection_pk', input.fingerprint)
       .select()
 
     if (deleteError) {
       return { error: 'Failed to remove link from collection' }
     }
 
-    revalidatePath(`/app/collections/${input.collectionFingerprint}`)
+    revalidatePath(`/app/collections/${input.fingerprint}`)
     return { message: 'Link removed from collection successfully' }
   })
 
-export const updateLinksOrder = authenticatedProcedure
+export const updateLinksOrder = ownsCollectionProcedure
   .createServerAction()
   .input(updateLinksOrderInputSchema)
   .handler(async ({ input, ctx }) => {
     const { supabase } = ctx
-    const { collectionFingerprint, linksOrder } = input
+    const { fingerprint, linksOrder } = input
 
     const { error: updatedOrderError } = await supabase
       .from('collection_link')
       .upsert(
         linksOrder.map(({ fingerprint, order }) => ({
           link_pk: fingerprint,
-          collection_pk: collectionFingerprint,
+          collection_pk: fingerprint,
           order,
         })),
         { onConflict: 'link_pk,collection_pk' }
@@ -214,5 +214,5 @@ export const updateLinksOrder = authenticatedProcedure
       })
     }
 
-    revalidatePath(`/app/collections/${collectionFingerprint}`)
+    revalidatePath(`/app/collections/${fingerprint}`)
   })

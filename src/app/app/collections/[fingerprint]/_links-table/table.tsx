@@ -84,7 +84,7 @@ export function LinksDataTable<TData extends ColumnsType, TValue>({
       const newData = arrayMove<TData>(orderedData, oldIndex, newIndex) //this is just a splice util
 
       execute({
-        collectionFingerprint,
+        fingerprint: collectionFingerprint,
         linksOrder: newData.map((data, index) => ({
           fingerprint: data.fingerprint,
           order: index + 1,

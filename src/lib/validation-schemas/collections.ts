@@ -23,16 +23,16 @@ export const toggleCollectionPublishedInputSchema = z.object({
 
 export const addLinkToCollectionInputSchema = z.object({
   linkFingerprint: z.string(),
-  collectionFingerprint: z.string(),
+  fingerprint: z.string(),
 })
 
 export const removeLinkFromCollectionInputSchema = z.object({
   linkFingerprint: z.string(),
-  collectionFingerprint: z.string(),
+  fingerprint: z.string(),
 })
 
 export const updateLinksOrderInputSchema = z.object({
-  collectionFingerprint: z.string(),
+  fingerprint: z.string(),
   linksOrder: z.array(
     z.object({
       fingerprint: z.string(),
