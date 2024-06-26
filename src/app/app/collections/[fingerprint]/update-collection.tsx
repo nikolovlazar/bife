@@ -8,9 +8,9 @@ import { useServerAction } from 'zsa-react'
 
 import { updateCollectionInputSchema } from '@/lib/validation-schemas/collections'
 
-import { HiddenInput } from '@/components/custom/hidden-input'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+import { HiddenInput } from '@/app/_components/custom/hidden-input'
+import { Button } from '@/app/_components/ui/button'
+import { Checkbox } from '@/app/_components/ui/checkbox'
 import {
   Form,
   FormControl,
@@ -18,9 +18,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { SubmitButton } from '@/components/ui/submit'
+} from '@/app/_components/ui/form'
+import { Input } from '@/app/_components/ui/input'
+import { SubmitButton } from '@/app/_components/ui/submit'
 
 import { updateCollection } from '../actions'
 

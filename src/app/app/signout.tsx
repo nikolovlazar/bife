@@ -1,8 +1,8 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { Button } from '@/components/ui/button'
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
+import { Button } from '@/app/_components/ui/button'
+import { DropdownMenuItem } from '@/app/_components/ui/dropdown-menu'
 
 import { createClient } from '@/utils/supabase/server'
 

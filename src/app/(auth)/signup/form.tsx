@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import Turnstile, { useTurnstile } from 'react-turnstile'
 import { z } from 'zod'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/app/_components/ui/button'
 import {
   Form,
   FormControl,
@@ -14,18 +14,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@/app/_components/ui/form'
+import { Input } from '@/app/_components/ui/input'
+import { signUpInputSchema } from '@/app/_lib/validation-schemas/auth'
 
-import { signup } from '../actions'
-import { signupSchema } from '../validation-schemas'
+import { signUp } from '../actions'
 
 export const SignUpForm = () => {
   const [tsToken, setTsToken] = useState<string | undefined>()
   const turnstile = useTurnstile()
 
-  const form = useForm<z.infer<typeof signupSchema>>({
-    resolver: zodResolver(signupSchema),
+  const form = useForm<z.infer<typeof signUpInputSchema>>({
+    resolver: zodResolver(signUpInputSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -33,23 +33,24 @@ export const SignUpForm = () => {
     },
   })
 
-  async function onSubmit(values: z.infer<typeof signupSchema>) {
+  async function onSubmit(values: z.infer<typeof signUpInputSchema>) {
     const data = new FormData()
     data.append('email', values.email)
     data.append('password', values.password)
     data.append('confirmPassword', values.confirmPassword)
     data.append('tsToken', tsToken!)
-    const res = await signup(data)
-    if (res && res.errors) {
-      turnstile.reset()
-      res.errors.email && form.setError('email', { message: res.errors.email })
-      res.errors.password &&
-        form.setError('password', { message: res.errors.password })
-      res.errors.confirmPassword &&
-        form.setError('confirmPassword', {
-          message: res.errors.confirmPassword,
-        })
-    }
+    const res = await signUp(data)
+    console.log(res)
+    // if (res && res.errors) {
+    //   turnstile.reset()
+    //   res.errors.email && form.setError('email', { message: res.errors.email })
+    //   res.errors.password &&
+    //     form.setError('password', { message: res.errors.password })
+    //   res.errors.confirmPassword &&
+    //     form.setError('confirmPassword', {
+    //       message: res.errors.confirmPassword,
+    //     })
+    // }
   }
   return (
     <Form {...form}>

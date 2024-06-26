@@ -12,11 +12,11 @@ import {
   toggleCollectionPublishedInputSchema,
   updateCollectionInputSchema,
   updateLinksOrderInputSchema,
-} from '@/lib/validation-schemas/collections'
+} from '@/app/_lib/validation-schemas/collections'
 import {
   authenticatedProcedure,
   ownsCollectionProcedure,
-} from '@/lib/zsa-procedures'
+} from '@/app/_lib/zsa-procedures'
 
 export const createCollection = authenticatedProcedure
   .createServerAction()

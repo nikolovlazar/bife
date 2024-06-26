@@ -14,7 +14,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '@/app/_components/ui/table'
 
 import { Link } from '@/utils/types'
 

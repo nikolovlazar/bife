@@ -9,7 +9,7 @@ import { useServerAction } from 'zsa-react'
 
 import { removeLinkFromCollectionInputSchema } from '@/lib/validation-schemas/collections'
 
-import { HiddenInput } from '@/components/custom/hidden-input'
+import { HiddenInput } from '@/app/_components/custom/hidden-input'
 import {
   Dialog,
   DialogContent,
@@ -17,9 +17,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Form, FormField } from '@/components/ui/form'
-import { SubmitButton } from '@/components/ui/submit'
+} from '@/app/_components/ui/dialog'
+import { Form, FormField } from '@/app/_components/ui/form'
+import { SubmitButton } from '@/app/_components/ui/submit'
 
 import { removeLinkFromCollection } from '../actions'
 

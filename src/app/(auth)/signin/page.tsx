@@ -1,12 +1,12 @@
 import Link from 'next/link'
 
-import { Button } from '@/components/ui/button'
-import { Icons } from '@/components/ui/icons'
-import { Separator } from '@/components/ui/separator'
+import { Button } from '@/app/_components/ui/button'
+import { Icons } from '@/app/_components/ui/icons'
+import { Separator } from '@/app/_components/ui/separator'
+
+import { signIn } from '../actions'
 
 import { SignInForm } from './form'
-
-import { signin } from '../actions'
 
 export default function SignIn() {
   return (
@@ -17,7 +17,7 @@ export default function SignIn() {
           Enter your email below to sign in to your account
         </p>
       </div>
-      <form action={signin}>
+      <form action={signIn}>
         <div className="grid gap-4">
           <Button
             variant="outline"

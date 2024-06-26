@@ -10,7 +10,7 @@ import { useServerAction } from 'zsa-react'
 
 import { createCollectionInputSchema } from '@/lib/validation-schemas/collections'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/app/_components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -18,7 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@/app/_components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -26,9 +26,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { SubmitButton } from '@/components/ui/submit'
+} from '@/app/_components/ui/form'
+import { Input } from '@/app/_components/ui/input'
+import { SubmitButton } from '@/app/_components/ui/submit'
 
 import { createCollection } from './actions'
 

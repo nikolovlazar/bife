@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/app/_components/ui/card'
 
 import { createClient } from '@/utils/supabase/server'
 

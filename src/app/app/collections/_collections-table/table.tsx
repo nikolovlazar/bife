@@ -12,7 +12,7 @@ import {
 } from '@tanstack/react-table'
 import { useState } from 'react'
 
-import { Input } from '@/components/ui/input'
+import { Input } from '@/app/_components/ui/input'
 import {
   Table,
   TableBody,
@@ -20,7 +20,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '@/app/_components/ui/table'
 
 import type { Collection } from '@/utils/types'
 

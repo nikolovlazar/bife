@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form'
 import Turnstile, { useTurnstile } from 'react-turnstile'
 import { z } from 'zod'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/app/_components/ui/button'
 import {
   Form,
   FormControl,
@@ -15,37 +15,42 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from '@/app/_components/ui/form'
+import { Input } from '@/app/_components/ui/input'
+import { Label } from '@/app/_components/ui/label'
+import { signInInputSchema } from '@/app/_lib/validation-schemas/auth'
 
-import { signin } from '../actions'
-import { signinSchema } from '../validation-schemas'
+import { signIn } from '../actions'
 
 export const SignInForm = () => {
   const [tsToken, setTsToken] = useState<string | undefined>()
   const turnstile = useTurnstile()
 
-  const form = useForm<z.infer<typeof signinSchema>>({
-    resolver: zodResolver(signinSchema),
+  const form = useForm<z.infer<typeof signInInputSchema>>({
+    resolver: zodResolver(signInInputSchema),
     defaultValues: {
       email: '',
       password: '',
     },
   })
 
-  async function onSubmit(values: z.infer<typeof signinSchema>) {
+  async function onSubmit(values: z.infer<typeof signInInputSchema>) {
+    // Safe to do because this is email/password sign in screen
+    if (values.provider !== null) return
+
     const data = new FormData()
     data.append('email', values.email)
     data.append('password', values.password)
     data.append('tsToken', tsToken!)
-    const res = await signin(data)
-    if (res && res.errors) {
-      turnstile.reset()
-      res.errors.email && form.setError('email', { message: res.errors.email })
-      res.errors.password &&
-        form.setError('password', { message: res.errors.password })
-    }
+
+    const res = await signIn(data)
+    console.log(res)
+    // if (res && res.errors) {
+    //   turnstile.reset()
+    //   res.errors.email && form.setError('email', { message: res.errors.email })
+    //   res.errors.password &&
+    //     form.setError('password', { message: res.errors.password })
+    // }
   }
 
   return (

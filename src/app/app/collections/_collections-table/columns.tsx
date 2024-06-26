@@ -6,13 +6,13 @@ import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/app/_components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@/app/_components/ui/dropdown-menu'
 
 import { CollectionPublishedSwitch } from './collection-published-switch'
 import type { Collection } from '@/utils/types'

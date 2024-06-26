@@ -8,7 +8,7 @@ import Turnstile, { useTurnstile } from 'react-turnstile'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/app/_components/ui/button'
 import {
   Form,
   FormControl,
@@ -16,11 +16,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@/app/_components/ui/form'
+import { Input } from '@/app/_components/ui/input'
+import { forgotPasswordInputSchema } from '@/app/_lib/validation-schemas/auth'
 
 import { forgotPassword } from '../actions'
-import { forgotPasswordSchema } from '../validation-schemas'
 
 export const ForgotPasswordForm = () => {
   const [sent, setSent] = useState(false)
@@ -28,28 +28,29 @@ export const ForgotPasswordForm = () => {
   const [tsToken, setTsToken] = useState<string | undefined>()
   const turnstile = useTurnstile()
 
-  const form = useForm<z.infer<typeof forgotPasswordSchema>>({
-    resolver: zodResolver(forgotPasswordSchema),
+  const form = useForm<z.infer<typeof forgotPasswordInputSchema>>({
+    resolver: zodResolver(forgotPasswordInputSchema),
     defaultValues: {
       email: '',
     },
   })
 
-  async function onSubmit(values: z.infer<typeof forgotPasswordSchema>) {
+  async function onSubmit(values: z.infer<typeof forgotPasswordInputSchema>) {
     const data = new FormData()
     data.append('email', values.email)
     data.append('tsToken', tsToken!)
     setLoading(true)
     const res = await forgotPassword(data)
-    if (res.errors) {
-      res.errors.email && form.setError('email', { message: res.errors.email })
-      turnstile.reset()
-    } else if (res.success) {
-      setSent(true)
-      toast.success(res.message, {
-        description: 'Check your email for further instructions',
-      })
-    }
+    console.log(res)
+    // if (res.errors) {
+    //   res.errors.email && form.setError('email', { message: res.errors.email })
+    //   turnstile.reset()
+    // } else if (res.success) {
+    //   setSent(true)
+    //   toast.success(res.message, {
+    //     description: 'Check your email for further instructions',
+    //   })
+    // }
   }
 
   return !sent ? (

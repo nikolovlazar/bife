@@ -2,7 +2,7 @@ import { LinkIcon, Menu, Scroll, Utensils } from 'lucide-react'
 import Link from 'next/link'
 import { ReactNode, Suspense } from 'react'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/app/_components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +13,8 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+} from '@/app/_components/ui/dropdown-menu'
+import { Sheet, SheetContent, SheetTrigger } from '@/app/_components/ui/sheet'
 
 import { SidebarLink } from './sidebar-link'
 import { SignOut } from './signout'

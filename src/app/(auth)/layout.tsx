@@ -2,7 +2,7 @@ import { Utensils } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-import { TurnstileScript } from '@/components/turnstile-script'
+import { TurnstileScript } from '@/app/_components/turnstile-script'
 
 export const metadata: Metadata = {
   title: 'Bife | Authenticate',

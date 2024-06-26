@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/app/_lib/utils'
 
-import { ThemeProvider } from '@/components/theme-provider'
-import { Toaster } from '@/components/ui/sonner'
+import { ThemeProvider } from '@/app/_components/theme-provider'
+import { Toaster } from '@/app/_components/ui/sonner'
 
 import './globals.css'
 

@@ -4,13 +4,13 @@ import { ColumnDef } from '@tanstack/react-table'
 import dayjs from 'dayjs'
 import { MoreHorizontal } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/app/_components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@/app/_components/ui/dropdown-menu'
 
 import { EditLink } from '@/app/app/links/edit-link'
 

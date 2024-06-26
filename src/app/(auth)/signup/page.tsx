@@ -1,12 +1,12 @@
 import Link from 'next/link'
 
-import { Button } from '@/components/ui/button'
-import { Icons } from '@/components/ui/icons'
-import { Separator } from '@/components/ui/separator'
+import { Button } from '@/app/_components/ui/button'
+import { Icons } from '@/app/_components/ui/icons'
+import { Separator } from '@/app/_components/ui/separator'
+
+import { signIn } from '../actions'
 
 import { SignUpForm } from './form'
-
-import { signin } from '../actions'
 
 export default function SignUp() {
   return (
@@ -14,7 +14,7 @@ export default function SignUp() {
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">Create an account</h1>
       </div>
-      <form action={signin}>
+      <form action={signIn}>
         <div className="grid gap-4">
           <Button
             variant="outline"

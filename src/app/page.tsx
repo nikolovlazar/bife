@@ -5,9 +5,9 @@ import { Suspense } from 'react'
 
 import { thirtyRandomSlugs } from '@/lib/fake-data'
 
-import { BentoGrid, BentoGridItem } from '@/components/custom/bento'
-import { FallingLogos } from '@/components/custom/falling-logos'
-import { Scroller } from '@/components/custom/scroller'
+import { BentoGrid, BentoGridItem } from '@/app/_components/custom/bento'
+import { FallingLogos } from '@/app/_components/custom/falling-logos'
+import { Scroller } from '@/app/_components/custom/scroller'
 
 import { NavCTA } from './cta-nav'
 

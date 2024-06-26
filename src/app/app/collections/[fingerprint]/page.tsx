@@ -9,8 +9,8 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Button } from '@/components/ui/button'
+} from '@/app/_components/ui/breadcrumb'
+import { Button } from '@/app/_components/ui/button'
 
 import { createClient } from '@/utils/supabase/server'
 

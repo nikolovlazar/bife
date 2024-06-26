@@ -1,202 +1,69 @@
 'use server'
 
-import { Provider } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import {
-  forgotPasswordSchema,
-  resetPasswordSchema,
-  signinSchema,
-  signupSchema,
-} from './validation-schemas'
-import { createClient } from '@/utils/supabase/server'
+  forgotPasswordInputSchema,
+  resetPasswordInputSchema,
+  signInInputSchema,
+  signUpInputSchema,
+} from '../_lib/validation-schemas/auth'
+import { baseProcedure } from '../_lib/zsa-procedures'
 
-const externalProviders = ['google', 'github']
-export async function signin(formData: FormData) {
-  const formValues = {
-    email: formData.get('email')?.toString(),
-    password: formData.get('password')?.toString(),
-    provider: formData.get('provider')?.toString(),
-    tsToken: formData.get('tsToken')?.toString(),
-  }
+export const signIn = baseProcedure
+  .createServerAction()
+  .input(signInInputSchema, { type: 'formData' })
+  .handler(async ({ input, ctx }) => {
+    const { authenticationService } = ctx
 
-  const supabase = createClient()
-
-  if (formValues.provider && externalProviders.includes(formValues.provider)) {
-    const redirectTo =
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3000/api/auth/callback'
-        : 'https://bife.sh/api/auth/callback'
-
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: formValues.provider as Provider,
-      options: {
-        redirectTo,
-      },
-    })
-
-    if (error) {
-      throw error
+    if (input.provider !== null) {
+      const data = await authenticationService.signInWithProvider(
+        input.provider
+      )
+      revalidatePath('/', 'layout')
+      redirect(data.url)
     }
+
+    await authenticationService.signInWithPassword(
+      input.email,
+      input.password,
+      input.tsToken
+    )
 
     revalidatePath('/', 'layout')
-    redirect(data.url)
-  }
-
-  const validation = signinSchema.safeParse(formValues)
-
-  if (!validation.success) {
-    return {
-      errors: {
-        email: validation.error.formErrors.fieldErrors.email?.[0],
-        password: validation.error.formErrors.fieldErrors.password?.[0],
-      },
-    }
-  }
-
-  const values = validation.data
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email: values.email,
-    password: values.password,
-    options: { captchaToken: formValues.tsToken },
+    redirect('/')
   })
 
-  if (error) {
-    return {
-      errors: { email: error.message, password: error.message },
-    }
-  }
+export const signUp = baseProcedure
+  .createServerAction()
+  .input(signUpInputSchema, { type: 'formData' })
+  .handler(async ({ input, ctx }) => {
+    await ctx.authenticationService.signUp(
+      input.email,
+      input.password,
+      input.tsToken
+    )
 
-  revalidatePath('/', 'layout')
-  redirect('/')
-}
-
-export async function signup(formData: FormData) {
-  const formValues = {
-    email: formData.get('email')?.toString(),
-    password: formData.get('password')?.toString(),
-    confirmPassword: formData.get('confirmPassword')?.toString(),
-    tsToken: formData.get('tsToken')?.toString(),
-  }
-
-  const validation = signupSchema.safeParse(formValues)
-
-  if (!validation.success) {
-    return {
-      errors: {
-        email: validation.error.formErrors.fieldErrors.email?.[0],
-        password: validation.error.formErrors.fieldErrors.password?.[0],
-        confirmPassword:
-          validation.error.formErrors.fieldErrors.confirmPassword?.[0],
-      },
-    }
-  }
-
-  const supabase = createClient()
-
-  const values = validation.data
-
-  const { error } = await supabase.auth.signUp({
-    email: values.email,
-    password: values.password,
-    options: { captchaToken: formValues.tsToken },
+    revalidatePath('/', 'layout')
+    redirect('/')
   })
 
-  if (error) {
-    return {
-      errors: {
-        email: error.message,
-        password: error.message,
-        confirmPassword: error.message,
-      },
-    }
-  }
-
-  revalidatePath('/', 'layout')
-  redirect('/')
-}
-
-export async function resetPassword(formData: FormData) {
-  const formValues = {
-    password: formData.get('password')?.toString(),
-    confirmPassword: formData.get('confirmPassword')?.toString(),
-    tsToken: formData.get('tsToken')?.toString(),
-  }
-
-  const validation = resetPasswordSchema.safeParse(formValues)
-
-  if (!validation.success) {
-    return {
-      errors: {
-        password: validation.error.formErrors.fieldErrors.password?.[0],
-        confirmPassword:
-          validation.error.formErrors.fieldErrors.confirmPassword?.[0],
-      },
-    }
-  }
-
-  const supabase = createClient()
-
-  const values = validation.data
-
-  const { error } = await supabase.auth.updateUser({
-    password: values.password,
+export const resetPassword = baseProcedure
+  .createServerAction()
+  .input(resetPasswordInputSchema, { type: 'formData' })
+  .handler(async ({ input, ctx }) => {
+    await ctx.authenticationService.resetPassword(input.password)
+    redirect('/signin')
   })
 
-  if (error) {
+export const forgotPassword = baseProcedure
+  .createServerAction()
+  .input(forgotPasswordInputSchema, { type: 'formData' })
+  .handler(async ({ input, ctx }) => {
+    await ctx.authenticationService.forgotPassword(input.email, input.tsToken)
     return {
-      errors: {
-        password: error.message,
-        confirmPassword: error.message,
-      },
+      success: true,
+      message: 'Password reset request submitted successfully',
     }
-  }
-
-  redirect('/signin')
-}
-
-export async function forgotPassword(formData: FormData) {
-  const formValues = {
-    email: formData.get('email')?.toString(),
-    tsToken: formData.get('tsToken')?.toString(),
-  }
-
-  const validation = forgotPasswordSchema.safeParse(formValues)
-
-  if (!validation.success) {
-    return {
-      errors: {
-        email: validation.error.formErrors.fieldErrors.email?.[0],
-      },
-    }
-  }
-
-  const supabase = createClient()
-
-  const values = validation.data
-
-  const redirectTo =
-    process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000/api/auth/reset-password'
-      : 'https://bife.sh/api/auth/reset-password'
-
-  const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
-    redirectTo,
-    captchaToken: formValues.tsToken,
   })
-
-  if (error) {
-    return {
-      errors: {
-        email: error.message,
-      },
-    }
-  }
-
-  return {
-    success: true,
-    message: 'Password reset request submitted successfully',
-  }
-}

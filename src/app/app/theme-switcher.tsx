@@ -5,7 +5,7 @@ import { useTheme } from 'next-themes'
 import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-} from '@/components/ui/dropdown-menu'
+} from '@/app/_components/ui/dropdown-menu'
 
 export function ThemeSwitcher() {
   const { themes, theme, setTheme } = useTheme()

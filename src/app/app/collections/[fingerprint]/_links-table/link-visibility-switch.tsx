@@ -3,7 +3,7 @@
 import { toast } from 'sonner'
 import { useServerAction } from 'zsa-react'
 
-import { Switch } from '@/components/ui/switch'
+import { Switch } from '@/app/_components/ui/switch'
 
 import { toggleLinkVisibility } from '@/app/app/links/actions'
 

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/app/_components/ui/button'
 import {
   Form,
   FormControl,
@@ -12,35 +12,36 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@/app/_components/ui/form'
+import { Input } from '@/app/_components/ui/input'
+import { resetPasswordInputSchema } from '@/app/_lib/validation-schemas/auth'
 
 import { resetPassword } from '../actions'
-import { resetPasswordSchema } from '../validation-schemas'
 
 export const ResetPasswordForm = () => {
-  const form = useForm<z.infer<typeof resetPasswordSchema>>({
-    resolver: zodResolver(resetPasswordSchema),
+  const form = useForm<z.infer<typeof resetPasswordInputSchema>>({
+    resolver: zodResolver(resetPasswordInputSchema),
     defaultValues: {
       password: '',
       confirmPassword: '',
     },
   })
 
-  async function onSubmit(values: z.infer<typeof resetPasswordSchema>) {
+  async function onSubmit(values: z.infer<typeof resetPasswordInputSchema>) {
     const data = new FormData()
     data.append('password', values.password)
     data.append('confirmPassword', values.confirmPassword)
     const res = await resetPassword(data)
+    console.log(res)
 
-    if (res.errors) {
-      res.errors.password &&
-        form.setError('password', { message: res.errors.password })
-      res.errors.confirmPassword &&
-        form.setError('confirmPassword', {
-          message: res.errors.confirmPassword,
-        })
-    }
+    // if (res.errors) {
+    //   res.errors.password &&
+    //     form.setError('password', { message: res.errors.password })
+    //   res.errors.confirmPassword &&
+    //     form.setError('confirmPassword', {
+    //       message: res.errors.confirmPassword,
+    //     })
+    // }
   }
 
   return (

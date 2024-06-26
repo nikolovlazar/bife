@@ -10,8 +10,8 @@ import { useServerAction } from 'zsa-react'
 
 import { createLinkInputSchema } from '@/lib/validation-schemas/links'
 
-import { HiddenInput } from '@/components/custom/hidden-input'
-import { Button, type ButtonProps } from '@/components/ui/button'
+import { HiddenInput } from '@/app/_components/custom/hidden-input'
+import { Button, type ButtonProps } from '@/app/_components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -19,7 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@/app/_components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -27,9 +27,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { SubmitButton } from '@/components/ui/submit'
+} from '@/app/_components/ui/form'
+import { Input } from '@/app/_components/ui/input'
+import { SubmitButton } from '@/app/_components/ui/submit'
 
 import { createLink } from './actions'
 

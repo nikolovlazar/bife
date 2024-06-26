@@ -3,7 +3,7 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { GripVertical } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/app/_components/ui/button'
 
 export function RowDragHandle({ rowId }: { rowId: string }) {
   const { attributes, listeners } = useSortable({ id: rowId })

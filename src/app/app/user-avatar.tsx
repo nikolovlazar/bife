@@ -1,6 +1,6 @@
 import { CircleUser, User } from 'lucide-react'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/app/_components/ui/avatar'
 
 import { createClient } from '@/utils/supabase/server'
 
