@@ -56,7 +56,13 @@ export class AuthenticationService {
     })
 
     if (error) {
-      throw new Error('Unable to register: ' + error.message)
+      return {
+        errors: {
+          email: error.message,
+          password: error.message,
+          confirmPassword: error.message,
+        },
+      }
     }
   }
 

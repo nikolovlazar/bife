@@ -39,18 +39,19 @@ export const SignUpForm = () => {
     data.append('password', values.password)
     data.append('confirmPassword', values.confirmPassword)
     data.append('tsToken', tsToken!)
-    const res = await signUp(data)
-    console.log(res)
-    // if (res && res.errors) {
-    //   turnstile.reset()
-    //   res.errors.email && form.setError('email', { message: res.errors.email })
-    //   res.errors.password &&
-    //     form.setError('password', { message: res.errors.password })
-    //   res.errors.confirmPassword &&
-    //     form.setError('confirmPassword', {
-    //       message: res.errors.confirmPassword,
-    //     })
-    // }
+
+    const [output] = await signUp(data)
+    if (output && output.errors) {
+      turnstile.reset()
+      output.errors.email &&
+        form.setError('email', { message: output.errors.email })
+      output.errors.password &&
+        form.setError('password', { message: output.errors.password })
+      output.errors.confirmPassword &&
+        form.setError('confirmPassword', {
+          message: output.errors.confirmPassword,
+        })
+    }
   }
   return (
     <Form {...form}>

@@ -26,6 +26,16 @@ export const signInWithProviderInputSchema = z.object({
   provider: z.string().min(1),
 })
 
+export const signUpOutputSchema = z.object({
+  errors: z
+    .object({
+      email: z.string().optional(),
+      password: z.string().optional(),
+      confirmPassword: z.string().optional(),
+    })
+    .optional(),
+})
+
 export const signUpInputSchema = z
   .object({
     email: z.string().email('Invalid email'),

@@ -10,6 +10,7 @@ import {
   signInWithPasswordOutputSchema,
   signInWithProviderInputSchema,
   signUpInputSchema,
+  signUpOutputSchema,
 } from '../_lib/validation-schemas/auth'
 import { baseProcedure } from '../_lib/zsa-procedures'
 
@@ -29,6 +30,7 @@ export const signInWithPassword = baseProcedure
     if (res && res.errors) {
       return res
     }
+
     revalidatePath('/', 'layout')
     redirect('/')
   })
@@ -47,12 +49,17 @@ export const signInWithProvider = baseProcedure
 export const signUp = baseProcedure
   .createServerAction()
   .input(signUpInputSchema, { type: 'formData' })
+  .output(signUpOutputSchema)
   .handler(async ({ input, ctx }) => {
-    await ctx.authenticationService.signUp(
+    const res = await ctx.authenticationService.signUp(
       input.email,
       input.password,
       input.tsToken
     )
+
+    if (res && res.errors) {
+      return res
+    }
 
     revalidatePath('/', 'layout')
     redirect('/')
