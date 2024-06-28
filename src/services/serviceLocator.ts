@@ -21,6 +21,7 @@ export class ServiceLocator {
 
     console.log(`Creating and caching ${name} service...`)
     if (name === AuthenticationService.name) {
+      // Note: the place to instantiate different repositories if needed
       const authenticationService = new AuthenticationService()
       this._cache[name] = authenticationService
       return authenticationService
