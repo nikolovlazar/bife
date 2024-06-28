@@ -17,40 +17,38 @@ import {
   FormMessage,
 } from '@/app/_components/ui/form'
 import { Input } from '@/app/_components/ui/input'
-import { Label } from '@/app/_components/ui/label'
-import { signInInputSchema } from '@/app/_lib/validation-schemas/auth'
+import { signInWithPasswordFormSchema } from '@/app/_lib/validation-schemas/auth'
 
-import { signIn } from '../actions'
+import { signInWithPassword } from '../actions'
 
 export const SignInForm = () => {
   const [tsToken, setTsToken] = useState<string | undefined>()
   const turnstile = useTurnstile()
 
-  const form = useForm<z.infer<typeof signInInputSchema>>({
-    resolver: zodResolver(signInInputSchema),
+  const form = useForm<z.infer<typeof signInWithPasswordFormSchema>>({
+    resolver: zodResolver(signInWithPasswordFormSchema),
     defaultValues: {
       email: '',
       password: '',
     },
   })
 
-  async function onSubmit(values: z.infer<typeof signInInputSchema>) {
-    // Safe to do because this is email/password sign in screen
-    if (values.provider !== null) return
-
+  async function onSubmit(
+    values: z.infer<typeof signInWithPasswordFormSchema>
+  ) {
     const data = new FormData()
     data.append('email', values.email)
     data.append('password', values.password)
     data.append('tsToken', tsToken!)
 
-    const res = await signIn(data)
-    console.log(res)
-    // if (res && res.errors) {
-    //   turnstile.reset()
-    //   res.errors.email && form.setError('email', { message: res.errors.email })
-    //   res.errors.password &&
-    //     form.setError('password', { message: res.errors.password })
-    // }
+    const [output] = await signInWithPassword(data)
+    if (output && output.errors) {
+      turnstile.reset()
+      output.errors.email &&
+        form.setError('email', { message: output.errors.email })
+      output.errors.password &&
+        form.setError('password', { message: output.errors.password })
+    }
   }
 
   return (
@@ -67,6 +65,7 @@ export const SignInForm = () => {
                   <Input
                     type="email"
                     placeholder="bife@example.com"
+                    autoComplete="email"
                     {...field}
                   />
                 </FormControl>
@@ -81,7 +80,7 @@ export const SignInForm = () => {
               <FormItem>
                 <FormLabel>
                   <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
+                    Password
                     <Link
                       href="/forgot-password"
                       className="ml-auto inline-block text-sm text-foreground underline"
@@ -102,23 +101,15 @@ export const SignInForm = () => {
             )}
           />
           <FormItem>
-            <FormLabel>Verify you&apos;re human</FormLabel>
-            <FormControl>
-              <Turnstile
-                sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!}
-                className="mx-auto"
-                onVerify={setTsToken}
-              />
-            </FormControl>
+            <p>Verify you&apos;re human</p>
+            <Turnstile
+              sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!}
+              className="mx-auto"
+              onVerify={setTsToken}
+            />
             <FormMessage />
           </FormItem>
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={!tsToken}
-            name="tsToken"
-            value={tsToken ?? ''}
-          >
+          <Button type="submit" className="w-full" disabled={!tsToken}>
             Sign in
           </Button>
         </div>

@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
-import { removeLinkFromCollectionInputSchema } from '@/lib/validation-schemas/collections'
+import { removeLinkFromCollectionInputSchema } from '@/app/_lib/validation-schemas/collections'
 
 import { HiddenInput } from '@/app/_components/custom/hidden-input'
 import {

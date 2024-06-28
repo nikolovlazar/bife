@@ -8,8 +8,8 @@ import {
   deleteLinkInputSchema,
   toggleLinkVisibilityInputSchema,
   updateLinkInputSchema,
-} from '@/lib/validation-schemas/links'
-import { authenticatedProcedure } from '@/lib/zsa-procedures'
+} from '@/app/_lib/validation-schemas/links'
+import { authenticatedProcedure } from '@/app/_lib/zsa-procedures'
 
 export const createLink = authenticatedProcedure
   .createServerAction()

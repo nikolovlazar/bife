@@ -4,7 +4,7 @@ import { Button } from '@/app/_components/ui/button'
 import { Icons } from '@/app/_components/ui/icons'
 import { Separator } from '@/app/_components/ui/separator'
 
-import { signIn } from '../actions'
+import { signInWithProvider } from '../actions'
 
 import { SignUpForm } from './form'
 
@@ -14,7 +14,7 @@ export default function SignUp() {
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">Create an account</h1>
       </div>
-      <form action={signIn}>
+      <form action={signInWithProvider}>
         <div className="grid gap-4">
           <Button
             variant="outline"

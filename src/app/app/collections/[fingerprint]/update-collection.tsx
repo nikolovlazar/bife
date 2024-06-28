@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
-import { updateCollectionInputSchema } from '@/lib/validation-schemas/collections'
+import { updateCollectionInputSchema } from '@/app/_lib/validation-schemas/collections'
 
 import { HiddenInput } from '@/app/_components/custom/hidden-input'
 import { Button } from '@/app/_components/ui/button'

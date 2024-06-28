@@ -2,7 +2,7 @@
 
 import { Area, AreaChart } from 'recharts'
 
-import { analyticsChartData } from '@/lib/fake-data'
+import { analyticsChartData } from '@/app/_lib/fake-data'
 
 export default function AnalyticsChart() {
   return (

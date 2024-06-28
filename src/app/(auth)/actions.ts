@@ -6,33 +6,42 @@ import { redirect } from 'next/navigation'
 import {
   forgotPasswordInputSchema,
   resetPasswordInputSchema,
-  signInInputSchema,
+  signInWithPasswordInputSchema,
+  signInWithPasswordOutputSchema,
+  signInWithProviderInputSchema,
   signUpInputSchema,
 } from '../_lib/validation-schemas/auth'
 import { baseProcedure } from '../_lib/zsa-procedures'
 
-export const signIn = baseProcedure
+export const signInWithPassword = baseProcedure
   .createServerAction()
-  .input(signInInputSchema, { type: 'formData' })
+  .input(signInWithPasswordInputSchema, { type: 'formData' })
+  .output(signInWithPasswordOutputSchema)
   .handler(async ({ input, ctx }) => {
     const { authenticationService } = ctx
 
-    if (input.provider !== null) {
-      const data = await authenticationService.signInWithProvider(
-        input.provider
-      )
-      revalidatePath('/', 'layout')
-      redirect(data.url)
-    }
-
-    await authenticationService.signInWithPassword(
+    const res = await authenticationService.signInWithPassword(
       input.email,
       input.password,
       input.tsToken
     )
 
+    if (res && res.errors) {
+      return res
+    }
     revalidatePath('/', 'layout')
     redirect('/')
+  })
+
+export const signInWithProvider = baseProcedure
+  .createServerAction()
+  .input(signInWithProviderInputSchema, { type: 'formData' })
+  .handler(async ({ input, ctx }) => {
+    const { authenticationService } = ctx
+
+    const data = await authenticationService.signInWithProvider(input.provider)
+    revalidatePath('/', 'layout')
+    redirect(data.url)
   })
 
 export const signUp = baseProcedure

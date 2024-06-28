@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
-import { updateLinkInputSchema } from '@/lib/validation-schemas/links'
+import { updateLinkInputSchema } from '@/app/_lib/validation-schemas/links'
 
 import { HiddenInput } from '@/app/_components/custom/hidden-input'
 import {

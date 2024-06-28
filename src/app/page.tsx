@@ -3,16 +3,15 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { Suspense } from 'react'
 
-import { thirtyRandomSlugs } from '@/lib/fake-data'
-
 import { BentoGrid, BentoGridItem } from '@/app/_components/custom/bento'
 import { FallingLogos } from '@/app/_components/custom/falling-logos'
 import { Scroller } from '@/app/_components/custom/scroller'
+import { thirtyRandomSlugs } from '@/app/_lib/fake-data'
 
 import { NavCTA } from './cta-nav'
 
 const AnalyticsChart = dynamic(
-  () => import('../components/custom/analytics-chart'),
+  () => import('@/app/_components/custom/analytics-chart'),
   {
     ssr: false,
   }

@@ -1,17 +1,30 @@
 import { z } from 'zod'
 
-const signinWithPassword = z.object({
+export const signInWithPasswordOutputSchema = z.object({
+  errors: z
+    .object({
+      email: z.string().optional(),
+      password: z.string().optional(),
+    })
+    .optional(),
+})
+
+export const signInWithPasswordFormSchema = z.object({
   email: z.string().email('Invalid email'),
   password: z
     .string()
     .min(6, { message: 'Password must be at least 6 characters' }),
-  tsToken: z.string(),
 })
 
-export const signInInputSchema = z.discriminatedUnion('provider', [
-  z.object({ provider: z.string().min(1) }),
-  signinWithPassword.merge(z.object({ provider: z.literal(null) })),
-])
+export const signInWithPasswordInputSchema = signInWithPasswordFormSchema.merge(
+  z.object({
+    tsToken: z.string(),
+  })
+)
+
+export const signInWithProviderInputSchema = z.object({
+  provider: z.string().min(1),
+})
 
 export const signUpInputSchema = z
   .object({

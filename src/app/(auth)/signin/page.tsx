@@ -4,7 +4,7 @@ import { Button } from '@/app/_components/ui/button'
 import { Icons } from '@/app/_components/ui/icons'
 import { Separator } from '@/app/_components/ui/separator'
 
-import { signIn } from '../actions'
+import { signInWithProvider } from '../actions'
 
 import { SignInForm } from './form'
 
@@ -17,7 +17,7 @@ export default function SignIn() {
           Enter your email below to sign in to your account
         </p>
       </div>
-      <form action={signIn}>
+      <form action={signInWithProvider}>
         <div className="grid gap-4">
           <Button
             variant="outline"

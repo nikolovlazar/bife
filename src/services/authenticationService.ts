@@ -11,7 +11,7 @@ export class AuthenticationService {
   }
 
   async signInWithProvider(provider: string) {
-    if (!this._providers.every((p) => p === provider)) {
+    if (!this._providers.some((p) => p === provider)) {
       throw new Error('Provider not supported')
     }
 
