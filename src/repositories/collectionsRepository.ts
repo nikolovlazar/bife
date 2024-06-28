@@ -34,6 +34,7 @@ export class CollectionsRepository implements ICollectionsRepository {
       .single()
 
     if (creationError) {
+      // TODO: create custom error here
       throw new Error('Failed to create collection', { cause: creationError })
     }
 

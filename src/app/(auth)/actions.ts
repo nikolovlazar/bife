@@ -18,6 +18,31 @@ import { AuthenticationService } from '@/services/authenticationService'
 import { ServiceLocator } from '@/services/serviceLocator'
 import { AuthError } from '@/shared/errors/authError'
 
+export const signInWithPass = baseProcedure
+  .createServerAction()
+  .input(signInWithPasswordInputSchema, { type: 'formData' })
+  .handler(async ({ input }) => {
+    console.log('SIGN IN WITH PASS')
+    const authenticationService = ServiceLocator.getService(
+      AuthenticationService.name
+    )
+
+    try {
+      await authenticationService.signInWithPassword(
+        input.email,
+        input.password,
+        input.tsToken
+      )
+
+      redirect('/app/collections')
+    } catch (err) {
+      if (err instanceof AuthError) {
+        // TODO: report to Sentry
+        throw new ZSAError('ERROR', err)
+      }
+    }
+  })
+
 export const signInWithPassword = baseProcedure
   .createServerAction()
   .input(signInWithPasswordInputSchema, { type: 'formData' })
