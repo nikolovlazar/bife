@@ -4,17 +4,8 @@ import { createServerActionProcedure } from 'zsa'
 
 import { createClient } from '@/utils/supabase/server'
 
-import { CollectionsRepository } from '@/repositories/collectionsRepository'
-import { AuthenticationService } from '@/services/authenticationService'
-import { CollectionsService } from '@/services/collectionsService'
-
 export const baseProcedure = createServerActionProcedure().handler(() => {
-  const collectionsRepository = new CollectionsRepository()
-  const collectionsService = new CollectionsService(collectionsRepository)
-
-  const authenticationService = new AuthenticationService()
-
-  return { collectionsService, authenticationService }
+  return {}
 })
 
 export const authenticatedProcedure = createServerActionProcedure(

@@ -2,6 +2,8 @@ import { type Provider, SupabaseClient } from '@supabase/supabase-js'
 
 import { createClient } from '@/utils/supabase/server'
 
+import { AuthError } from '@/shared/errors/authError'
+
 export class AuthenticationService {
   private _supabase: SupabaseClient
   private _providers: Provider[] = ['github', 'google']
@@ -42,9 +44,7 @@ export class AuthenticationService {
     })
 
     if (error) {
-      return {
-        errors: { email: error.message, password: error.message },
-      }
+      throw new AuthError(error.message, error.status, { cause: error.cause })
     }
   }
 

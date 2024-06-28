@@ -5,8 +5,8 @@ import { nanoid } from 'nanoid'
 
 import { createClient } from '@/utils/supabase/server'
 
-import { CollectionDTO } from '@/dtos/collection'
-import { UserDTO } from '@/dtos/users'
+import { CollectionDTO } from '@/shared/dtos/collection'
+import { UserDTO } from '@/shared/dtos/users'
 
 // Live / Production Repository
 export class CollectionsRepository implements ICollectionsRepository {

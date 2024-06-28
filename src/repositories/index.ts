@@ -1,5 +1,5 @@
-import { CollectionDTO } from '@/dtos/collection'
-import { UserDTO } from '@/dtos/users'
+import { CollectionDTO } from '@/shared/dtos/collection'
+import { UserDTO } from '@/shared/dtos/users'
 
 export interface ICollectionsRepository {
   createCollection(

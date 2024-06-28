@@ -1,14 +1,5 @@
 import { z } from 'zod'
 
-export const signInWithPasswordOutputSchema = z.object({
-  errors: z
-    .object({
-      email: z.string().optional(),
-      password: z.string().optional(),
-    })
-    .optional(),
-})
-
 export const signInWithPasswordFormSchema = z.object({
   email: z.string().email('Invalid email'),
   password: z

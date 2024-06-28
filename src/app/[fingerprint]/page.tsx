@@ -37,6 +37,7 @@ export default async function PublicCollectionPage({
       return notFound()
     }
 
+    // TODO: implement analytics here
     permanentRedirect(link.url)
   } else {
     const {

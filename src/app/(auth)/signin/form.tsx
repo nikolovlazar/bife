@@ -41,13 +41,11 @@ export const SignInForm = () => {
     data.append('password', values.password)
     data.append('tsToken', tsToken!)
 
-    const [output] = await signInWithPassword(data)
-    if (output && output.errors) {
+    const [_, error] = await signInWithPassword(data)
+    if (error) {
       turnstile.reset()
-      output.errors.email &&
-        form.setError('email', { message: output.errors.email })
-      output.errors.password &&
-        form.setError('password', { message: output.errors.password })
+      form.setError('password', { message: error.message })
+      form.setError('email', { message: error.message })
     }
   }
 

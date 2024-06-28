@@ -1,6 +1,6 @@
-import { CollectionDTO } from '@/dtos/collection'
-import { UserDTO } from '@/dtos/users'
 import { ICollectionsRepository } from '@/repositories'
+import { CollectionDTO } from '@/shared/dtos/collection'
+import { UserDTO } from '@/shared/dtos/users'
 
 export class CollectionsService {
   private _collectionsRepository: ICollectionsRepository
