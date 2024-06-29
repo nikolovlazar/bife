@@ -34,6 +34,8 @@ export const signInWithPass = baseProcedure
         input.tsToken
       )
 
+      // TODO: redirect throws, so get it out and redirect only if service returns a value
+      // https://www.youtube.com/watch?v=rKzKE1jFEPI&lc=Ugx66i1bTDg4aglIQx94AaABAg <- highlighted comment
       redirect('/app/collections')
     } catch (err) {
       if (err instanceof AuthError) {
