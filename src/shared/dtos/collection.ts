@@ -1,34 +1,25 @@
-import type { Collection } from '@/utils/types'
+import { Collection } from '@/utils/types'
+import { IDTO } from '.'
 
-export class CollectionDTO {
-  private _created_at: string
-  private _created_by: string
-  private _description: string | null
-  private _fingerprint: string
-  private _published: boolean
-  private _title: string
+export class CollectionDTO implements IDTO {
+  constructor(
+    private _fingerprint: string,
+    private _title: string,
+    private _description: string | undefined | null,
+    private _published: boolean,
+    private _created_by: string,
+    private _created_at: string
+  ) {}
 
-  constructor({
-    created_at,
-    created_by,
-    description,
-    fingerprint,
-    published,
-    title,
-  }: {
-    created_at: string
-    created_by: string
-    description: string | null
-    fingerprint: string
-    published: boolean
-    title: string
-  }) {
-    this._created_at = created_at
-    this._created_by = created_by
-    this._description = description
-    this._fingerprint = fingerprint
-    this._published = published
-    this._title = title
+  public toJSON() {
+    return JSON.stringify({
+      fingerprint: this.fingerprint,
+      title: this.title,
+      description: this.description,
+      published: this.published,
+      created_by: this.created_by,
+      created_at: this.created_at 
+    })
   }
 
   public get created_at() {
@@ -56,13 +47,13 @@ export class CollectionDTO {
   }
 
   static fromDb(data: Collection) {
-    return new CollectionDTO({
-      fingerprint: data.fingerprint,
-      title: data.title,
-      description: data.description,
-      published: data.published,
-      created_at: data.created_at,
-      created_by: data.created_by,
-    })
+    return new CollectionDTO(
+      data.fingerprint,
+      data.title,
+      data.description,
+      data.published,
+      data.created_by,
+      data.created_at
+    )
   }
 }

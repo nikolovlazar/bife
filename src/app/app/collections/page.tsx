@@ -18,6 +18,7 @@ async function getCollections() {
     .from('collection')
     .select()
     .eq('created_by', user.id)
+
   if (collectionError) {
     throw new Error('Failed to fetch collections')
   }

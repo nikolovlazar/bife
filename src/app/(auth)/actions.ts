@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { ZSAError } from 'zsa'
+import { ZSAError, createServerAction } from 'zsa'
 
 import {
   forgotPasswordInputSchema,
@@ -12,19 +12,15 @@ import {
   signUpInputSchema,
   signUpOutputSchema,
 } from '../_lib/validation-schemas/auth'
-import { baseProcedure } from '../_lib/zsa-procedures'
 
-import { AuthenticationService } from '@/services/authenticationService'
 import { ServiceLocator } from '@/services/serviceLocator'
-import { AuthError } from '@/shared/errors/authError'
+import { AuthError } from '@/shared/errors/authErrors'
 
-export const signInWithPass = baseProcedure
-  .createServerAction()
+export const signInWithPassword = createServerAction()
   .input(signInWithPasswordInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
-    console.log('SIGN IN WITH PASS')
     const authenticationService = ServiceLocator.getService(
-      AuthenticationService.name
+      'AuthenticationService'
     )
 
     try {
@@ -33,49 +29,18 @@ export const signInWithPass = baseProcedure
         input.password,
         input.tsToken
       )
-
-      // TODO: redirect throws, so get it out and redirect only if service returns a value
-      // https://www.youtube.com/watch?v=rKzKE1jFEPI&lc=Ugx66i1bTDg4aglIQx94AaABAg <- highlighted comment
-      redirect('/app/collections')
     } catch (err) {
-      if (err instanceof AuthError) {
-        // TODO: report to Sentry
-        throw new ZSAError('ERROR', err)
-      }
+      throw new ZSAError('ERROR', err)
     }
+
+    redirect('/app/collections')
   })
 
-export const signInWithPassword = baseProcedure
-  .createServerAction()
-  .input(signInWithPasswordInputSchema, { type: 'formData' })
-  .handler(async ({ input }) => {
-    console.log('SIGN IN WITH PASSWORD')
-    const authenticationService = ServiceLocator.getService(
-      AuthenticationService.name
-    )
-
-    try {
-      await authenticationService.signInWithPassword(
-        input.email,
-        input.password,
-        input.tsToken
-      )
-
-      redirect('/app/collections')
-    } catch (err) {
-      if (err instanceof AuthError) {
-        // TODO: report to Sentry
-        throw new ZSAError('ERROR', err)
-      }
-    }
-  })
-
-export const signInWithProvider = baseProcedure
-  .createServerAction()
+export const signInWithProvider = createServerAction()
   .input(signInWithProviderInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
     const authenticationService = ServiceLocator.getService(
-      AuthenticationService.name
+      'AuthenticationService'
     )
 
     const data = await authenticationService.signInWithProvider(input.provider)
@@ -83,47 +48,60 @@ export const signInWithProvider = baseProcedure
     redirect(data.url)
   })
 
-export const signUp = baseProcedure
-  .createServerAction()
+export const signUp = createServerAction()
   .input(signUpInputSchema, { type: 'formData' })
   .output(signUpOutputSchema)
   .handler(async ({ input }) => {
     const authenticationService = ServiceLocator.getService(
-      AuthenticationService.name
-    )
-    const res = await authenticationService.signUp(
-      input.email,
-      input.password,
-      input.tsToken
+      'AuthenticationService'
     )
 
-    if (res && res.errors) {
-      return res
+    try {
+      await authenticationService.signUp(
+        input.email,
+        input.password,
+        input.tsToken
+      )
+    } catch(err) {
+      // TODO: report to Sentry
+      throw new ZSAError('ERROR', err)
     }
 
     revalidatePath('/', 'layout')
     redirect('/')
   })
 
-export const resetPassword = baseProcedure
-  .createServerAction()
+export const resetPassword = createServerAction()
   .input(resetPasswordInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
     const authenticationService = ServiceLocator.getService(
-      AuthenticationService.name
+      'AuthenticationService'
     )
-    await authenticationService.resetPassword(input.password)
+
+    try {
+      await authenticationService.resetPassword(input.password)
+    } catch(err) {
+      // TODO: report to Sentry
+      throw new ZSAError('ERROR', err)
+    }
+
     redirect('/signin')
   })
 
-export const forgotPassword = baseProcedure
-  .createServerAction()
+export const forgotPassword = createServerAction()
   .input(forgotPasswordInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
     const authenticationService = ServiceLocator.getService(
-      AuthenticationService.name
+      'AuthenticationService'
     )
-    await authenticationService.forgotPassword(input.email, input.tsToken)
+
+    try {
+      await authenticationService.forgotPassword(input.email, input.tsToken)
+    } catch(err) {
+      // TODO: report to Sentry
+      throw new ZSAError('ERROR', err)
+    }
+
     return {
       success: true,
       message: 'Password reset request submitted successfully',

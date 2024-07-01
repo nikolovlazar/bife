@@ -16,9 +16,7 @@ export function CollectionPublishedSwitch({
 }) {
   const { isPending, execute } = useServerAction(toggleCollectionPublished, {
     onError: ({ err }) => {
-      toast.error(`Failed to ${checked ? 'unpublish' : 'publish'} collection`, {
-        description: err.message,
-      })
+      toast.error(err.message)
     },
     onSuccess: ({ data }) => {
       toast.success(
@@ -26,12 +24,14 @@ export function CollectionPublishedSwitch({
       )
     },
   })
+
   const handleCheckedChange = async (value: boolean) => {
     execute({
       fingerprint,
       checked: value,
     })
   }
+
   return (
     <Switch
       disabled={isPending}

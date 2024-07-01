@@ -10,12 +10,16 @@ import {
   updateLinkInputSchema,
 } from '@/app/_lib/validation-schemas/links'
 import { authenticatedProcedure } from '@/app/_lib/zsa-procedures'
+import { createClient } from '@/utils/supabase/server'
+import { ServiceLocator } from '@/services/serviceLocator'
 
 export const createLink = authenticatedProcedure
   .createServerAction()
   .input(createLinkInputSchema)
-  .handler(async ({ input, ctx }) => {
-    const { user, supabase } = ctx
+  .handler(async ({ input }) => {
+    const supabase = createClient()
+    const authenticationService = ServiceLocator.getService('AuthenticationService')
+    const user = await authenticationService.getUser()
 
     const fingerprint = nanoid(8)
 
@@ -75,8 +79,11 @@ export const createLink = authenticatedProcedure
 export const updateLink = authenticatedProcedure
   .createServerAction()
   .input(updateLinkInputSchema)
-  .handler(async ({ input, ctx }) => {
-    const { user, supabase } = ctx
+  .handler(async ({ input }) => {
+    const supabase = createClient()
+    const authenticationService = ServiceLocator.getService('AuthenticationService')
+    const user = await authenticationService.getUser()
+
     const { data: existingLink, error } = await supabase
       .from('link')
       .select()
@@ -116,8 +123,10 @@ export const updateLink = authenticatedProcedure
 export const deleteLink = authenticatedProcedure
   .createServerAction()
   .input(deleteLinkInputSchema)
-  .handler(async ({ input, ctx }) => {
-    const { user, supabase } = ctx
+  .handler(async ({ input}) => {
+    const supabase = createClient()
+    const authenticationService = ServiceLocator.getService('AuthenticationService')
+    const user = await authenticationService.getUser()
 
     const { data: existingLink, error } = await supabase
       .from('link')
@@ -151,8 +160,9 @@ export const deleteLink = authenticatedProcedure
 export const toggleLinkVisibility = authenticatedProcedure
   .createServerAction()
   .input(toggleLinkVisibilityInputSchema)
-  .handler(async ({ input, ctx }) => {
-    const { supabase } = ctx
+  .handler(async ({ input }) => {
+    const supabase = createClient()
+
     const { data: existingRelation, error } = await supabase
       .from('collection_link')
       .select()
@@ -185,4 +195,4 @@ export const toggleLinkVisibility = authenticatedProcedure
 
     revalidatePath(`/app/collections/${input.collection_pk}`)
     return updated
-  })
+})

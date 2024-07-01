@@ -2,7 +2,7 @@ import { type Provider, SupabaseClient } from '@supabase/supabase-js'
 
 import { createClient } from '@/utils/supabase/server'
 
-import { AuthError } from '@/shared/errors/authError'
+import { AuthError } from '@/shared/errors/authErrors'
 
 export class AuthenticationService {
   private _supabase: SupabaseClient
@@ -10,6 +10,21 @@ export class AuthenticationService {
 
   constructor() {
     this._supabase = createClient()
+  }
+
+  async getUser() {
+    const { data, error: userError } = await this._supabase.auth.getUser()
+
+    if (userError) {
+      throw new AuthError(userError.message, userError.status, {
+        cause: userError.cause,
+      })
+    }
+
+    return {
+      id: data.user.id,
+      role: data.user.role,
+    }
   }
 
   async signInWithProvider(provider: string) {
@@ -30,7 +45,7 @@ export class AuthenticationService {
     })
 
     if (error) {
-      throw error
+      throw new AuthError(error.message, error.status, { cause: error.cause })
     }
 
     return data
@@ -56,13 +71,7 @@ export class AuthenticationService {
     })
 
     if (error) {
-      return {
-        errors: {
-          email: error.message,
-          password: error.message,
-          confirmPassword: error.message,
-        },
-      }
+      throw new AuthError(error.message, error.status, { cause: error.cause })
     }
   }
 
@@ -72,7 +81,7 @@ export class AuthenticationService {
     })
 
     if (error) {
-      throw new Error('Cannot reset password: ' + error.message)
+      throw new AuthError(error.message, error.status, { cause: error.cause })
     }
   }
 
@@ -88,7 +97,7 @@ export class AuthenticationService {
     })
 
     if (error) {
-      throw new Error('Unable to request password reset: ' + error.message)
+      throw new AuthError(error.message, error.status, { cause: error.cause })
     }
   }
 }

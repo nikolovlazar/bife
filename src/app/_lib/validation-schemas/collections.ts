@@ -8,8 +8,8 @@ export const createCollectionInputSchema = z.object({
 export const updateCollectionInputSchema = z.object({
   title: z.string(),
   description: z.string().optional(),
-  published: z.boolean(),
   fingerprint: z.string(),
+  published: z.boolean(),
 })
 
 export const deleteCollectionInputSchema = z.object({
