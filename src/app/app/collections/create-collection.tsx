@@ -8,8 +8,6 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
-import { createCollectionInputSchema } from '@/app/_lib/validation-schemas/collections'
-
 import { Button } from '@/app/_components/ui/button'
 import {
   Dialog,
@@ -29,6 +27,7 @@ import {
 } from '@/app/_components/ui/form'
 import { Input } from '@/app/_components/ui/input'
 import { SubmitButton } from '@/app/_components/ui/submit'
+import { createCollectionInputSchema } from '@/app/_lib/validation-schemas/collections'
 
 import { createCollection } from './actions'
 

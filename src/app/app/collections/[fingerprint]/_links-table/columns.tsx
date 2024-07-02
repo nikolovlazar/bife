@@ -11,7 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/app/_components/ui/dropdown-menu'
-
 import { EditLink } from '@/app/app/links/edit-link'
 
 import type { Collection, Link } from '@/utils/types'

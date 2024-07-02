@@ -6,8 +6,6 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
-import { updateCollectionInputSchema } from '@/app/_lib/validation-schemas/collections'
-
 import { HiddenInput } from '@/app/_components/custom/hidden-input'
 import { Button } from '@/app/_components/ui/button'
 import { Checkbox } from '@/app/_components/ui/checkbox'
@@ -21,6 +19,7 @@ import {
 } from '@/app/_components/ui/form'
 import { Input } from '@/app/_components/ui/input'
 import { SubmitButton } from '@/app/_components/ui/submit'
+import { updateCollectionInputSchema } from '@/app/_lib/validation-schemas/collections'
 
 import { updateCollection } from '../actions'
 

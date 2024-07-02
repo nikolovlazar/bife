@@ -1,7 +1,8 @@
+import { createClient } from '@/utils/supabase/server'
+
 import { linkColumns } from './_links-table/columns'
 import { LinksDataTable } from './_links-table/table'
 import { CreateLink } from './create-link'
-import { createClient } from '@/utils/supabase/server'
 
 async function getLinks() {
   const supabase = createClient()

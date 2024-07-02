@@ -7,8 +7,6 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
-import { updateLinkInputSchema } from '@/app/_lib/validation-schemas/links'
-
 import { HiddenInput } from '@/app/_components/custom/hidden-input'
 import {
   Dialog,
@@ -27,6 +25,7 @@ import {
 } from '@/app/_components/ui/form'
 import { Input } from '@/app/_components/ui/input'
 import { SubmitButton } from '@/app/_components/ui/submit'
+import { updateLinkInputSchema } from '@/app/_lib/validation-schemas/links'
 
 import { updateLink } from './actions'
 

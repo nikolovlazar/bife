@@ -62,7 +62,7 @@ export const signUp = createServerAction()
         input.password,
         input.tsToken
       )
-    } catch(err) {
+    } catch (err) {
       // TODO: report to Sentry
       throw new ZSAError('ERROR', err)
     }
@@ -80,7 +80,7 @@ export const resetPassword = createServerAction()
 
     try {
       await authenticationService.resetPassword(input.password)
-    } catch(err) {
+    } catch (err) {
       // TODO: report to Sentry
       throw new ZSAError('ERROR', err)
     }
@@ -97,7 +97,7 @@ export const forgotPassword = createServerAction()
 
     try {
       await authenticationService.forgotPassword(input.email, input.tsToken)
-    } catch(err) {
+    } catch (err) {
       // TODO: report to Sentry
       throw new ZSAError('ERROR', err)
     }

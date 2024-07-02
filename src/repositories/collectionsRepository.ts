@@ -1,5 +1,3 @@
-// TODO: Fix import order for '.' imports
-import { ICollectionsRepository } from '.'
 import { SupabaseClient } from '@supabase/supabase-js'
 import { nanoid } from 'nanoid'
 
@@ -7,8 +5,13 @@ import { createClient } from '@/utils/supabase/server'
 import { CollectionInsert, CollectionUpdate } from '@/utils/types'
 
 import { CollectionDTO } from '@/shared/dtos/collection'
+import {
+  CreateCollectionError,
+  UpdateCollectionError,
+} from '@/shared/errors/collectionErrors'
 import { Database } from '~/supabase/types.gen'
-import { CreateCollectionError, UpdateCollectionError } from '@/shared/errors/collectionErrors'
+
+import { ICollectionsRepository } from '.'
 
 // Live / Production Repository
 export class CollectionsRepository implements ICollectionsRepository {
@@ -36,7 +39,9 @@ export class CollectionsRepository implements ICollectionsRepository {
       .single()
 
     if (creationError) {
-      throw new CreateCollectionError(creationError.message, { cause: creationError })
+      throw new CreateCollectionError(creationError.message, {
+        cause: creationError,
+      })
     }
 
     const newCollection = CollectionDTO.fromDb(data)

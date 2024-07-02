@@ -2,8 +2,6 @@
 
 import { Check, ChevronsUpDown } from 'lucide-react'
 
-import { cn } from '@/app/_lib/utils'
-
 import { Button } from '@/app/_components/ui/button'
 import {
   Command,
@@ -18,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/app/_components/ui/popover'
+import { cn } from '@/app/_lib/utils'
 
 import type { Link } from '@/utils/types'
 

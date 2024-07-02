@@ -1,4 +1,5 @@
 import { Collection } from '@/utils/types'
+
 import { IDTO } from '.'
 
 export class CollectionDTO implements IDTO {
@@ -18,7 +19,7 @@ export class CollectionDTO implements IDTO {
       description: this.description,
       published: this.published,
       created_by: this.created_by,
-      created_at: this.created_at 
+      created_at: this.created_at,
     })
   }
 

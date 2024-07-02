@@ -5,7 +5,7 @@ import { CollectionDTO } from '@/shared/dtos/collection'
 export interface ICollectionsRepository {
   createCollection(
     collection: CollectionInsert,
-    userId:string 
+    userId: string
   ): Promise<CollectionDTO>
 
   getCollection(fingerprint: string): Promise<CollectionDTO>

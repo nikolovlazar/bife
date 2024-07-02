@@ -1,6 +1,7 @@
+import { createClient } from '@/utils/supabase/server'
+
 import { type ColumnsType, linkColumns } from './_links-table/columns'
 import { LinksDataTable } from './_links-table/table'
-import { createClient } from '@/utils/supabase/server'
 
 export async function LinksList({ fingerprint }: { fingerprint: string }) {
   const supabase = createClient()

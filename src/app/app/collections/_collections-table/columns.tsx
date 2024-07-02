@@ -14,10 +14,11 @@ import {
   DropdownMenuTrigger,
 } from '@/app/_components/ui/dropdown-menu'
 
-import { CollectionPublishedSwitch } from './collection-published-switch'
 import type { Collection } from '@/utils/types'
 
 import { DeleteCollectionConfirmation } from '../[fingerprint]/delete-collection'
+
+import { CollectionPublishedSwitch } from './collection-published-switch'
 
 export const collectionColumns: ColumnDef<Collection>[] = [
   {

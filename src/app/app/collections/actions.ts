@@ -15,10 +15,14 @@ import {
 } from '@/app/_lib/validation-schemas/collections'
 import { authenticatedProcedure } from '@/app/_lib/zsa-procedures'
 
+import { createClient } from '@/utils/supabase/server'
+
 import { ServiceLocator } from '@/services/serviceLocator'
 import { CollectionDTO } from '@/shared/dtos/collection'
-import { CreateCollectionError, UpdateCollectionError } from '@/shared/errors/collectionErrors'
-import { createClient } from '@/utils/supabase/server'
+import {
+  CreateCollectionError,
+  UpdateCollectionError,
+} from '@/shared/errors/collectionErrors'
 
 export const createCollection = authenticatedProcedure
   .createServerAction()
@@ -34,9 +38,12 @@ export const createCollection = authenticatedProcedure
         description: input.description,
       })
     } catch (err) {
+      // TODO: report err.cause to Sentry
       if (err instanceof CreateCollectionError) {
-        // TODO: report err.cause to Sentry
-        throw new ZSAError('ERROR', 'Cannot create collection. Reason: ' + err.message)
+        throw new ZSAError(
+          'ERROR',
+          'Cannot create collection. Reason: ' + err.message
+        )
       }
       throw new ZSAError('ERROR', err)
     }
@@ -57,8 +64,8 @@ export const updateCollection = authenticatedProcedure
         input
       )
     } catch (err) {
+      // TODO: report err.cause to Sentry
       if (err instanceof UpdateCollectionError) {
-        // TODO: report err.cause to Sentry
         throw new ZSAError('ERROR', 'Cannot update collection.')
       }
       throw new ZSAError('ERROR', err)
@@ -101,7 +108,10 @@ export const toggleCollectionPublished = authenticatedProcedure
       )
     } catch (err) {
       // TODO: report error to Sentry
-      throw new ZSAError('ERROR', `Cannot ${input.checked ? 'publish' : 'unpublish'} collection`)
+      throw new ZSAError(
+        'ERROR',
+        `Cannot ${input.checked ? 'publish' : 'unpublish'} collection`
+      )
     }
 
     revalidatePath(`/app/collections/${updatedCollection.fingerprint}`)
@@ -113,7 +123,9 @@ export const addLinkToCollection = authenticatedProcedure
   .input(addLinkToCollectionInputSchema)
   .handler(async ({ input }) => {
     const supabase = createClient()
-    const authenticationService = ServiceLocator.getService('AuthenticationService')
+    const authenticationService = ServiceLocator.getService(
+      'AuthenticationService'
+    )
 
     const user = await authenticationService.getUser()
 

@@ -3,7 +3,7 @@ import type { Config } from 'tailwindcss'
 import { fontFamily } from 'tailwindcss/defaultTheme'
 import flattenColorPalette from 'tailwindcss/lib/util/flattenColorPalette'
 
-const config = {
+const config: Config = {
   darkMode: ['class'],
   content: ['./src/**/*.{ts,tsx}'],
   prefix: '',
@@ -153,7 +153,7 @@ const config = {
       )
     },
   ],
-} satisfies Config
+}
 
 function addVariablesForColors({ addBase, theme }: any) {
   const allColors = flattenColorPalette(theme('colors'))
