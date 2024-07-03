@@ -14,7 +14,6 @@ import {
 } from '../_lib/validation-schemas/auth'
 
 import { ServiceLocator } from '@/services/serviceLocator'
-import { AuthError } from '@/shared/errors/authErrors'
 
 export const signInWithPassword = createServerAction()
   .input(signInWithPasswordInputSchema, { type: 'formData' })

@@ -15,14 +15,10 @@ import {
 } from '@/app/_lib/validation-schemas/collections'
 import { authenticatedProcedure } from '@/app/_lib/zsa-procedures'
 
-import { createClient } from '@/utils/supabase/server'
-
 import { ServiceLocator } from '@/services/serviceLocator'
 import { CollectionDTO } from '@/shared/dtos/collection'
-import {
-  CreateCollectionError,
-  UpdateCollectionError,
-} from '@/shared/errors/collectionErrors'
+import { CollectionLinkDTO } from '@/shared/dtos/collectionLink'
+import { OperationError } from '@/shared/errors/commonErrors'
 
 export const createCollection = authenticatedProcedure
   .createServerAction()
@@ -39,7 +35,7 @@ export const createCollection = authenticatedProcedure
       })
     } catch (err) {
       // TODO: report err.cause to Sentry
-      if (err instanceof CreateCollectionError) {
+      if (err instanceof OperationError) {
         throw new ZSAError(
           'ERROR',
           'Cannot create collection. Reason: ' + err.message
@@ -65,7 +61,7 @@ export const updateCollection = authenticatedProcedure
       )
     } catch (err) {
       // TODO: report err.cause to Sentry
-      if (err instanceof UpdateCollectionError) {
+      if (err instanceof OperationError) {
         throw new ZSAError('ERROR', 'Cannot update collection.')
       }
       throw new ZSAError('ERROR', err)
@@ -122,74 +118,46 @@ export const addLinkToCollection = authenticatedProcedure
   .createServerAction()
   .input(addLinkToCollectionInputSchema)
   .handler(async ({ input }) => {
-    const supabase = createClient()
-    const authenticationService = ServiceLocator.getService(
-      'AuthenticationService'
+    const collectionLinkService = ServiceLocator.getService(
+      'CollectionLinkService'
     )
 
-    const user = await authenticationService.getUser()
+    let relation: CollectionLinkDTO
 
-    const { data: existingLink, error } = await supabase
-      .from('link')
-      .select()
-      .eq('fingerprint', input.linkFingerprint)
-      .eq('created_by', user.id)
-      .single()
-
-    if (error) {
-      throw new Error('Failed to fetch link', { cause: error })
+    try {
+      relation = await collectionLinkService.addLinkToCollection(
+        input.fingerprint,
+        input.linkFingerprint
+      )
+    } catch (err) {
+      // TODO: report error to Sentry
+      throw new ZSAError('ERROR', err)
     }
 
-    if (!existingLink) {
-      throw new Error('Link not found')
-    }
-
-    const { error: linkError } = await supabase.from('collection_link').insert({
-      link_pk: input.linkFingerprint,
-      collection_pk: input.fingerprint,
-      visible: true,
-    })
-
-    if (linkError) {
-      throw new Error('Failed to add link to collection', { cause: linkError })
-    }
-
-    revalidatePath(`/app/collections/${input.fingerprint}`)
+    revalidatePath(`/app/collections/${relation.collection_pk}`)
   })
 
 export const removeLinkFromCollection = authenticatedProcedure
   .createServerAction()
   .input(removeLinkFromCollectionInputSchema)
   .handler(async ({ input }) => {
-    const supabase = createClient()
+    const collectionLinkService = ServiceLocator.getService(
+      'CollectionLinkService'
+    )
 
-    const { data: existingJunction, error } = await supabase
-      .from('collection_link')
-      .select()
-      .eq('link_pk', input.linkFingerprint)
-      .eq('collection_pk', input.fingerprint)
-      .single()
+    let relation: CollectionLinkDTO
 
-    if (error) {
-      return { error: 'Failed to fetch link <> collection relation' }
+    try {
+      relation = await collectionLinkService.removeLinkFromCollection(
+        input.fingerprint,
+        input.linkFingerprint
+      )
+    } catch (err) {
+      // TODO: report error to Sentry
+      throw new ZSAError('ERROR', err)
     }
 
-    if (!existingJunction) {
-      return { error: 'Link not found in collection' }
-    }
-
-    const { error: deleteError } = await supabase
-      .from('collection_link')
-      .delete()
-      .eq('link_pk', input.linkFingerprint)
-      .eq('collection_pk', input.fingerprint)
-      .select()
-
-    if (deleteError) {
-      return { error: 'Failed to remove link from collection' }
-    }
-
-    revalidatePath(`/app/collections/${input.fingerprint}`)
+    revalidatePath(`/app/collections/${relation.collection_pk}`)
     return { message: 'Link removed from collection successfully' }
   })
 
@@ -197,26 +165,19 @@ export const updateLinksOrder = authenticatedProcedure
   .createServerAction()
   .input(updateLinksOrderInputSchema)
   .handler(async ({ input }) => {
-    const supabase = createClient()
-    const { fingerprint, linksOrder } = input
+    const collectionLinkService = ServiceLocator.getService(
+      'CollectionLinkService'
+    )
 
-    const { error: updatedOrderError } = await supabase
-      .from('collection_link')
-      .upsert(
-        linksOrder.map(({ fingerprint, order }) => ({
-          link_pk: fingerprint,
-          collection_pk: fingerprint,
-          order,
-        })),
-        { onConflict: 'link_pk,collection_pk' }
+    try {
+      await collectionLinkService.updateLinksOrder(
+        input.fingerprint,
+        input.linksOrder
       )
-      .select('order,visible,link(*)')
-
-    if (updatedOrderError) {
-      throw new Error('Failed to update links order', {
-        cause: updatedOrderError,
-      })
+    } catch (err) {
+      // TODO: report error to Sentry
+      throw new ZSAError('ERROR', err)
     }
 
-    revalidatePath(`/app/collections/${fingerprint}`)
+    revalidatePath(`/app/collections/${input.fingerprint}`)
   })

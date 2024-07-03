@@ -1,32 +1,24 @@
-import { SupabaseClient } from '@supabase/supabase-js'
 import { nanoid } from 'nanoid'
 
 import { createClient } from '@/utils/supabase/server'
 import { CollectionInsert, CollectionUpdate } from '@/utils/types'
 
-import { CollectionDTO } from '@/shared/dtos/collection'
-import {
-  CreateCollectionError,
-  UpdateCollectionError,
-} from '@/shared/errors/collectionErrors'
-import { Database } from '~/supabase/types.gen'
+import { CollectionDTO, CollectionDTOSchema } from '@/shared/dtos/collection'
+import { OperationError } from '@/shared/errors/commonErrors'
 
 import { ICollectionsRepository } from '.'
 
 // Live / Production Repository
 export class CollectionsRepository implements ICollectionsRepository {
-  private _db: SupabaseClient<Database>
-
-  constructor() {
-    this._db = createClient()
-  }
+  constructor() {}
 
   async createCollection(collection: CollectionInsert, userId: string) {
+    const db = createClient()
     const { title, description } = collection
 
     const fingerprint = nanoid(8)
 
-    const { data, error: creationError } = await this._db
+    const { data, error } = await db
       .from('collection')
       .insert({
         created_at: new Date().toUTCString(),
@@ -38,33 +30,33 @@ export class CollectionsRepository implements ICollectionsRepository {
       .select()
       .single()
 
-    if (creationError) {
-      throw new CreateCollectionError(creationError.message, {
-        cause: creationError,
+    if (error) {
+      throw new OperationError(error.message, {
+        cause: error,
       })
     }
 
-    const newCollection = CollectionDTO.fromDb(data)
-    return newCollection
+    return CollectionDTOSchema.parse(data)
   }
 
   async getCollection(fingerprint: string) {
-    const { data, error } = await this._db
+    const db = createClient()
+    const { data, error } = await db
       .from('collection')
       .select()
       .eq('fingerprint', fingerprint)
       .single()
 
     if (error) {
-      throw new Error('Failed to get collection', { cause: error })
+      throw new OperationError(error.message, { cause: error })
     }
 
-    const collection = CollectionDTO.fromDb(data)
-    return collection
+    return CollectionDTOSchema.parse(data)
   }
 
   async getUsersCollection(fingerprint: string, userId: string) {
-    const { data, error } = await this._db
+    const db = createClient()
+    const { data, error } = await db
       .from('collection')
       .select()
       .eq('fingerprint', fingerprint)
@@ -72,16 +64,15 @@ export class CollectionsRepository implements ICollectionsRepository {
       .single()
 
     if (error) {
-      // TODO: create custom error here
-      throw new Error('Failed to get collection', { cause: error })
+      throw new OperationError(error.message, { cause: error })
     }
 
-    const collection = CollectionDTO.fromDb(data)
-    return collection
+    return CollectionDTOSchema.parse(data)
   }
 
   async updateCollection(fingerprint: string, input: CollectionUpdate) {
-    const { data, error } = await this._db
+    const db = createClient()
+    const { data, error } = await db
       .from('collection')
       .update({
         title: input.title,
@@ -93,14 +84,15 @@ export class CollectionsRepository implements ICollectionsRepository {
       .single()
 
     if (error) {
-      throw new UpdateCollectionError(error.message, { cause: error })
+      throw new OperationError(error.message, { cause: error })
     }
 
-    return CollectionDTO.fromDb(data)
+    return CollectionDTOSchema.parse(data)
   }
 
   async deleteCollection(fingerprint: string): Promise<CollectionDTO> {
-    const { data, error } = await this._db
+    const db = createClient()
+    const { data, error } = await db
       .from('collection')
       .delete()
       .eq('fingerprint', fingerprint)
@@ -108,10 +100,9 @@ export class CollectionsRepository implements ICollectionsRepository {
       .single()
 
     if (error) {
-      // TODO: create custom error here
-      throw new Error('Failed to delete collection', { cause: error })
+      throw new OperationError(error.message, { cause: error })
     }
 
-    return CollectionDTO.fromDb(data)
+    return CollectionDTOSchema.parse(data)
   }
 }

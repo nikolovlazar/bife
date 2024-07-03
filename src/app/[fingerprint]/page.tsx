@@ -9,30 +9,23 @@ import {
   CardTitle,
 } from '@/app/_components/ui/card'
 
-import { createClient } from '@/utils/supabase/server'
+import { ServiceLocator } from '@/services/serviceLocator'
+import { CollectionLinksDTO } from '@/shared/dtos/collectionLink'
 
 export default async function PublicCollectionPage({
   params,
 }: {
   params: { fingerprint: string }
 }) {
-  const supabase = createClient()
-  const { data: collection } = await supabase
-    .from('collection')
-    .select('*')
-    .eq('fingerprint', params.fingerprint)
-    .single()
+  const collectionsService = ServiceLocator.getService('CollectionsService')
+  const collection = await collectionsService.getPublicCollection(
+    params.fingerprint
+  )
 
   if (!collection) {
-    const { data: link, error: linkError } = await supabase
-      .from('link')
-      .select('url')
-      .eq('fingerprint', params.fingerprint)
-      .single()
+    const linksService = ServiceLocator.getService('LinksService')
+    const link = await linksService.getPublicLink(params.fingerprint)
 
-    if (linkError) {
-      throw linkError
-    }
     if (!link) {
       return notFound()
     }
@@ -40,26 +33,20 @@ export default async function PublicCollectionPage({
     // TODO: implement analytics here
     permanentRedirect(link.url)
   } else {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+    const collectionLinkService = ServiceLocator.getService(
+      'CollectionLinkService'
+    )
+    let displayedLinks: CollectionLinksDTO =
+      await collectionLinkService.getLinksForCollection(collection.fingerprint)
 
-    const { data: links, error: linksError } = await supabase
-      .from('collection_link')
-      .select('visible, order, link(*)')
-      .order('order', { ascending: true })
-      .eq('collection_pk', collection.fingerprint)
-
-    if (linksError) {
-      console.error(linksError)
-      return <p>Error loading links.</p>
+    try {
+      displayedLinks = await collectionLinkService.getLinksForCollection(
+        collection.fingerprint
+      )
+    } catch (err) {
+      // TODO: check for not exists error, if yes -> return notFound()
+      return <p>Error fetching links for collection...</p>
     }
-
-    const canSeeHiddenLinks = user && collection.created_by === user.id
-
-    const displayedLinks = links
-      .filter((link) => link.visible || canSeeHiddenLinks)
-      .map((link) => ({ ...link.link, visible: true }))
 
     return (
       <>
@@ -71,7 +58,7 @@ export default async function PublicCollectionPage({
         </Card>
         <div className="flex flex-1 flex-col justify-between gap-8">
           <div className="flex flex-1 flex-col gap-4">
-            {displayedLinks.map((link) => (
+            {displayedLinks.map(({ link }) => (
               <a
                 key={link.fingerprint}
                 href={link.url}

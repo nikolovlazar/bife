@@ -1,15 +1,28 @@
 import { CollectionsRepository } from '../repositories/collectionsRepository'
 
 import { AuthenticationService } from './authenticationService'
+import { CollectionLinkService } from './collectionLinkService'
 import { CollectionsService } from './collectionsService'
+import { LinksService } from './linksService'
+import {
+  ICollectionLinkRepository,
+  ICollectionsRepository,
+  ILinksRepository,
+} from '@/repositories'
+import { CollectionLinkRepository } from '@/repositories/collectionLinkRepository'
+import { LinksRepository } from '@/repositories/linksRepository'
 
 interface ServiceMap {
   AuthenticationService: AuthenticationService
   CollectionsService: CollectionsService
+  LinksService: LinksService
+  CollectionLinkService: CollectionLinkService
 }
 
 interface RepositoryMap {
-  CollectionsRepository: CollectionsRepository
+  CollectionsRepository: ICollectionsRepository
+  LinksRepository: ILinksRepository
+  CollectionLinkRepository: ICollectionLinkRepository
 }
 
 export class ServiceLocator {
@@ -27,12 +40,27 @@ export class ServiceLocator {
       )
       return new CollectionsService(collectionsRepository)
     },
+    LinksService: () => {
+      const linksRepository =
+        ServiceLocator.getOrCreateRepository('LinksRepository')
+
+      return new LinksService(linksRepository)
+    },
+    CollectionLinkService: () => {
+      const collectionLinkRepository = ServiceLocator.getOrCreateRepository(
+        'CollectionLinkRepository'
+      )
+
+      return new CollectionLinkService(collectionLinkRepository)
+    },
   }
 
   private static _repositoryFactory: {
     [K in keyof RepositoryMap]: () => RepositoryMap[K]
   } = {
     CollectionsRepository: () => new CollectionsRepository(),
+    LinksRepository: () => new LinksRepository(),
+    CollectionLinkRepository: () => new CollectionLinkRepository(),
   }
 
   private static getOrCreateRepository<T extends keyof RepositoryMap>(

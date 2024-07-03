@@ -5,19 +5,18 @@ import { createClient } from '@/utils/supabase/server'
 import { AuthError } from '@/shared/errors/authErrors'
 
 export class AuthenticationService {
-  private _supabase: SupabaseClient
   private _providers: Provider[] = ['github', 'google']
 
-  constructor() {
-    this._supabase = createClient()
-  }
+  constructor() {}
 
   async getUser() {
-    const { data, error: userError } = await this._supabase.auth.getUser()
+    const supabase = createClient()
+    const { data, error } = await supabase.auth.getUser()
 
-    if (userError) {
-      throw new AuthError(userError.message, userError.status, {
-        cause: userError.cause,
+    if (error) {
+      // TODO: check if not logged in throws exception
+      throw new AuthError(error.message, error.status, {
+        cause: error.cause,
       })
     }
 
@@ -37,7 +36,8 @@ export class AuthenticationService {
         ? 'http://localhost:3000/api/auth/callback'
         : 'https://bife.sh/api/auth/callback'
 
-    const { data, error } = await this._supabase.auth.signInWithOAuth({
+    const supabase = createClient()
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: provider as Provider,
       options: {
         redirectTo,
@@ -52,7 +52,8 @@ export class AuthenticationService {
   }
 
   async signInWithPassword(email: string, password: string, tsToken: string) {
-    const { error } = await this._supabase.auth.signInWithPassword({
+    const supabase = createClient()
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
       options: { captchaToken: tsToken },
@@ -64,7 +65,8 @@ export class AuthenticationService {
   }
 
   async signUp(email: string, password: string, tsToken: string) {
-    const { error } = await this._supabase.auth.signUp({
+    const supabase = createClient()
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: { captchaToken: tsToken },
@@ -76,7 +78,8 @@ export class AuthenticationService {
   }
 
   async resetPassword(password: string) {
-    const { error } = await this._supabase.auth.updateUser({
+    const supabase = createClient()
+    const { error } = await supabase.auth.updateUser({
       password: password,
     })
 
@@ -91,7 +94,8 @@ export class AuthenticationService {
         ? 'http://localhost:3000/api/auth/reset-password'
         : 'https://bife.sh/api/auth/reset-password'
 
-    const { error } = await this._supabase.auth.resetPasswordForEmail(email, {
+    const supabase = createClient()
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo,
       captchaToken: tsToken,
     })

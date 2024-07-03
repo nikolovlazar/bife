@@ -10,3 +10,9 @@ export class AuthError extends Error {
     this.status = status
   }
 }
+
+export class UnauthorizedError extends Error {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options)
+  }
+}
