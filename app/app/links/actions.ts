@@ -4,8 +4,8 @@ import { revalidatePath } from 'next/cache'
 import { ZSAError } from 'zsa'
 
 import { ServiceLocator } from '@/services/serviceLocator'
-import type { CollectionLinkDTO } from '@/shared/dtos/collectionLink'
-import { LinkDTO } from '@/shared/dtos/link'
+import type { CollectionLink } from '@/shared/dtos/collectionLink'
+import { Link } from '@/shared/dtos/link'
 import { OperationError } from '@/shared/errors/commonErrors'
 import {
   createLinkInputSchema,
@@ -21,7 +21,7 @@ export const createLink = authenticatedProcedure
   .handler(async ({ input }) => {
     const linksService = ServiceLocator.getService('LinksService')
 
-    let link: LinkDTO
+    let link: Link
 
     const { collection, ...linkInput } = input
 
@@ -45,7 +45,7 @@ export const updateLink = authenticatedProcedure
   .handler(async ({ input }) => {
     const linksService = ServiceLocator.getService('LinksService')
 
-    let link: LinkDTO
+    let link: Link
 
     const { fingerprint, ...linkData } = input
 
@@ -91,7 +91,7 @@ export const toggleLinkVisibility = authenticatedProcedure
       'CollectionLinkService'
     )
 
-    let updated: CollectionLinkDTO
+    let updated: CollectionLink
 
     try {
       updated = await collectionLinkService.setVisibility(

@@ -5,40 +5,40 @@ import {
   LinkUpdate,
 } from '@/utils/types'
 
-import { CollectionDTO } from '@/shared/dtos/collection'
+import { Collection } from '@/shared/dtos/collection'
 import {
-  CollectionLinkDTO,
-  CollectionLinksDTO,
+  CollectionLink,
+  CollectionLinks,
 } from '@/shared/dtos/collectionLink'
-import { LinkDTO } from '@/shared/dtos/link'
+import { Link } from '@/shared/dtos/link'
 
 export interface ICollectionsRepository {
   createCollection(
     collection: CollectionInsert,
     userId: string
-  ): Promise<CollectionDTO>
+  ): Promise<Collection>
 
-  getCollection(fingerprint: string): Promise<CollectionDTO>
+  getCollection(fingerprint: string): Promise<Collection>
 
   getUsersCollection(
     fingerprint: string,
     userId: string
-  ): Promise<CollectionDTO>
+  ): Promise<Collection>
 
   updateCollection(
     fingerprint: string,
     input: CollectionUpdate
-  ): Promise<CollectionDTO>
+  ): Promise<Collection>
 
-  deleteCollection(fingerprint: string): Promise<CollectionDTO>
+  deleteCollection(fingerprint: string): Promise<Collection>
 }
 
 export interface ILinksRepository {
-  getLink(fingerprint: string): Promise<LinkDTO>
+  getLink(fingerprint: string): Promise<Link>
 
-  createLink(link: LinkInsert, userId: string): Promise<LinkDTO>
+  createLink(link: LinkInsert, userId: string): Promise<Link>
 
-  updateLink(fingerprint: string, link: LinkUpdate): Promise<LinkDTO>
+  updateLink(fingerprint: string, link: LinkUpdate): Promise<Link>
 
   deleteLink(fingerprint: string): Promise<void>
 
@@ -46,35 +46,35 @@ export interface ILinksRepository {
     collectionFingerprint: string,
     linkFingerprint: string,
     visibility: boolean
-  ): Promise<LinkDTO>
+  ): Promise<Link>
 }
 
 export interface ICollectionLinkRepository {
   getRelation(
     collectionFingerprint: string,
     linkFingerprint: string
-  ): Promise<CollectionLinkDTO>
+  ): Promise<CollectionLink>
 
   setVisibility(
     collectionFingerprint: string,
     linkFingerprint: string,
     visibility: boolean
-  ): Promise<CollectionLinkDTO>
+  ): Promise<CollectionLink>
 
   addLinkToCollection(
     collectionFingerprint: string,
     linkFingerprint: string
-  ): Promise<CollectionLinkDTO>
+  ): Promise<CollectionLink>
 
   removeLinkFromCollection(
     collectionFingerprint: string,
     linkFingerprint: string
-  ): Promise<CollectionLinkDTO>
+  ): Promise<CollectionLink>
 
   updateLinksOrder(
     collectionFingerprint: string,
     linksOrder: { fingerprint: string; order: number }[]
   ): Promise<void>
 
-  getLinksForCollection(collectionFingerprint: string): Promise<CollectionLinksDTO>
+  getLinksForCollection(collectionFingerprint: string): Promise<CollectionLinks>
 }

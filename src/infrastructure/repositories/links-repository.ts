@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid'
 import { createClient } from '@/utils/supabase/server'
 import { LinkInsert, LinkUpdate } from '@/utils/types'
 
-import { LinkDTO, LinkDTOSchema } from '@/shared/dtos/link'
+import { Link, LinkSchema } from '@/shared/dtos/link'
 import { OperationError } from '@/shared/errors/commonErrors'
 
 import { ILinksRepository } from '.'
@@ -11,7 +11,7 @@ import { ILinksRepository } from '.'
 export class LinksRepository implements ILinksRepository {
   constructor() {}
 
-  async getLink(fingerprint: string): Promise<LinkDTO> {
+  async getLink(fingerprint: string): Promise<Link> {
     const db = createClient()
     const { data, error } = await db
       .from('link')
@@ -25,10 +25,10 @@ export class LinksRepository implements ILinksRepository {
       })
     }
 
-    return LinkDTOSchema.parse(data)
+    return LinkSchema.parse(data)
   }
 
-  async createLink(link: LinkInsert, userId: string): Promise<LinkDTO> {
+  async createLink(link: LinkInsert, userId: string): Promise<Link> {
     const db = createClient()
     const fingerprint = nanoid(8)
 
@@ -52,10 +52,10 @@ export class LinksRepository implements ILinksRepository {
       })
     }
 
-    return LinkDTOSchema.parse(data)
+    return LinkSchema.parse(data)
   }
 
-  async updateLink(fingerprint: string, data: LinkUpdate): Promise<LinkDTO> {
+  async updateLink(fingerprint: string, data: LinkUpdate): Promise<Link> {
     const db = createClient()
     const { data: updatedLink, error } = await db
       .from('link')
@@ -70,7 +70,7 @@ export class LinksRepository implements ILinksRepository {
       })
     }
 
-    return LinkDTOSchema.parse(updatedLink)
+    return LinkSchema.parse(updatedLink)
   }
 
   async deleteLink(fingerprint: string): Promise<void> {
@@ -90,7 +90,7 @@ export class LinksRepository implements ILinksRepository {
     collectionFingerprint: string,
     linkFingerprint: string,
     visibility: boolean
-  ): Promise<LinkDTO> {
+  ): Promise<Link> {
     throw new Error('Method not implemented.')
   }
 }

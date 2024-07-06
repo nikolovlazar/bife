@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const LinkDTOSchema = z.object({
+export const LinkSchema = z.object({
   fingerprint: z.string(),
   label: z.string(),
   url: z.string(),
@@ -8,4 +8,4 @@ export const LinkDTOSchema = z.object({
   created_at: z.string(),
 })
 
-export type LinkDTO = z.infer<typeof LinkDTOSchema>
+export type Link = z.infer<typeof LinkSchema>

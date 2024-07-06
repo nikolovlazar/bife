@@ -1,14 +1,14 @@
 import { CollectionInsert, CollectionUpdate } from '@/utils/types'
 
 import { ServiceLocator } from './serviceLocator'
-import { ICollectionsRepository } from '@/repositories'
-import { CollectionDTO } from '@/shared/dtos/collection'
+import { ICollectionsRepository } from '@/infrastructure/repositories'
+import { Collection } from '@/shared/dtos/collection'
 import { UnauthorizedError } from '@/shared/errors/authErrors'
 
 export class CollectionsService {
   constructor(private _collectionsRepository: ICollectionsRepository) {}
 
-  async createCollection(collection: CollectionInsert): Promise<CollectionDTO> {
+  async createCollection(collection: CollectionInsert): Promise<Collection> {
     const authenticationService = ServiceLocator.getService(
       'AuthenticationService'
     )
@@ -22,13 +22,13 @@ export class CollectionsService {
     return newCollection
   }
 
-  async getPublicCollection(fingerprint: string): Promise<CollectionDTO> {
+  async getPublicCollection(fingerprint: string): Promise<Collection> {
     const collection =
       await this._collectionsRepository.getCollection(fingerprint)
     return collection
   }
 
-  async getCollection(fingerprint: string): Promise<CollectionDTO> {
+  async getCollection(fingerprint: string): Promise<Collection> {
     const authenticationService = ServiceLocator.getService(
       'AuthenticationService'
     )
@@ -49,7 +49,7 @@ export class CollectionsService {
   async updateCollection(
     fingerprint: string,
     input: Partial<CollectionUpdate>
-  ): Promise<CollectionDTO> {
+  ): Promise<Collection> {
     const authenticationService = ServiceLocator.getService(
       'AuthenticationService'
     )
@@ -74,7 +74,7 @@ export class CollectionsService {
     return updatedCollection
   }
 
-  async deleteCollection(fingerprint: string): Promise<CollectionDTO> {
+  async deleteCollection(fingerprint: string): Promise<Collection> {
     const authenticationService = ServiceLocator.getService(
       'AuthenticationService'
     )

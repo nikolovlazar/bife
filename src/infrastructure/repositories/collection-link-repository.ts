@@ -1,9 +1,9 @@
 import { createClient } from '@/utils/supabase/server'
 
 import {
-  CollectionLinkDTOSchema,
-  CollectionLinksDTO,
-  CollectionLinksDTOSchema,
+  CollectionLinkSchema,
+  CollectionLinks,
+  CollectionLinksSchema,
 } from '@/shared/dtos/collectionLink'
 import { OperationError } from '@/shared/errors/commonErrors'
 
@@ -30,7 +30,7 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
       })
     }
 
-    return CollectionLinkDTOSchema.parse(data)
+    return CollectionLinkSchema.parse(data)
   }
 
   async setVisibility(
@@ -53,7 +53,7 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
       })
     }
 
-    return CollectionLinkDTOSchema.parse(data)
+    return CollectionLinkSchema.parse(data)
   }
 
   async addLinkToCollection(
@@ -77,7 +77,7 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
       })
     }
 
-    return CollectionLinkDTOSchema.parse(data)
+    return CollectionLinkSchema.parse(data)
   }
 
   async removeLinkFromCollection(
@@ -99,7 +99,7 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
       })
     }
 
-    return CollectionLinkDTOSchema.parse(data)
+    return CollectionLinkSchema.parse(data)
   }
 
   async updateLinksOrder(
@@ -125,7 +125,7 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
 
   async getLinksForCollection(
     collectionFingerprint: string
-  ): Promise<CollectionLinksDTO> {
+  ): Promise<CollectionLinks> {
     const db = createClient()
     const { data, error } = await db
       .from('collection_link')
@@ -141,6 +141,6 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
 
     const nonNullLinks = data.filter((entry) => entry.link !== null)
 
-    return CollectionLinksDTOSchema.parse(nonNullLinks)
+    return CollectionLinksSchema.parse(nonNullLinks)
   }
 }

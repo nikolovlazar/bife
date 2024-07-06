@@ -1,4 +1,4 @@
-import { CollectionsRepository } from '../repositories/collectionsRepository'
+import { CollectionsRepository } from '../infrastructure/repositories/collections-repository'
 
 import { AuthenticationService } from './authenticationService'
 import { CollectionLinkService } from './collectionLinkService'
@@ -8,9 +8,9 @@ import {
   ICollectionLinkRepository,
   ICollectionsRepository,
   ILinksRepository,
-} from '@/repositories'
-import { CollectionLinkRepository } from '@/repositories/collectionLinkRepository'
-import { LinksRepository } from '@/repositories/linksRepository'
+} from '@/infrastructure/repositories'
+import { CollectionLinkRepository } from '@/infrastructure/repositories/collection-link-repository'
+import { LinksRepository } from '@/infrastructure/repositories/links-repository'
 
 interface ServiceMap {
   AuthenticationService: AuthenticationService

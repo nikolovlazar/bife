@@ -22,7 +22,7 @@ export class AuthenticationService {
 
     return {
       id: data.user.id,
-      role: data.user.role,
+      email: data.user.email
     }
   }
 

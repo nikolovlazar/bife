@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid'
 import { createClient } from '@/utils/supabase/server'
 import { CollectionInsert, CollectionUpdate } from '@/utils/types'
 
-import { CollectionDTO, CollectionDTOSchema } from '@/shared/dtos/collection'
+import { Collection, CollectionSchema } from '@/shared/dtos/collection'
 import { OperationError } from '@/shared/errors/commonErrors'
 
 import { ICollectionsRepository } from '.'
@@ -36,7 +36,7 @@ export class CollectionsRepository implements ICollectionsRepository {
       })
     }
 
-    return CollectionDTOSchema.parse(data)
+    return CollectionSchema.parse(data)
   }
 
   async getCollection(fingerprint: string) {
@@ -51,7 +51,7 @@ export class CollectionsRepository implements ICollectionsRepository {
       throw new OperationError(error.message, { cause: error })
     }
 
-    return CollectionDTOSchema.parse(data)
+    return CollectionSchema.parse(data)
   }
 
   async getUsersCollection(fingerprint: string, userId: string) {
@@ -67,7 +67,7 @@ export class CollectionsRepository implements ICollectionsRepository {
       throw new OperationError(error.message, { cause: error })
     }
 
-    return CollectionDTOSchema.parse(data)
+    return CollectionSchema.parse(data)
   }
 
   async updateCollection(fingerprint: string, input: CollectionUpdate) {
@@ -87,10 +87,10 @@ export class CollectionsRepository implements ICollectionsRepository {
       throw new OperationError(error.message, { cause: error })
     }
 
-    return CollectionDTOSchema.parse(data)
+    return CollectionSchema.parse(data)
   }
 
-  async deleteCollection(fingerprint: string): Promise<CollectionDTO> {
+  async deleteCollection(fingerprint: string): Promise<Collection> {
     const db = createClient()
     const { data, error } = await db
       .from('collection')
@@ -103,6 +103,6 @@ export class CollectionsRepository implements ICollectionsRepository {
       throw new OperationError(error.message, { cause: error })
     }
 
-    return CollectionDTOSchema.parse(data)
+    return CollectionSchema.parse(data)
   }
 }

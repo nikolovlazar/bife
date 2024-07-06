@@ -1,22 +1,22 @@
 import { z } from 'zod'
 
-import { LinkDTOSchema } from './link'
+import { LinkSchema } from './link'
 
-export const CollectionLinkDTOSchema = z.object({
+export const CollectionLinkSchema = z.object({
   collection_pk: z.string(),
   link_pk: z.string(),
   order: z.number().min(0),
   visible: z.boolean().default(true),
 })
 
-export type CollectionLinkDTO = z.infer<typeof CollectionLinkDTOSchema>
+export type CollectionLink = z.infer<typeof CollectionLinkSchema>
 
-export const CollectionLinksDTOSchema = z.array(
+export const CollectionLinksSchema = z.array(
   z.object({
     visible: z.boolean(),
     order: z.number(),
-    link: LinkDTOSchema,
+    link: LinkSchema,
   })
 )
 
-export type CollectionLinksDTO = z.infer<typeof CollectionLinksDTOSchema>
+export type CollectionLinks = z.infer<typeof CollectionLinksSchema>

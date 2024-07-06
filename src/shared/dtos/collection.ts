@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const CollectionDTOSchema = z.object({
+export const CollectionSchema = z.object({
   fingerprint: z.string(),
   title: z.string(),
   description: z.string().optional(),
@@ -9,4 +9,4 @@ export const CollectionDTOSchema = z.object({
   created_at: z.string(),
 })
 
-export type CollectionDTO = z.infer<typeof CollectionDTOSchema>
+export type Collection = z.infer<typeof CollectionSchema>

@@ -1,21 +1,21 @@
 import { LinkInsert, LinkUpdate } from '@/utils/types'
 
 import { ServiceLocator } from './serviceLocator'
-import { ILinksRepository } from '@/repositories'
-import { CollectionDTO } from '@/shared/dtos/collection'
-import { LinkDTO } from '@/shared/dtos/link'
+import { ILinksRepository } from '@/infrastructure/repositories'
+import { Collection } from '@/shared/dtos/collection'
+import { Link } from '@/shared/dtos/link'
 import { UnauthorizedError } from '@/shared/errors/authErrors'
 
 export class LinksService {
   constructor(private _linksRepository: ILinksRepository) {}
 
-  async getPublicLink(fingerprint: string): Promise<LinkDTO> {
+  async getPublicLink(fingerprint: string): Promise<Link> {
     const link = await this._linksRepository.getLink(fingerprint)
 
     return link
   }
 
-  async getLink(fingerprint: string): Promise<LinkDTO> {
+  async getLink(fingerprint: string): Promise<Link> {
     const authenticationService = ServiceLocator.getService(
       'AuthenticationService'
     )
@@ -36,7 +36,7 @@ export class LinksService {
   async createLink(
     data: LinkInsert,
     collectionFingerprint?: string
-  ): Promise<LinkDTO> {
+  ): Promise<Link> {
     const authenticationService = ServiceLocator.getService(
       'AuthenticationService'
     )
@@ -44,7 +44,7 @@ export class LinksService {
 
     const collectionsService = ServiceLocator.getService('CollectionsService')
 
-    let collection: CollectionDTO | undefined
+    let collection: Collection | undefined
     if (collectionFingerprint) {
       collection = await collectionsService.getCollection(collectionFingerprint)
     }
@@ -64,7 +64,7 @@ export class LinksService {
     return newLink
   }
 
-  async updateLink(fingerprint: string, data: LinkUpdate): Promise<LinkDTO> {
+  async updateLink(fingerprint: string, data: LinkUpdate): Promise<Link> {
     const authenticationService = ServiceLocator.getService(
       'AuthenticationService'
     )

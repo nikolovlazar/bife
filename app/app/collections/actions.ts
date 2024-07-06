@@ -5,8 +5,8 @@ import { redirect } from 'next/navigation'
 import { ZSAError } from 'zsa'
 
 import { ServiceLocator } from '@/services/serviceLocator'
-import { CollectionDTO } from '@/shared/dtos/collection'
-import { CollectionLinkDTO } from '@/shared/dtos/collectionLink'
+import { Collection } from '@/shared/dtos/collection'
+import { CollectionLink } from '@/shared/dtos/collectionLink'
 import { OperationError } from '@/shared/errors/commonErrors'
 import {
   addLinkToCollectionInputSchema,
@@ -25,7 +25,7 @@ export const createCollection = authenticatedProcedure
   .handler(async ({ input }) => {
     const collectionsService = ServiceLocator.getService('CollectionsService')
 
-    let collection: CollectionDTO
+    let collection: Collection
 
     try {
       collection = await collectionsService.createCollection({
@@ -52,7 +52,7 @@ export const updateCollection = authenticatedProcedure
   .handler(async ({ input }) => {
     const collectionsService = ServiceLocator.getService('CollectionsService')
 
-    let collection: CollectionDTO
+    let collection: Collection
     try {
       collection = await collectionsService.updateCollection(
         input.fingerprint,
@@ -76,7 +76,7 @@ export const deleteCollection = authenticatedProcedure
   .handler(async ({ input }) => {
     const collectionsService = ServiceLocator.getService('CollectionsService')
 
-    let collection: CollectionDTO
+    let collection: Collection
 
     try {
       collection = await collectionsService.deleteCollection(input.fingerprint)
@@ -94,7 +94,7 @@ export const toggleCollectionPublished = authenticatedProcedure
   .handler(async ({ input }) => {
     const collectionsService = ServiceLocator.getService('CollectionsService')
 
-    let updatedCollection: CollectionDTO
+    let updatedCollection: Collection
 
     try {
       updatedCollection = await collectionsService.updateCollection(
@@ -121,7 +121,7 @@ export const addLinkToCollection = authenticatedProcedure
       'CollectionLinkService'
     )
 
-    let relation: CollectionLinkDTO
+    let relation: CollectionLink
 
     try {
       relation = await collectionLinkService.addLinkToCollection(
@@ -144,7 +144,7 @@ export const removeLinkFromCollection = authenticatedProcedure
       'CollectionLinkService'
     )
 
-    let relation: CollectionLinkDTO
+    let relation: CollectionLink
 
     try {
       relation = await collectionLinkService.removeLinkFromCollection(

@@ -1,6 +1,6 @@
 import { ServiceLocator } from './serviceLocator'
-import { ICollectionLinkRepository } from '@/repositories'
-import { CollectionLinkDTO } from '@/shared/dtos/collectionLink'
+import { ICollectionLinkRepository } from '@/infrastructure/repositories'
+import { CollectionLink } from '@/shared/dtos/collectionLink'
 import { User } from '@/shared/dtos/users'
 
 export class CollectionLinkService {
@@ -36,7 +36,7 @@ export class CollectionLinkService {
   async addLinkToCollection(
     collectionFingerprint: string,
     linkFingerprint: string
-  ): Promise<CollectionLinkDTO> {
+  ): Promise<CollectionLink> {
     const collectionsService = ServiceLocator.getService('CollectionsService')
     const collection = await collectionsService.getCollection(
       collectionFingerprint
@@ -56,7 +56,7 @@ export class CollectionLinkService {
   async removeLinkFromCollection(
     collectionFingerprint: string,
     linkFingerprint: string
-  ): Promise<CollectionLinkDTO> {
+  ): Promise<CollectionLink> {
     const collectionsService = ServiceLocator.getService('CollectionsService')
     const collection = await collectionsService.getCollection(
       collectionFingerprint

@@ -3,7 +3,7 @@ import NextLink from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 
 import { ServiceLocator } from '@/services/serviceLocator'
-import { CollectionLinksDTO } from '@/shared/dtos/collectionLink'
+import { CollectionLinks } from '@/shared/dtos/collectionLink'
 import {
   Card,
   CardDescription,
@@ -35,7 +35,7 @@ export default async function PublicCollectionPage({
     const collectionLinkService = ServiceLocator.getService(
       'CollectionLinkService'
     )
-    let displayedLinks: CollectionLinksDTO =
+    let displayedLinks: CollectionLinks =
       await collectionLinkService.getLinksForCollection(collection.fingerprint)
 
     try {
