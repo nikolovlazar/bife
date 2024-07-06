@@ -8,7 +8,6 @@ import {
 import { CollectionDTO } from '@/shared/dtos/collection'
 import {
   CollectionLinkDTO,
-  CollectionLinkDTO,
   CollectionLinksDTO,
 } from '@/shared/dtos/collectionLink'
 import { LinkDTO } from '@/shared/dtos/link'

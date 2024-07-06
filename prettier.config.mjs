@@ -2,10 +2,21 @@
  * @see https://prettier.io/docs/en/configuration.html
  * @type {import("prettier").Config}
  */
+import sortImports from '@trivago/prettier-plugin-sort-imports'
+import tailwindCss from 'prettier-plugin-tailwindcss'
+
 const config = {
-  plugins: [
-    '@trivago/prettier-plugin-sort-imports',
-    'prettier-plugin-tailwindcss',
+  plugins: [sortImports],
+  overrides: [
+    {
+      files: '*./tsx',
+      options: {
+        plugins: [
+          sortImports,
+          tailwindCss,
+        ],
+      },
+    },
   ],
   arrowParens: 'always',
   bracketSpacing: true,
