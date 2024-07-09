@@ -1,7 +1,6 @@
 import { Utensils } from 'lucide-react'
 import NextLink from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
-import 'reflect-metadata'
 
 import { CollectionLinks } from '@/entities/models/collection-link'
 

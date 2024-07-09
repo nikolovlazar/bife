@@ -72,6 +72,7 @@
     "supabase": "^1.167.4",
     "tailwind-gradient-mask-image": "^1.2.0",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "webpack": "^5.92.1"
   }
 }

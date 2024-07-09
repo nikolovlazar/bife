@@ -1,5 +1,4 @@
 import { Container } from 'inversify'
-import 'reflect-metadata'
 
 import { AuthenticationModule } from './modules/authentication.module'
 
