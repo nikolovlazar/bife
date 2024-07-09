@@ -4,7 +4,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import dayjs from 'dayjs'
 import { MoreHorizontal } from 'lucide-react'
 
-import { Link } from '@/utils/types'
+import { Link } from '@/entities/models/link'
 
 import { DeleteLinkConfirmation } from '../delete-link'
 import { EditLink } from '../edit-link'

@@ -12,7 +12,7 @@ import {
 } from '@tanstack/react-table'
 import { useState } from 'react'
 
-import type { Collection } from '@/utils/types'
+import { Collection } from '@/entities/models/collection'
 
 import { Input } from '@/web/_components/ui/input'
 import {

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 
 import './globals.css'
+import './reflect-metadata-client'
 import { ThemeProvider } from '@/web/_components/theme-provider'
 import { Toaster } from '@/web/_components/ui/sonner'
 import { cn } from '@/web/_lib/utils'

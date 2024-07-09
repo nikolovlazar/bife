@@ -6,7 +6,7 @@ import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
-import type { Collection } from '@/utils/types'
+import { Collection } from '@/entities/models/collection'
 
 import { DeleteCollectionConfirmation } from '../[fingerprint]/delete-collection'
 

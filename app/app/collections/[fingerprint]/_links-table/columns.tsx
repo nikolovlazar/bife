@@ -4,7 +4,8 @@ import { ColumnDef } from '@tanstack/react-table'
 import dayjs from 'dayjs'
 import { MoreHorizontal } from 'lucide-react'
 
-import type { Collection, Link } from '@/utils/types'
+import { Collection } from '@/entities/models/collection'
+import { Link } from '@/entities/models/link'
 
 import { RemoveLinkFromCollectionConfirmation } from '../remove-link'
 

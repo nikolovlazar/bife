@@ -7,7 +7,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 
-import { Link } from '@/utils/types'
+import { Link } from '@/entities/models/link'
 
 import {
   Table,

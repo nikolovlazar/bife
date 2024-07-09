@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const CollectionSchema = z.object({
   fingerprint: z.string(),
   title: z.string(),
-  description: z.string().optional(),
+  description: z.string().nullish(),
   published: z.boolean(),
   created_by: z.string(),
   created_at: z.string(),

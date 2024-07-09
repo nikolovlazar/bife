@@ -2,7 +2,7 @@
 
 import { Check, ChevronsUpDown } from 'lucide-react'
 
-import type { Link } from '@/utils/types'
+import { Link } from '@/entities/models/link'
 
 import { CreateLink } from '../../links/create-link'
 import { addLinkToCollection, removeLinkFromCollection } from '../actions'

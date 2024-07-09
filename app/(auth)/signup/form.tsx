@@ -18,14 +18,14 @@ import {
   FormMessage,
 } from '@/web/_components/ui/form'
 import { Input } from '@/web/_components/ui/input'
-import { signUpInputSchema } from '@/web/_lib/validation-schemas/auth'
+import { signUpFormSchema } from '@/web/_lib/validation-schemas/auth'
 
 export const SignUpForm = () => {
   const [tsToken, setTsToken] = useState<string | undefined>()
   const turnstile = useTurnstile()
 
-  const form = useForm<z.infer<typeof signUpInputSchema>>({
-    resolver: zodResolver(signUpInputSchema),
+  const form = useForm<z.infer<typeof signUpFormSchema>>({
+    resolver: zodResolver(signUpFormSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -33,7 +33,7 @@ export const SignUpForm = () => {
     },
   })
 
-  async function onSubmit(values: z.infer<typeof signUpInputSchema>) {
+  async function onSubmit(values: z.infer<typeof signUpFormSchema>) {
     const data = new FormData()
     data.append('email', values.email)
     data.append('password', values.password)

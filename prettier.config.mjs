@@ -22,7 +22,7 @@ const config = {
     '^./(.*)$',
     '^[./]',
   ],
-  importOrderParserPlugins: ['typescript', 'decorators-legacy'],
+  importOrderParserPlugins: ['typescript', 'jsx', 'decorators-legacy'],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
   trailingComma: 'es5',

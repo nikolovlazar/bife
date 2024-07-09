@@ -27,17 +27,22 @@ export const signUpOutputSchema = z.object({
     .optional(),
 })
 
-export const signUpInputSchema = z
-  .object({
-    email: z.string().email('Invalid email'),
-    password: z
-      .string()
-      .min(6, { message: 'Password must be at least 6 characters' }),
-    confirmPassword: z
-      .string()
-      .min(6, { message: 'Password must be at least 6 characters' }),
-    tsToken: z.string(),
-  })
+export const signUpFormSchema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z
+    .string()
+    .min(6, { message: 'Password must be at least 6 characters' }),
+  confirmPassword: z
+    .string()
+    .min(6, { message: 'Password must be at least 6 characters' }),
+})
+
+export const signUpInputSchema = signUpFormSchema
+  .merge(
+    z.object({
+      tsToken: z.string(),
+    })
+  )
   .superRefine(({ password, confirmPassword }, ctx) => {
     if (confirmPassword !== password) {
       ctx.addIssue({
