@@ -1,4 +1,5 @@
 import { type Provider } from '@supabase/supabase-js'
+import { injectable } from 'inversify'
 
 import { IAuthenticationService } from '@/application/services/authentication-service.interface'
 
@@ -6,6 +7,7 @@ import { AuthError } from '@/entities/errors/auth'
 
 import { createClient } from '@/infrastructure/utils/supabase/server'
 
+@injectable()
 export class AuthenticationService implements IAuthenticationService {
   private _providers: Provider[] = ['github', 'google']
 

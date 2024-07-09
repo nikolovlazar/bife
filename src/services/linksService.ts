@@ -1,8 +1,13 @@
-import { ServiceLocator } from './serviceLocator'
+import { ILinksRepository } from '@/application/repositories/links-repository.interface'
+import { IAuthenticationService } from '@/application/services/authentication-service.interface'
+
+import { UnauthorizedError } from '@/entities/errors/auth'
 import { Collection } from '@/entities/models/collection'
 import { Link, LinkInsert, LinkUpdate } from '@/entities/models/link'
-import { UnauthorizedError } from '@/entities/errors/auth'
-import { ILinksRepository } from '@/application/repositories/links-repository.interface'
+
+import { ServiceLocator } from './serviceLocator'
+import { inject } from '@/di/container'
+import { DI_TYPES } from '@/di/types'
 
 export class LinksService {
   constructor(private _linksRepository: ILinksRepository) {}
@@ -14,8 +19,8 @@ export class LinksService {
   }
 
   async getLink(fingerprint: string): Promise<Link> {
-    const authenticationService = ServiceLocator.getService(
-      'AuthenticationService'
+    const authenticationService = inject<IAuthenticationService>(
+      DI_TYPES.AuthenticationService
     )
     const user = await authenticationService.getUser()
 
@@ -35,8 +40,8 @@ export class LinksService {
     data: LinkInsert,
     collectionFingerprint?: string
   ): Promise<Link> {
-    const authenticationService = ServiceLocator.getService(
-      'AuthenticationService'
+    const authenticationService = inject<IAuthenticationService>(
+      DI_TYPES.AuthenticationService
     )
     const user = await authenticationService.getUser()
 
@@ -63,8 +68,8 @@ export class LinksService {
   }
 
   async updateLink(fingerprint: string, data: LinkUpdate): Promise<Link> {
-    const authenticationService = ServiceLocator.getService(
-      'AuthenticationService'
+    const authenticationService = inject<IAuthenticationService>(
+      DI_TYPES.AuthenticationService
     )
     const user = await authenticationService.getUser()
     const link = await this._linksRepository.getLink(fingerprint)
@@ -90,8 +95,8 @@ export class LinksService {
   }
 
   async deleteLink(fingerprint: string): Promise<void> {
-    const authenticationService = ServiceLocator.getService(
-      'AuthenticationService'
+    const authenticationService = inject<IAuthenticationService>(
+      DI_TYPES.AuthenticationService
     )
     const user = await authenticationService.getUser()
     const link = await this._linksRepository.getLink(fingerprint)

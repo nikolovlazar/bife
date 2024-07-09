@@ -1,7 +1,12 @@
 import { ICollectionLinkRepository } from '@/application/repositories/collection-link-repository.interface'
-import { ServiceLocator } from './serviceLocator'
+import { IAuthenticationService } from '@/application/services/authentication-service.interface'
+
 import { CollectionLink } from '@/entities/models/collection-link'
 import { User } from '@/entities/models/users'
+
+import { ServiceLocator } from './serviceLocator'
+import { inject } from '@/di/container'
+import { DI_TYPES } from '@/di/types'
 
 export class CollectionLinkService {
   constructor(private _collectionLinkRepository: ICollectionLinkRepository) {}
@@ -95,8 +100,8 @@ export class CollectionLinkService {
   }
 
   async getLinksForCollection(collectionFingerprint: string) {
-    const authenticationService = ServiceLocator.getService(
-      'AuthenticationService'
+    const authenticationService = inject<IAuthenticationService>(
+      DI_TYPES.AuthenticationService
     )
     let user: User | undefined
     let shouldFilterInvisibleLinks = true

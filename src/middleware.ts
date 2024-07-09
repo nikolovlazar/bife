@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { updateSession } from '@/utils/supabase/middleware'
+import { updateSession } from '@/infrastructure/utils/supabase/middleware'
 
 const protectedRoutes: string[] = ['/reset-password', '/app']
 export async function middleware(request: NextRequest) {

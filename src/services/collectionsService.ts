@@ -1,18 +1,23 @@
-import { ServiceLocator } from './serviceLocator'
+import { ICollectionsRepository } from '@/application/repositories/collections-repository.interface'
+import { IAuthenticationService } from '@/application/services/authentication-service.interface'
+
+import { UnauthorizedError } from '@/entities/errors/auth'
 import {
   Collection,
   CollectionInsert,
   CollectionUpdate,
 } from '@/entities/models/collection'
-import { UnauthorizedError } from '@/entities/errors/auth'
-import { ICollectionsRepository } from '@/application/repositories/collections-repository.interface'
+
+import { ServiceLocator } from './serviceLocator'
+import { inject } from '@/di/container'
+import { DI_TYPES } from '@/di/types'
 
 export class CollectionsService {
   constructor(private _collectionsRepository: ICollectionsRepository) {}
 
   async createCollection(collection: CollectionInsert): Promise<Collection> {
-    const authenticationService = ServiceLocator.getService(
-      'AuthenticationService'
+    const authenticationService = inject<IAuthenticationService>(
+      DI_TYPES.AuthenticationService
     )
     const user = await authenticationService.getUser()
 
@@ -31,8 +36,8 @@ export class CollectionsService {
   }
 
   async getCollection(fingerprint: string): Promise<Collection> {
-    const authenticationService = ServiceLocator.getService(
-      'AuthenticationService'
+    const authenticationService = inject<IAuthenticationService>(
+      DI_TYPES.AuthenticationService
     )
     const user = await authenticationService.getUser()
 
@@ -52,8 +57,8 @@ export class CollectionsService {
     fingerprint: string,
     input: Partial<CollectionUpdate>
   ): Promise<Collection> {
-    const authenticationService = ServiceLocator.getService(
-      'AuthenticationService'
+    const authenticationService = inject<IAuthenticationService>(
+      DI_TYPES.AuthenticationService
     )
     const user = await authenticationService.getUser()
     const collection = await this.getCollection(fingerprint)
@@ -77,8 +82,8 @@ export class CollectionsService {
   }
 
   async deleteCollection(fingerprint: string): Promise<Collection> {
-    const authenticationService = ServiceLocator.getService(
-      'AuthenticationService'
+    const authenticationService = inject<IAuthenticationService>(
+      DI_TYPES.AuthenticationService
     )
     const user = await authenticationService.getUser()
     const collection = await this.getCollection(fingerprint)

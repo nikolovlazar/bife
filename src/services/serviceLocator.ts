@@ -5,7 +5,7 @@ import { ILinksRepository } from '@/application/repositories/links-repository.in
 import { CollectionLinkRepository } from '@/infrastructure/repositories/collection-link-repository'
 import { CollectionsRepository } from '@/infrastructure/repositories/collections-repository'
 import { LinksRepository } from '@/infrastructure/repositories/links-repository'
-import { AuthenticationService } from '@/infrastructure/services/authenticationService'
+import { AuthenticationService } from '@/infrastructure/services/authentication-service'
 
 import { CollectionLinkService } from './collectionLinkService'
 import { CollectionsService } from './collectionsService'

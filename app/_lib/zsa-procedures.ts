@@ -1,12 +1,15 @@
 import { redirect } from 'next/navigation'
 import { createServerActionProcedure } from 'zsa'
 
-import { ServiceLocator } from '@/services/serviceLocator'
+import { IAuthenticationService } from '@/application/services/authentication-service.interface'
+
+import { inject } from '@/di/container'
+import { DI_TYPES } from '@/di/types'
 
 export const authenticatedProcedure = createServerActionProcedure().handler(
   async () => {
-    const authenticationService = ServiceLocator.getService(
-      'AuthenticationService'
+    const authenticationService = inject<IAuthenticationService>(
+      DI_TYPES.AuthenticationService
     )
 
     try {
