@@ -7,6 +7,7 @@ const ApplicationContainer = new Container({
 })
 
 const initializeContainer = () => {
+  console.log('============ Initializing DI container')
   ApplicationContainer.load(AuthenticationModule)
 }
 
