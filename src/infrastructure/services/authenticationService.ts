@@ -2,9 +2,10 @@ import { type Provider } from '@supabase/supabase-js'
 
 import { createClient } from '@/utils/supabase/server'
 
-import { AuthError } from '@/shared/errors/authErrors'
+import { AuthError } from '@/entities/errors/auth'
+import { IAuthenticationService } from '@/application/services/authentication-service.interface'
 
-export class AuthenticationService {
+export class AuthenticationService implements IAuthenticationService {
   private _providers: Provider[] = ['github', 'google']
 
   constructor() {}
@@ -22,7 +23,7 @@ export class AuthenticationService {
 
     return {
       id: data.user.id,
-      email: data.user.email
+      email: data.user.email,
     }
   }
 
@@ -37,7 +38,7 @@ export class AuthenticationService {
         : 'https://bife.sh/api/auth/callback'
 
     const supabase = createClient()
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: provider as Provider,
       options: {
         redirectTo,
@@ -47,8 +48,6 @@ export class AuthenticationService {
     if (error) {
       throw new AuthError(error.message, error.status, { cause: error.cause })
     }
-
-    return data
   }
 
   async signInWithPassword(email: string, password: string, tsToken: string) {

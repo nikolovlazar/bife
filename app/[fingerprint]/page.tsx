@@ -3,7 +3,7 @@ import NextLink from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 
 import { ServiceLocator } from '@/services/serviceLocator'
-import { CollectionLinks } from '@/shared/dtos/collectionLink'
+import { CollectionLinks } from '@/entities/models/collection-link'
 import {
   Card,
   CardDescription,

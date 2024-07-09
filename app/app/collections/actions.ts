@@ -5,9 +5,9 @@ import { redirect } from 'next/navigation'
 import { ZSAError } from 'zsa'
 
 import { ServiceLocator } from '@/services/serviceLocator'
-import { Collection } from '@/shared/dtos/collection'
-import { CollectionLink } from '@/shared/dtos/collectionLink'
-import { OperationError } from '@/shared/errors/commonErrors'
+import { Collection } from '@/entities/models/collection'
+import { CollectionLink } from '@/entities/models/collection-link'
+import { OperationError } from '@/entities/errors/common'
 import {
   addLinkToCollectionInputSchema,
   createCollectionInputSchema,

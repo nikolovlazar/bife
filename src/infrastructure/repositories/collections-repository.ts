@@ -1,12 +1,14 @@
 import { nanoid } from 'nanoid'
 
 import { createClient } from '@/utils/supabase/server'
-import { CollectionInsert, CollectionUpdate } from '@/utils/types'
-
-import { Collection, CollectionSchema } from '@/shared/dtos/collection'
-import { OperationError } from '@/shared/errors/commonErrors'
-
-import { ICollectionsRepository } from '.'
+import {
+  Collection,
+  CollectionInsert,
+  CollectionSchema,
+  CollectionUpdate,
+} from '@/entities/models/collection'
+import { OperationError } from '@/entities/errors/common'
+import { ICollectionsRepository } from '@/application/repositories/collections-repository.interface'
 
 // Live / Production Repository
 export class CollectionsRepository implements ICollectionsRepository {

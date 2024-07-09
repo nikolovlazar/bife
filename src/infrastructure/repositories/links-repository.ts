@@ -1,12 +1,15 @@
 import { nanoid } from 'nanoid'
 
 import { createClient } from '@/utils/supabase/server'
-import { LinkInsert, LinkUpdate } from '@/utils/types'
 
-import { Link, LinkSchema } from '@/shared/dtos/link'
-import { OperationError } from '@/shared/errors/commonErrors'
-
-import { ILinksRepository } from '.'
+import {
+  Link,
+  LinkInsert,
+  LinkSchema,
+  LinkUpdate,
+} from '@/entities/models/link'
+import { OperationError } from '@/entities/errors/common'
+import { ILinksRepository } from '@/application/repositories/links-repository.interface'
 
 export class LinksRepository implements ILinksRepository {
   constructor() {}

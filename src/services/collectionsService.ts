@@ -1,9 +1,11 @@
-import { CollectionInsert, CollectionUpdate } from '@/utils/types'
-
 import { ServiceLocator } from './serviceLocator'
-import { ICollectionsRepository } from '@/infrastructure/repositories'
-import { Collection } from '@/shared/dtos/collection'
-import { UnauthorizedError } from '@/shared/errors/authErrors'
+import {
+  Collection,
+  CollectionInsert,
+  CollectionUpdate,
+} from '@/entities/models/collection'
+import { UnauthorizedError } from '@/entities/errors/auth'
+import { ICollectionsRepository } from '@/application/repositories/collections-repository.interface'
 
 export class CollectionsService {
   constructor(private _collectionsRepository: ICollectionsRepository) {}

@@ -4,10 +4,9 @@ import {
   CollectionLinkSchema,
   CollectionLinks,
   CollectionLinksSchema,
-} from '@/shared/dtos/collectionLink'
-import { OperationError } from '@/shared/errors/commonErrors'
-
-import { ICollectionLinkRepository } from '.'
+} from '@/entities/models/collection-link'
+import { OperationError } from '@/entities/errors/common'
+import { ICollectionLinkRepository } from '@/application/repositories/collection-link-repository.interface'
 
 export class CollectionLinkRepository implements ICollectionLinkRepository {
   constructor() {}

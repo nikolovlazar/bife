@@ -4,9 +4,9 @@ import { revalidatePath } from 'next/cache'
 import { ZSAError } from 'zsa'
 
 import { ServiceLocator } from '@/services/serviceLocator'
-import type { CollectionLink } from '@/shared/dtos/collectionLink'
-import { Link } from '@/shared/dtos/link'
-import { OperationError } from '@/shared/errors/commonErrors'
+import type { CollectionLink } from '@/entities/models/collection-link'
+import { Link } from '@/entities/models/link'
+import { OperationError } from '@/entities/errors/common'
 import {
   createLinkInputSchema,
   deleteLinkInputSchema,

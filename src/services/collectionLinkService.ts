@@ -1,7 +1,7 @@
+import { ICollectionLinkRepository } from '@/application/repositories/collection-link-repository.interface'
 import { ServiceLocator } from './serviceLocator'
-import { ICollectionLinkRepository } from '@/infrastructure/repositories'
-import { CollectionLink } from '@/shared/dtos/collectionLink'
-import { User } from '@/shared/dtos/users'
+import { CollectionLink } from '@/entities/models/collection-link'
+import { User } from '@/entities/models/users'
 
 export class CollectionLinkService {
   constructor(private _collectionLinkRepository: ICollectionLinkRepository) {}

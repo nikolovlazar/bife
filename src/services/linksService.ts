@@ -1,10 +1,8 @@
-import { LinkInsert, LinkUpdate } from '@/utils/types'
-
 import { ServiceLocator } from './serviceLocator'
-import { ILinksRepository } from '@/infrastructure/repositories'
-import { Collection } from '@/shared/dtos/collection'
-import { Link } from '@/shared/dtos/link'
-import { UnauthorizedError } from '@/shared/errors/authErrors'
+import { Collection } from '@/entities/models/collection'
+import { Link, LinkInsert, LinkUpdate } from '@/entities/models/link'
+import { UnauthorizedError } from '@/entities/errors/auth'
+import { ILinksRepository } from '@/application/repositories/links-repository.interface'
 
 export class LinksService {
   constructor(private _linksRepository: ILinksRepository) {}

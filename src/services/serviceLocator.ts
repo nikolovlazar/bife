@@ -1,16 +1,15 @@
-import { CollectionsRepository } from '../infrastructure/repositories/collections-repository'
+import { ICollectionLinkRepository } from '@/application/repositories/collection-link-repository.interface'
+import { ICollectionsRepository } from '@/application/repositories/collections-repository.interface'
+import { ILinksRepository } from '@/application/repositories/links-repository.interface'
 
-import { AuthenticationService } from './authenticationService'
+import { CollectionLinkRepository } from '@/infrastructure/repositories/collection-link-repository'
+import { CollectionsRepository } from '@/infrastructure/repositories/collections-repository'
+import { LinksRepository } from '@/infrastructure/repositories/links-repository'
+import { AuthenticationService } from '@/infrastructure/services/authenticationService'
+
 import { CollectionLinkService } from './collectionLinkService'
 import { CollectionsService } from './collectionsService'
 import { LinksService } from './linksService'
-import {
-  ICollectionLinkRepository,
-  ICollectionsRepository,
-  ILinksRepository,
-} from '@/infrastructure/repositories'
-import { CollectionLinkRepository } from '@/infrastructure/repositories/collection-link-repository'
-import { LinksRepository } from '@/infrastructure/repositories/links-repository'
 
 interface ServiceMap {
   AuthenticationService: AuthenticationService
