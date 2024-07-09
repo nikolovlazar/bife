@@ -4,7 +4,6 @@ import { updateSession } from '@/infrastructure/utils/supabase/middleware'
 
 const protectedRoutes: string[] = ['/reset-password', '/app']
 export async function middleware(request: NextRequest) {
-  console.log('============ Middleware')
   let { user, response } = await updateSession(request)
 
   if (
