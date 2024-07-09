@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Turnstile, { useTurnstile } from 'react-turnstile'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { signUp } from '../actions'
@@ -41,16 +42,22 @@ export const SignUpForm = () => {
     data.append('tsToken', tsToken!)
 
     const [output] = await signUp(data)
-    if (output && output.errors) {
-      turnstile.reset()
-      output.errors.email &&
-        form.setError('email', { message: output.errors.email })
-      output.errors.password &&
-        form.setError('password', { message: output.errors.password })
-      output.errors.confirmPassword &&
-        form.setError('confirmPassword', {
-          message: output.errors.confirmPassword,
+    if (output) {
+      if (output.errors) {
+        turnstile.reset()
+        output.errors.email &&
+          form.setError('email', { message: output.errors.email })
+        output.errors.password &&
+          form.setError('password', { message: output.errors.password })
+        output.errors.confirmPassword &&
+          form.setError('confirmPassword', {
+            message: output.errors.confirmPassword,
+          })
+      } else if (output.success) {
+        toast.success('Sign up successful!', {
+          description: 'Check your email for further instructions',
         })
+      }
     }
   }
   return (

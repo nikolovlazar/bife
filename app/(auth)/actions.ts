@@ -69,7 +69,7 @@ export const signUp = createServerAction()
     }
 
     revalidatePath('/', 'layout')
-    redirect('/app')
+    return { success: true }
   })
 
 export const resetPassword = createServerAction()

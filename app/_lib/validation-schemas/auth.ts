@@ -25,6 +25,7 @@ export const signUpOutputSchema = z.object({
       confirmPassword: z.string().optional(),
     })
     .optional(),
+  success: z.boolean().optional(),
 })
 
 export const signUpFormSchema = z.object({
