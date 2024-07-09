@@ -2,7 +2,7 @@ import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/infrastructure/utils/supabase/server'
 
 import { AddOrCreateLink } from './add-create-link'
 import { LinksList } from './links-list'

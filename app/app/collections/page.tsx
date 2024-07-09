@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/infrastructure/utils/supabase/server'
 
 import { collectionColumns } from './_collections-table/columns'
 import { CollectionsDataTable } from './_collections-table/table'

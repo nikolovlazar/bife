@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/infrastructure/utils/supabase/server'
 
 import { type ColumnsType, linkColumns } from './_links-table/columns'
 import { LinksDataTable } from './_links-table/table'

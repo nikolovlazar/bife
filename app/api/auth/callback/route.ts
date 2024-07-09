@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/infrastructure/utils/supabase/server'
 
 export async function GET(request: Request) {
   // The `/api/auth/callback` route is required for the server-side auth flow implemented

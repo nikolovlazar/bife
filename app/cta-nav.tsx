@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/infrastructure/utils/supabase/server'
 
 export async function NavCTA() {
   const supabase = createClient()

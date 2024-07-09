@@ -2,7 +2,7 @@ import { User } from '@/entities/models/users'
 
 export interface IAuthenticationService {
   getUser(): Promise<User>
-  signInWithProvider(provider: string): Promise<void>
+  signInWithProvider(provider: string): Promise<{ url: string }>
   signInWithPassword(
     email: string,
     password: string,

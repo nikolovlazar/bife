@@ -1,7 +1,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/infrastructure/utils/supabase/server'
 
 import { Button } from '@/web/_components/ui/button'
 import { DropdownMenuItem } from '@/web/_components/ui/dropdown-menu'
