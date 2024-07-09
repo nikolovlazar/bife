@@ -1,3 +1,4 @@
+import { injectable } from 'inversify'
 import { nanoid } from 'nanoid'
 
 import { ICollectionsRepository } from '@/application/repositories/collections-repository.interface'
@@ -12,7 +13,7 @@ import {
 
 import { createClient } from '@/infrastructure/utils/supabase/server'
 
-// Live / Production Repository
+@injectable()
 export class CollectionsRepository implements ICollectionsRepository {
   constructor() {}
 

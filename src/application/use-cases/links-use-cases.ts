@@ -1,16 +1,25 @@
-import { ILinksRepository } from '@/application/repositories/links-repository.interface'
-import { IAuthenticationService } from '@/application/services/authentication-service.interface'
+import { inject, injectable } from 'inversify'
+
+import type { ILinksRepository } from '@/application/repositories/links-repository.interface'
+import type { IAuthenticationService } from '@/application/services/authentication-service.interface'
 
 import { UnauthorizedError } from '@/entities/errors/auth'
 import { Collection } from '@/entities/models/collection'
 import { Link, LinkInsert, LinkUpdate } from '@/entities/models/link'
 
-import { ServiceLocator } from './serviceLocator'
+import { CollectionLinkUseCases } from './collection-link-use-cases'
+import { CollectionsUseCases } from './collections-use-cases'
 import { getInjection } from '@/di/container'
 import { DI_TYPES } from '@/di/types'
 
-export class LinksService {
-  constructor(private _linksRepository: ILinksRepository) {}
+@injectable()
+export class LinksUseCases {
+  constructor(
+    @inject(DI_TYPES.AuthenticationService)
+    private _authenticationService: IAuthenticationService,
+    @inject(DI_TYPES.LinksRepository)
+    private _linksRepository: ILinksRepository
+  ) {}
 
   async getPublicLink(fingerprint: string): Promise<Link> {
     const link = await this._linksRepository.getLink(fingerprint)
@@ -19,10 +28,7 @@ export class LinksService {
   }
 
   async getLink(fingerprint: string): Promise<Link> {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
-    const user = await authenticationService.getUser()
+    const user = await this._authenticationService.getUser()
 
     const link = await this._linksRepository.getLink(fingerprint)
 
@@ -40,25 +46,25 @@ export class LinksService {
     data: LinkInsert,
     collectionFingerprint?: string
   ): Promise<Link> {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
-    const user = await authenticationService.getUser()
-
-    const collectionsService = ServiceLocator.getService('CollectionsService')
+    const user = await this._authenticationService.getUser()
 
     let collection: Collection | undefined
     if (collectionFingerprint) {
-      collection = await collectionsService.getCollection(collectionFingerprint)
+      const collectionsUseCases = getInjection<CollectionsUseCases>(
+        DI_TYPES.CollectionsUseCases
+      )
+      collection = await collectionsUseCases.getCollection(
+        collectionFingerprint
+      )
     }
 
     const newLink = await this._linksRepository.createLink(data, user.id)
 
     if (collection) {
-      const collectionLinkService = ServiceLocator.getService(
-        'CollectionLinkService'
+      const collectionLinkUseCases = getInjection<CollectionLinkUseCases>(
+        DI_TYPES.CollectionLinkUseCases
       )
-      await collectionLinkService.addLinkToCollection(
+      await collectionLinkUseCases.addLinkToCollection(
         collection.fingerprint,
         newLink.fingerprint
       )
@@ -68,10 +74,7 @@ export class LinksService {
   }
 
   async updateLink(fingerprint: string, data: LinkUpdate): Promise<Link> {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
-    const user = await authenticationService.getUser()
+    const user = await this._authenticationService.getUser()
     const link = await this._linksRepository.getLink(fingerprint)
 
     if (link.created_by !== user.id) {
@@ -95,10 +98,7 @@ export class LinksService {
   }
 
   async deleteLink(fingerprint: string): Promise<void> {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
-    const user = await authenticationService.getUser()
+    const user = await this._authenticationService.getUser()
     const link = await this._linksRepository.getLink(fingerprint)
 
     if (link.created_by !== user.id) {

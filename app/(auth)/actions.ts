@@ -6,7 +6,7 @@ import { ZSAError, createServerAction } from 'zsa'
 
 import { IAuthenticationService } from '@/application/services/authentication-service.interface'
 
-import { inject } from '@/di/container'
+import { getInjection } from '@/di/container'
 import { DI_TYPES } from '@/di/types'
 import {
   forgotPasswordInputSchema,
@@ -20,7 +20,7 @@ import {
 export const signInWithPassword = createServerAction()
   .input(signInWithPasswordInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
-    const authenticationService = inject<IAuthenticationService>(
+    const authenticationService = getInjection<IAuthenticationService>(
       DI_TYPES.AuthenticationService
     )
 
@@ -40,7 +40,7 @@ export const signInWithPassword = createServerAction()
 export const signInWithProvider = createServerAction()
   .input(signInWithProviderInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
-    const authenticationService = inject<IAuthenticationService>(
+    const authenticationService = getInjection<IAuthenticationService>(
       DI_TYPES.AuthenticationService
     )
 
@@ -53,7 +53,7 @@ export const signUp = createServerAction()
   .input(signUpInputSchema, { type: 'formData' })
   .output(signUpOutputSchema)
   .handler(async ({ input }) => {
-    const authenticationService = inject<IAuthenticationService>(
+    const authenticationService = getInjection<IAuthenticationService>(
       DI_TYPES.AuthenticationService
     )
 
@@ -75,7 +75,7 @@ export const signUp = createServerAction()
 export const resetPassword = createServerAction()
   .input(resetPasswordInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
-    const authenticationService = inject<IAuthenticationService>(
+    const authenticationService = getInjection<IAuthenticationService>(
       DI_TYPES.AuthenticationService
     )
 
@@ -92,7 +92,7 @@ export const resetPassword = createServerAction()
 export const forgotPassword = createServerAction()
   .input(forgotPasswordInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
-    const authenticationService = inject<IAuthenticationService>(
+    const authenticationService = getInjection<IAuthenticationService>(
       DI_TYPES.AuthenticationService
     )
 

@@ -1,16 +1,19 @@
+import { injectable } from 'inversify'
 import { nanoid } from 'nanoid'
 
-import { createClient } from '@/infrastructure/utils/supabase/server'
+import { ILinksRepository } from '@/application/repositories/links-repository.interface'
 
+import { OperationError } from '@/entities/errors/common'
 import {
   Link,
   LinkInsert,
   LinkSchema,
   LinkUpdate,
 } from '@/entities/models/link'
-import { OperationError } from '@/entities/errors/common'
-import { ILinksRepository } from '@/application/repositories/links-repository.interface'
 
+import { createClient } from '@/infrastructure/utils/supabase/server'
+
+@injectable()
 export class LinksRepository implements ILinksRepository {
   constructor() {}
 

@@ -2,9 +2,14 @@ import { Utensils } from 'lucide-react'
 import NextLink from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 
+import { CollectionLinkUseCases } from '@/application/use-cases/collection-link-use-cases'
+import { CollectionsUseCases } from '@/application/use-cases/collections-use-cases'
+import { LinksUseCases } from '@/application/use-cases/links-use-cases'
+
 import { CollectionLinks } from '@/entities/models/collection-link'
 
-import { ServiceLocator } from '@/services/serviceLocator'
+import { getInjection } from '@/di/container'
+import { DI_TYPES } from '@/di/types'
 import {
   Card,
   CardDescription,
@@ -17,14 +22,16 @@ export default async function PublicCollectionPage({
 }: {
   params: { fingerprint: string }
 }) {
-  const collectionsService = ServiceLocator.getService('CollectionsService')
-  const collection = await collectionsService.getPublicCollection(
+  const collectionsUseCases = getInjection<CollectionsUseCases>(
+    DI_TYPES.CollectionsUseCases
+  )
+  const collection = await collectionsUseCases.getPublicCollection(
     params.fingerprint
   )
 
   if (!collection) {
-    const linksService = ServiceLocator.getService('LinksService')
-    const link = await linksService.getPublicLink(params.fingerprint)
+    const linksUseCases = getInjection<LinksUseCases>(DI_TYPES.LinksUseCases)
+    const link = await linksUseCases.getPublicLink(params.fingerprint)
 
     if (!link) {
       return notFound()
@@ -33,14 +40,13 @@ export default async function PublicCollectionPage({
     // TODO: implement analytics here
     permanentRedirect(link.url)
   } else {
-    const collectionLinkService = ServiceLocator.getService(
-      'CollectionLinkService'
+    const collectionLinkUseCases = getInjection<CollectionLinkUseCases>(
+      DI_TYPES.CollectionLinkUseCases
     )
-    let displayedLinks: CollectionLinks =
-      await collectionLinkService.getLinksForCollection(collection.fingerprint)
+    let displayedLinks: CollectionLinks
 
     try {
-      displayedLinks = await collectionLinkService.getLinksForCollection(
+      displayedLinks = await collectionLinkUseCases.getLinksForCollection(
         collection.fingerprint
       )
     } catch (err) {

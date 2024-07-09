@@ -1,13 +1,17 @@
-import { createClient } from '@/infrastructure/utils/supabase/server'
+import { injectable } from 'inversify'
 
+import { ICollectionLinkRepository } from '@/application/repositories/collection-link-repository.interface'
+
+import { OperationError } from '@/entities/errors/common'
 import {
   CollectionLinkSchema,
   CollectionLinks,
   CollectionLinksSchema,
 } from '@/entities/models/collection-link'
-import { OperationError } from '@/entities/errors/common'
-import { ICollectionLinkRepository } from '@/application/repositories/collection-link-repository.interface'
 
+import { createClient } from '@/infrastructure/utils/supabase/server'
+
+@injectable()
 export class CollectionLinkRepository implements ICollectionLinkRepository {
   constructor() {}
 

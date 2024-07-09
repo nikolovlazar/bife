@@ -4,10 +4,15 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { ZSAError } from 'zsa'
 
-import { ServiceLocator } from '@/services/serviceLocator'
+import { CollectionsUseCases } from '@/application/use-cases/collections-use-cases'
+
+import { OperationError } from '@/entities/errors/common'
 import { Collection } from '@/entities/models/collection'
 import { CollectionLink } from '@/entities/models/collection-link'
-import { OperationError } from '@/entities/errors/common'
+
+import { getInjection } from '@/di/container'
+import { DI_TYPES } from '@/di/types'
+import { ServiceLocator } from '@/services/serviceLocator'
 import {
   addLinkToCollectionInputSchema,
   createCollectionInputSchema,
@@ -23,12 +28,14 @@ export const createCollection = authenticatedProcedure
   .createServerAction()
   .input(createCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionsService = ServiceLocator.getService('CollectionsService')
+    const collectionsUseCases = getInjection<CollectionsUseCases>(
+      DI_TYPES.CollectionsUseCases
+    )
 
     let collection: Collection
 
     try {
-      collection = await collectionsService.createCollection({
+      collection = await collectionsUseCases.createCollection({
         title: input.title,
         description: input.description,
       })

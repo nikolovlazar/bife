@@ -1,15 +1,24 @@
-import { ICollectionLinkRepository } from '@/application/repositories/collection-link-repository.interface'
-import { IAuthenticationService } from '@/application/services/authentication-service.interface'
+import { inject, injectable } from 'inversify'
+
+import type { ICollectionLinkRepository } from '@/application/repositories/collection-link-repository.interface'
+import type { IAuthenticationService } from '@/application/services/authentication-service.interface'
 
 import { CollectionLink } from '@/entities/models/collection-link'
 import { User } from '@/entities/models/users'
 
-import { ServiceLocator } from './serviceLocator'
+import { CollectionsUseCases } from './collections-use-cases'
+import { LinksUseCases } from './links-use-cases'
 import { getInjection } from '@/di/container'
 import { DI_TYPES } from '@/di/types'
 
-export class CollectionLinkService {
-  constructor(private _collectionLinkRepository: ICollectionLinkRepository) {}
+@injectable()
+export class CollectionLinkUseCases {
+  constructor(
+    @inject(DI_TYPES.AuthenticationService)
+    private _authenticationService: IAuthenticationService,
+    @inject(DI_TYPES.CollectionLinkRepository)
+    private _collectionLinkRepository: ICollectionLinkRepository
+  ) {}
 
   async setVisibility(
     collectionFingerprint: string,
@@ -21,13 +30,15 @@ export class CollectionLinkService {
       linkFingerprint
     )
 
-    const collectionsService = ServiceLocator.getService('CollectionsService')
-    const collection = await collectionsService.getCollection(
+    const collectionsUseCases = getInjection<CollectionsUseCases>(
+      DI_TYPES.CollectionsUseCases
+    )
+    const collection = await collectionsUseCases.getCollection(
       relation.collection_pk
     )
 
-    const linksService = ServiceLocator.getService('LinksService')
-    const link = await linksService.getLink(relation.link_pk)
+    const linksUseCases = getInjection<LinksUseCases>(DI_TYPES.LinksUseCases)
+    const link = await linksUseCases.getLink(relation.link_pk)
 
     const updated = await this._collectionLinkRepository.setVisibility(
       collection.fingerprint,
@@ -42,13 +53,15 @@ export class CollectionLinkService {
     collectionFingerprint: string,
     linkFingerprint: string
   ): Promise<CollectionLink> {
-    const collectionsService = ServiceLocator.getService('CollectionsService')
-    const collection = await collectionsService.getCollection(
+    const collectionsUseCases = getInjection<CollectionsUseCases>(
+      DI_TYPES.CollectionsUseCases
+    )
+    const collection = await collectionsUseCases.getCollection(
       collectionFingerprint
     )
 
-    const linksService = ServiceLocator.getService('LinksService')
-    const link = await linksService.getLink(linkFingerprint)
+    const linksUseCases = getInjection<LinksUseCases>(DI_TYPES.LinksUseCases)
+    const link = await linksUseCases.getLink(linkFingerprint)
 
     const relation = await this._collectionLinkRepository.addLinkToCollection(
       collection.fingerprint,
@@ -62,13 +75,15 @@ export class CollectionLinkService {
     collectionFingerprint: string,
     linkFingerprint: string
   ): Promise<CollectionLink> {
-    const collectionsService = ServiceLocator.getService('CollectionsService')
-    const collection = await collectionsService.getCollection(
+    const collectionsUseCases = getInjection<CollectionsUseCases>(
+      DI_TYPES.CollectionsUseCases
+    )
+    const collection = await collectionsUseCases.getCollection(
       collectionFingerprint
     )
 
-    const linksService = ServiceLocator.getService('LinksService')
-    const link = await linksService.getLink(linkFingerprint)
+    const linksUseCases = getInjection<LinksUseCases>(DI_TYPES.LinksUseCases)
+    const link = await linksUseCases.getLink(linkFingerprint)
 
     const relation =
       await this._collectionLinkRepository.removeLinkFromCollection(
@@ -83,14 +98,16 @@ export class CollectionLinkService {
     collectionFingerprint: string,
     linksOrder: { fingerprint: string; order: number }[]
   ) {
-    const collectionsService = ServiceLocator.getService('CollectionsService')
-    const collection = await collectionsService.getCollection(
+    const collectionsUseCases = getInjection<CollectionsUseCases>(
+      DI_TYPES.CollectionsUseCases
+    )
+    const collection = await collectionsUseCases.getCollection(
       collectionFingerprint
     )
 
-    const linksService = ServiceLocator.getService('LinksService')
+    const linksUseCases = getInjection<LinksUseCases>(DI_TYPES.LinksUseCases)
     await Promise.all(
-      linksOrder.map(({ fingerprint }) => linksService.getLink(fingerprint))
+      linksOrder.map(({ fingerprint }) => linksUseCases.getLink(fingerprint))
     )
 
     await this._collectionLinkRepository.updateLinksOrder(
@@ -100,17 +117,16 @@ export class CollectionLinkService {
   }
 
   async getLinksForCollection(collectionFingerprint: string) {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
     let user: User | undefined
     let shouldFilterInvisibleLinks = true
 
     try {
-      user = await authenticationService.getUser()
+      user = await this._authenticationService.getUser()
 
-      const collectionsService = ServiceLocator.getService('CollectionsService')
-      const collection = await collectionsService.getCollection(
+      const collectionsUseCases = getInjection<CollectionsUseCases>(
+        DI_TYPES.CollectionsUseCases
+      )
+      const collection = await collectionsUseCases.getCollection(
         collectionFingerprint
       )
 

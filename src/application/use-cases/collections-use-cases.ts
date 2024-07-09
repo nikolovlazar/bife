@@ -1,5 +1,7 @@
-import { ICollectionsRepository } from '@/application/repositories/collections-repository.interface'
-import { IAuthenticationService } from '@/application/services/authentication-service.interface'
+import { inject, injectable } from 'inversify'
+
+import type { ICollectionsRepository } from '@/application/repositories/collections-repository.interface'
+import type { IAuthenticationService } from '@/application/services/authentication-service.interface'
 
 import { UnauthorizedError } from '@/entities/errors/auth'
 import {
@@ -8,17 +10,19 @@ import {
   CollectionUpdate,
 } from '@/entities/models/collection'
 
-import { getInjection } from '@/di/container'
 import { DI_TYPES } from '@/di/types'
 
-export class CollectionsService {
-  constructor(private _collectionsRepository: ICollectionsRepository) {}
+@injectable()
+export class CollectionsUseCases {
+  constructor(
+    @inject(DI_TYPES.AuthenticationService)
+    private _authenticationService: IAuthenticationService,
+    @inject(DI_TYPES.CollectionsRepository)
+    private _collectionsRepository: ICollectionsRepository
+  ) {}
 
   async createCollection(collection: CollectionInsert): Promise<Collection> {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
-    const user = await authenticationService.getUser()
+    const user = await this._authenticationService.getUser()
 
     const newCollection = await this._collectionsRepository.createCollection(
       collection,
@@ -35,10 +39,7 @@ export class CollectionsService {
   }
 
   async getCollection(fingerprint: string): Promise<Collection> {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
-    const user = await authenticationService.getUser()
+    const user = await this._authenticationService.getUser()
 
     const collection =
       await this._collectionsRepository.getCollection(fingerprint)
@@ -56,10 +57,7 @@ export class CollectionsService {
     fingerprint: string,
     input: Partial<CollectionUpdate>
   ): Promise<Collection> {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
-    const user = await authenticationService.getUser()
+    const user = await this._authenticationService.getUser()
     const collection = await this.getCollection(fingerprint)
 
     if (collection.created_by !== user.id) {
@@ -81,10 +79,7 @@ export class CollectionsService {
   }
 
   async deleteCollection(fingerprint: string): Promise<Collection> {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
-    const user = await authenticationService.getUser()
+    const user = await this._authenticationService.getUser()
     const collection = await this.getCollection(fingerprint)
 
     if (collection.created_by !== user.id) {

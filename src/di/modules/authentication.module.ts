@@ -7,8 +7,8 @@ import { AuthenticationService } from '@/infrastructure/services/authentication-
 import { DI_TYPES } from '../types'
 
 const initializeModule = (bind: interfaces.Bind) => {
-  bind<IAuthenticationService>(DI_TYPES.AuthenticationService).toDynamicValue(
-    () => new AuthenticationService()
+  bind<IAuthenticationService>(DI_TYPES.AuthenticationService).to(
+    AuthenticationService
   )
 }
 
