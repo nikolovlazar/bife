@@ -4,15 +4,11 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { ZSAError } from 'zsa'
 
-import { CollectionLinkUseCases } from '@/application/use-cases/collection-link-use-cases'
-import { CollectionsUseCases } from '@/application/use-cases/collections-use-cases'
-
 import { OperationError } from '@/entities/errors/common'
 import { Collection } from '@/entities/models/collection'
 import { CollectionLink } from '@/entities/models/collection-link'
 
 import { getInjection } from '@/di/container'
-import { DI_TYPES } from '@/di/types'
 import {
   addLinkToCollectionInputSchema,
   createCollectionInputSchema,
@@ -28,9 +24,7 @@ export const createCollection = authenticatedProcedure
   .createServerAction()
   .input(createCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionsUseCases = getInjection<CollectionsUseCases>(
-      DI_TYPES.CollectionsUseCases
-    )
+    const collectionsUseCases = getInjection('CollectionsUseCases')
 
     let collection: Collection
 
@@ -57,9 +51,7 @@ export const updateCollection = authenticatedProcedure
   .createServerAction()
   .input(updateCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionsUseCases = getInjection<CollectionsUseCases>(
-      DI_TYPES.CollectionsUseCases
-    )
+    const collectionsUseCases = getInjection('CollectionsUseCases')
 
     let collection: Collection
     try {
@@ -83,9 +75,7 @@ export const deleteCollection = authenticatedProcedure
   .createServerAction()
   .input(deleteCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionsUseCases = getInjection<CollectionsUseCases>(
-      DI_TYPES.CollectionsUseCases
-    )
+    const collectionsUseCases = getInjection('CollectionsUseCases')
 
     let collection: Collection
 
@@ -103,9 +93,7 @@ export const toggleCollectionPublished = authenticatedProcedure
   .createServerAction()
   .input(toggleCollectionPublishedInputSchema)
   .handler(async ({ input }) => {
-    const collectionsUseCases = getInjection<CollectionsUseCases>(
-      DI_TYPES.CollectionsUseCases
-    )
+    const collectionsUseCases = getInjection('CollectionsUseCases')
 
     let updatedCollection: Collection
 
@@ -130,9 +118,7 @@ export const addLinkToCollection = authenticatedProcedure
   .createServerAction()
   .input(addLinkToCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionLinkUseCases = getInjection<CollectionLinkUseCases>(
-      DI_TYPES.CollectionLinkUseCases
-    )
+    const collectionLinkUseCases = getInjection('CollectionLinkUseCases')
 
     let relation: CollectionLink
 
@@ -153,9 +139,7 @@ export const removeLinkFromCollection = authenticatedProcedure
   .createServerAction()
   .input(removeLinkFromCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionLinkUseCases = getInjection<CollectionLinkUseCases>(
-      DI_TYPES.CollectionLinkUseCases
-    )
+    const collectionLinkUseCases = getInjection('CollectionLinkUseCases')
 
     let relation: CollectionLink
 
@@ -177,9 +161,7 @@ export const updateLinksOrder = authenticatedProcedure
   .createServerAction()
   .input(updateLinksOrderInputSchema)
   .handler(async ({ input }) => {
-    const collectionLinkUseCases = getInjection<CollectionLinkUseCases>(
-      DI_TYPES.CollectionLinkUseCases
-    )
+    const collectionLinkUseCases = getInjection('CollectionLinkUseCases')
 
     try {
       await collectionLinkUseCases.updateLinksOrder(

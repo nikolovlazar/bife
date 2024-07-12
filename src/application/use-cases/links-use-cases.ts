@@ -50,9 +50,7 @@ export class LinksUseCases {
 
     let collection: Collection | undefined
     if (collectionFingerprint) {
-      const collectionsUseCases = getInjection<CollectionsUseCases>(
-        DI_TYPES.CollectionsUseCases
-      )
+      const collectionsUseCases = getInjection('CollectionsUseCases')
       collection = await collectionsUseCases.getCollection(
         collectionFingerprint
       )
@@ -61,9 +59,7 @@ export class LinksUseCases {
     const newLink = await this._linksRepository.createLink(data, user.id)
 
     if (collection) {
-      const collectionLinkUseCases = getInjection<CollectionLinkUseCases>(
-        DI_TYPES.CollectionLinkUseCases
-      )
+      const collectionLinkUseCases = getInjection('CollectionLinkUseCases')
       await collectionLinkUseCases.addLinkToCollection(
         collection.fingerprint,
         newLink.fingerprint

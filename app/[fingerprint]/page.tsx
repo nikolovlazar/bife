@@ -2,16 +2,11 @@ import { Utensils } from 'lucide-react'
 import NextLink from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 
-import { CollectionLinkUseCases } from '@/application/use-cases/collection-link-use-cases'
-import { CollectionsUseCases } from '@/application/use-cases/collections-use-cases'
-import { LinksUseCases } from '@/application/use-cases/links-use-cases'
-
 import { NotFoundError } from '@/entities/errors/common'
 import { Collection } from '@/entities/models/collection'
 import { CollectionLinks } from '@/entities/models/collection-link'
 
 import { getInjection } from '@/di/container'
-import { DI_TYPES } from '@/di/types'
 import {
   Card,
   CardDescription,
@@ -24,48 +19,36 @@ export default async function PublicCollectionPage({
 }: {
   params: { fingerprint: string }
 }) {
-  const linksUseCases = getInjection<LinksUseCases>(DI_TYPES.LinksUseCases)
-  try {
-    const link = await linksUseCases.getPublicLink(params.fingerprint)
-    // TODO: implement analytics here
-    permanentRedirect(link.url)
-  } catch (err) {
-    if (err instanceof NotFoundError) {
-      // do nothing, it's most likely a collection
-    } else {
-      throw err
-    }
-  }
+  const getLinkOrCollectionUseCase = getInjection('GetLinkOrCollectionUseCases')
 
-  const collectionsUseCases = getInjection<CollectionsUseCases>(
-    DI_TYPES.CollectionsUseCases
-  )
-  let collection: Collection | null = null
-
+  let collection: Collection
   try {
-    collection = await collectionsUseCases.getPublicCollection(
+    const { link, collection: c } = await getLinkOrCollectionUseCase.execute(
       params.fingerprint
     )
+
+    if (link) {
+      return permanentRedirect(link.url)
+    }
+
+    collection = c
   } catch (err) {
     if (err instanceof NotFoundError) {
       return notFound()
-    } else {
-      throw err
     }
+    throw err
   }
 
-  const collectionLinkUseCases = getInjection<CollectionLinkUseCases>(
-    DI_TYPES.CollectionLinkUseCases
-  )
-  let displayedLinks: CollectionLinks
-
+  let displayedLinks: CollectionLinks = []
   try {
-    displayedLinks = await collectionLinkUseCases.getLinksForCollection(
-      collection.fingerprint
-    )
+    const collectionLinkUseCases = getInjection('CollectionLinkUseCases')
+    displayedLinks =
+      await collectionLinkUseCases.getLinksForCollection(collection)
   } catch (err) {
-    // TODO: check for not exists error, if yes -> return notFound()
-    return <p>Error fetching links for collection...</p>
+    if (!(err instanceof NotFoundError)) {
+      // TODO: send it to Sentry
+      throw err
+    }
   }
 
   return (

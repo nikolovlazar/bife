@@ -4,10 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { ZSAError, createServerAction } from 'zsa'
 
-import { IAuthenticationService } from '@/application/services/authentication-service.interface'
-
 import { getInjection } from '@/di/container'
-import { DI_TYPES } from '@/di/types'
 import {
   forgotPasswordInputSchema,
   resetPasswordInputSchema,
@@ -20,9 +17,7 @@ import {
 export const signInWithPassword = createServerAction()
   .input(signInWithPasswordInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
+    const authenticationService = getInjection('IAuthenticationService')
 
     try {
       await authenticationService.signInWithPassword(
@@ -40,10 +35,7 @@ export const signInWithPassword = createServerAction()
 export const signInWithProvider = createServerAction()
   .input(signInWithProviderInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
-
+    const authenticationService = getInjection('IAuthenticationService')
     const data = await authenticationService.signInWithProvider(input.provider)
     revalidatePath('/', 'layout')
     redirect(data.url)
@@ -53,10 +45,7 @@ export const signUp = createServerAction()
   .input(signUpInputSchema, { type: 'formData' })
   .output(signUpOutputSchema)
   .handler(async ({ input }) => {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
-
+    const authenticationService = getInjection('IAuthenticationService')
     try {
       await authenticationService.signUp(
         input.email,
@@ -75,10 +64,7 @@ export const signUp = createServerAction()
 export const resetPassword = createServerAction()
   .input(resetPasswordInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
-
+    const authenticationService = getInjection('IAuthenticationService')
     try {
       await authenticationService.resetPassword(input.password)
     } catch (err) {
@@ -92,10 +78,7 @@ export const resetPassword = createServerAction()
 export const forgotPassword = createServerAction()
   .input(forgotPasswordInputSchema, { type: 'formData' })
   .handler(async ({ input }) => {
-    const authenticationService = getInjection<IAuthenticationService>(
-      DI_TYPES.AuthenticationService
-    )
-
+    const authenticationService = getInjection('IAuthenticationService')
     try {
       await authenticationService.forgotPassword(input.email, input.tsToken)
     } catch (err) {

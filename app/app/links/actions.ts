@@ -3,15 +3,11 @@
 import { revalidatePath } from 'next/cache'
 import { ZSAError } from 'zsa'
 
-import { CollectionLinkUseCases } from '@/application/use-cases/collection-link-use-cases'
-import { LinksUseCases } from '@/application/use-cases/links-use-cases'
-
 import { OperationError } from '@/entities/errors/common'
 import type { CollectionLink } from '@/entities/models/collection-link'
 import { Link } from '@/entities/models/link'
 
 import { getInjection } from '@/di/container'
-import { DI_TYPES } from '@/di/types'
 import {
   createLinkInputSchema,
   deleteLinkInputSchema,
@@ -24,7 +20,7 @@ export const createLink = authenticatedProcedure
   .createServerAction()
   .input(createLinkInputSchema)
   .handler(async ({ input }) => {
-    const linksUseCases = getInjection<LinksUseCases>(DI_TYPES.LinksUseCases)
+    const linksUseCases = getInjection('LinksUseCases')
 
     let link: Link
 
@@ -48,7 +44,7 @@ export const updateLink = authenticatedProcedure
   .createServerAction()
   .input(updateLinkInputSchema)
   .handler(async ({ input }) => {
-    const linksUseCases = getInjection<LinksUseCases>(DI_TYPES.LinksUseCases)
+    const linksUseCases = getInjection('LinksUseCases')
 
     let link: Link
 
@@ -72,7 +68,7 @@ export const deleteLink = authenticatedProcedure
   .createServerAction()
   .input(deleteLinkInputSchema)
   .handler(async ({ input }) => {
-    const linksUseCases = getInjection<LinksUseCases>(DI_TYPES.LinksUseCases)
+    const linksUseCases = getInjection('LinksUseCases')
 
     try {
       await linksUseCases.deleteLink(input.fingerprint)
@@ -92,9 +88,7 @@ export const toggleLinkVisibility = authenticatedProcedure
   .createServerAction()
   .input(toggleLinkVisibilityInputSchema)
   .handler(async ({ input }) => {
-    const collectionLinkUseCases = getInjection<CollectionLinkUseCases>(
-      DI_TYPES.CollectionLinkUseCases
-    )
+    const collectionLinkUseCases = getInjection('CollectionLinkUseCases')
 
     let updated: CollectionLink
 

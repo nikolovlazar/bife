@@ -4,6 +4,7 @@ import { AuthenticationModule } from './modules/authentication.module'
 import { CollectionLinkModule } from './modules/collection-link.module'
 import { CollectionsModule } from './modules/collection.module'
 import { LinksModule } from './modules/links.module'
+import { DI_RETURN_TYPES } from './types'
 
 const ApplicationContainer = new Container({
   defaultScope: 'Singleton',
@@ -18,8 +19,10 @@ const initializeContainer = () => {
 
 initializeContainer()
 
-export const getInjection = <T>(symbol: symbol) => {
-  return ApplicationContainer.get<T>(symbol)
+export function getInjection<K extends keyof DI_RETURN_TYPES>(
+  symbol: K
+): DI_RETURN_TYPES[K] {
+  return ApplicationContainer.get(symbol)
 }
 
 export { ApplicationContainer }

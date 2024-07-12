@@ -2,6 +2,7 @@ import { ContainerModule, interfaces } from 'inversify'
 
 import { ICollectionLinkRepository } from '@/application/repositories/collection-link-repository.interface'
 import { CollectionLinkUseCases } from '@/application/use-cases/collection-link-use-cases'
+import { GetLinkOrCollectionUseCase } from '@/application/use-cases/get-link-collection.use-case'
 
 import { CollectionLinkRepository } from '@/infrastructure/repositories/collection-link-repository'
 
@@ -13,6 +14,9 @@ const initializeModule = (bind: interfaces.Bind) => {
   )
   bind<CollectionLinkUseCases>(DI_TYPES.CollectionLinkUseCases).to(
     CollectionLinkUseCases
+  )
+  bind<GetLinkOrCollectionUseCase>(DI_TYPES.GetLinkOrCollectionUseCases).to(
+    GetLinkOrCollectionUseCase
   )
 }
 
