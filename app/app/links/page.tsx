@@ -10,6 +10,7 @@ async function getLinks() {
 
   return links
 }
+
 export default async function LinksPage() {
   const links = await getLinks()
 
