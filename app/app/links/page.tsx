@@ -14,7 +14,10 @@ async function getLinks() {
     throw new Error('User not found')
   }
 
-  const { data, error: linksError } = await supabase.from('link').select()
+  const { data, error: linksError } = await supabase
+    .from('link')
+    .select()
+    .eq('created_by', user.id)
 
   if (linksError) {
     console.error(linksError)
