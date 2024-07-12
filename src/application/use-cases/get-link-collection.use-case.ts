@@ -7,15 +7,15 @@ import { NotFoundError } from '@/entities/errors/common'
 import { Collection } from '@/entities/models/collection'
 import { Link } from '@/entities/models/link'
 
-import { DI_TYPES } from '@/di/types'
+import { DI_SYMBOLS } from '@/di/types'
 
 @injectable()
 export class GetLinkOrCollectionUseCase {
   constructor(
-    @inject(DI_TYPES.CollectionsRepository)
+    @inject(DI_SYMBOLS.ICollectionsRepository)
     private _collectionsRepository: ICollectionsRepository,
 
-    @inject(DI_TYPES.LinksRepository)
+    @inject(DI_SYMBOLS.ILinksRepository)
     private _linksRepository: ILinksRepository
   ) {}
 

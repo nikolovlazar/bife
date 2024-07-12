@@ -5,13 +5,13 @@ import { CollectionsUseCases } from '@/application/use-cases/collections-use-cas
 
 import { CollectionsRepository } from '@/infrastructure/repositories/collections-repository'
 
-import { DI_TYPES } from '../types'
+import { DI_SYMBOLS } from '../types'
 
 const initializeModule = (bind: interfaces.Bind) => {
-  bind<ICollectionsRepository>(DI_TYPES.CollectionsRepository).to(
+  bind<ICollectionsRepository>(DI_SYMBOLS.ICollectionsRepository).to(
     CollectionsRepository
   )
-  bind<CollectionsUseCases>(DI_TYPES.CollectionsUseCases).to(
+  bind<CollectionsUseCases>(DI_SYMBOLS.CollectionsUseCases).to(
     CollectionsUseCases
   )
 }

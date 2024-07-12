@@ -7,17 +7,15 @@ import { UnauthorizedError } from '@/entities/errors/auth'
 import { Collection } from '@/entities/models/collection'
 import { Link, LinkInsert, LinkUpdate } from '@/entities/models/link'
 
-import { CollectionLinkUseCases } from './collection-link-use-cases'
-import { CollectionsUseCases } from './collections-use-cases'
 import { getInjection } from '@/di/container'
-import { DI_TYPES } from '@/di/types'
+import { DI_SYMBOLS } from '@/di/types'
 
 @injectable()
 export class LinksUseCases {
   constructor(
-    @inject(DI_TYPES.AuthenticationService)
+    @inject(DI_SYMBOLS.IAuthenticationService)
     private _authenticationService: IAuthenticationService,
-    @inject(DI_TYPES.LinksRepository)
+    @inject(DI_SYMBOLS.ILinksRepository)
     private _linksRepository: ILinksRepository
   ) {}
 

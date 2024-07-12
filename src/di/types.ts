@@ -7,14 +7,14 @@ import { CollectionsUseCases } from '@/application/use-cases/collections-use-cas
 import { GetLinkOrCollectionUseCase } from '@/application/use-cases/get-link-collection.use-case'
 import { LinksUseCases } from '@/application/use-cases/links-use-cases'
 
-export const DI_TYPES = {
+export const DI_SYMBOLS = {
   // Services
-  AuthenticationService: Symbol.for('AuthenticationService'),
+  IAuthenticationService: Symbol.for('IAuthenticationService'),
 
   // Repositories
-  CollectionsRepository: Symbol.for('CollectionsRepository'),
-  CollectionLinkRepository: Symbol.for('CollectionLinkRepository'),
-  LinksRepository: Symbol.for('LinksRepository'),
+  ICollectionsRepository: Symbol.for('ICollectionsRepository'),
+  ICollectionLinkRepository: Symbol.for('ICollectionLinkRepository'),
+  ILinksRepository: Symbol.for('ILinksRepository'),
 
   // Use cases
   CollectionsUseCases: Symbol.for('CollectionsUseCases'),

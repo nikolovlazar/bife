@@ -5,11 +5,11 @@ import { LinksUseCases } from '@/application/use-cases/links-use-cases'
 
 import { LinksRepository } from '@/infrastructure/repositories/links-repository'
 
-import { DI_TYPES } from '../types'
+import { DI_SYMBOLS } from '../types'
 
 const initializeModule = (bind: interfaces.Bind) => {
-  bind<ILinksRepository>(DI_TYPES.LinksRepository).to(LinksRepository)
-  bind<LinksUseCases>(DI_TYPES.LinksUseCases).to(LinksUseCases)
+  bind<ILinksRepository>(DI_SYMBOLS.ILinksRepository).to(LinksRepository)
+  bind<LinksUseCases>(DI_SYMBOLS.LinksUseCases).to(LinksUseCases)
 }
 
 export const LinksModule = new ContainerModule(initializeModule)

@@ -10,15 +10,15 @@ import {
   CollectionUpdate,
 } from '@/entities/models/collection'
 
-import { DI_TYPES } from '@/di/types'
+import { DI_SYMBOLS } from '@/di/types'
 
 @injectable()
 export class CollectionsUseCases {
   constructor(
-    @inject(DI_TYPES.AuthenticationService)
+    @inject(DI_SYMBOLS.IAuthenticationService)
     private _authenticationService: IAuthenticationService,
 
-    @inject(DI_TYPES.CollectionsRepository)
+    @inject(DI_SYMBOLS.ICollectionsRepository)
     private _collectionsRepository: ICollectionsRepository
   ) {}
 

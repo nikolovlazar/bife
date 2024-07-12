@@ -6,16 +6,16 @@ import { GetLinkOrCollectionUseCase } from '@/application/use-cases/get-link-col
 
 import { CollectionLinkRepository } from '@/infrastructure/repositories/collection-link-repository'
 
-import { DI_TYPES } from '../types'
+import { DI_SYMBOLS } from '../types'
 
 const initializeModule = (bind: interfaces.Bind) => {
-  bind<ICollectionLinkRepository>(DI_TYPES.CollectionLinkRepository).to(
+  bind<ICollectionLinkRepository>(DI_SYMBOLS.ICollectionLinkRepository).to(
     CollectionLinkRepository
   )
-  bind<CollectionLinkUseCases>(DI_TYPES.CollectionLinkUseCases).to(
+  bind<CollectionLinkUseCases>(DI_SYMBOLS.CollectionLinkUseCases).to(
     CollectionLinkUseCases
   )
-  bind<GetLinkOrCollectionUseCase>(DI_TYPES.GetLinkOrCollectionUseCases).to(
+  bind<GetLinkOrCollectionUseCase>(DI_SYMBOLS.GetLinkOrCollectionUseCases).to(
     GetLinkOrCollectionUseCase
   )
 }

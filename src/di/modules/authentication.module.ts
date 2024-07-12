@@ -4,10 +4,10 @@ import { IAuthenticationService } from '@/application/services/authentication-se
 
 import { AuthenticationService } from '@/infrastructure/services/authentication-service'
 
-import { DI_TYPES } from '../types'
+import { DI_SYMBOLS } from '../types'
 
 const initializeModule = (bind: interfaces.Bind) => {
-  bind<IAuthenticationService>(DI_TYPES.AuthenticationService).to(
+  bind<IAuthenticationService>(DI_SYMBOLS.IAuthenticationService).to(
     AuthenticationService
   )
 }

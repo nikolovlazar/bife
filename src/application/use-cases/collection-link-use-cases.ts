@@ -12,14 +12,14 @@ import {
 import { User } from '@/entities/models/users'
 
 import { getInjection } from '@/di/container'
-import { DI_TYPES } from '@/di/types'
+import { DI_SYMBOLS } from '@/di/types'
 
 @injectable()
 export class CollectionLinkUseCases {
   constructor(
-    @inject(DI_TYPES.AuthenticationService)
+    @inject(DI_SYMBOLS.IAuthenticationService)
     private _authenticationService: IAuthenticationService,
-    @inject(DI_TYPES.CollectionLinkRepository)
+    @inject(DI_SYMBOLS.ICollectionLinkRepository)
     private _collectionLinkRepository: ICollectionLinkRepository
   ) {}
 
