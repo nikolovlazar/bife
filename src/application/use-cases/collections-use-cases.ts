@@ -17,6 +17,7 @@ export class CollectionsUseCases {
   constructor(
     @inject(DI_TYPES.AuthenticationService)
     private _authenticationService: IAuthenticationService,
+
     @inject(DI_TYPES.CollectionsRepository)
     private _collectionsRepository: ICollectionsRepository
   ) {}

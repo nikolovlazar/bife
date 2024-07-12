@@ -3,7 +3,6 @@ import { nanoid } from 'nanoid'
 
 import { ICollectionsRepository } from '@/application/repositories/collections-repository.interface'
 
-import { OperationError } from '@/entities/errors/common'
 import {
   Collection,
   CollectionInsert,
@@ -12,6 +11,8 @@ import {
 } from '@/entities/models/collection'
 
 import { createClient } from '@/infrastructure/utils/supabase/server'
+
+import { mapPostgrestErrorToDomainError } from '../utils/supabase/errors'
 
 @injectable()
 export class CollectionsRepository implements ICollectionsRepository {
@@ -36,9 +37,7 @@ export class CollectionsRepository implements ICollectionsRepository {
       .single()
 
     if (error) {
-      throw new OperationError(error.message, {
-        cause: error,
-      })
+      throw mapPostgrestErrorToDomainError(error)
     }
 
     return CollectionSchema.parse(data)
@@ -53,7 +52,7 @@ export class CollectionsRepository implements ICollectionsRepository {
       .single()
 
     if (error) {
-      throw new OperationError(error.message, { cause: error })
+      throw mapPostgrestErrorToDomainError(error)
     }
 
     return CollectionSchema.parse(data)
@@ -69,7 +68,7 @@ export class CollectionsRepository implements ICollectionsRepository {
       .single()
 
     if (error) {
-      throw new OperationError(error.message, { cause: error })
+      throw mapPostgrestErrorToDomainError(error)
     }
 
     return CollectionSchema.parse(data)
@@ -89,7 +88,7 @@ export class CollectionsRepository implements ICollectionsRepository {
       .single()
 
     if (error) {
-      throw new OperationError(error.message, { cause: error })
+      throw mapPostgrestErrorToDomainError(error)
     }
 
     return CollectionSchema.parse(data)
@@ -105,7 +104,7 @@ export class CollectionsRepository implements ICollectionsRepository {
       .single()
 
     if (error) {
-      throw new OperationError(error.message, { cause: error })
+      throw mapPostgrestErrorToDomainError(error)
     }
 
     return CollectionSchema.parse(data)

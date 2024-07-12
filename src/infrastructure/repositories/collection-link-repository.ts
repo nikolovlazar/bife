@@ -2,7 +2,6 @@ import { injectable } from 'inversify'
 
 import { ICollectionLinkRepository } from '@/application/repositories/collection-link-repository.interface'
 
-import { OperationError } from '@/entities/errors/common'
 import {
   CollectionLinkSchema,
   CollectionLinks,
@@ -10,6 +9,8 @@ import {
 } from '@/entities/models/collection-link'
 
 import { createClient } from '@/infrastructure/utils/supabase/server'
+
+import { mapPostgrestErrorToDomainError } from '../utils/supabase/errors'
 
 @injectable()
 export class CollectionLinkRepository implements ICollectionLinkRepository {
@@ -25,12 +26,7 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
       .single()
 
     if (error) {
-      // TODO: Switch on the error.code and throw more specific errors
-      // but not as specific as before
-      // and change the message to be more specific - hardcode it
-      throw new OperationError(error.message, {
-        cause: error,
-      })
+      throw mapPostgrestErrorToDomainError(error)
     }
 
     return CollectionLinkSchema.parse(data)
@@ -51,9 +47,7 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
       .single()
 
     if (error) {
-      throw new OperationError(error.message, {
-        cause: error,
-      })
+      throw mapPostgrestErrorToDomainError(error)
     }
 
     return CollectionLinkSchema.parse(data)
@@ -75,9 +69,7 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
       .single()
 
     if (error) {
-      throw new OperationError(error.message, {
-        cause: error,
-      })
+      throw mapPostgrestErrorToDomainError(error)
     }
 
     return CollectionLinkSchema.parse(data)
@@ -97,9 +89,7 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
       .single()
 
     if (error) {
-      throw new OperationError(error.message, {
-        cause: error,
-      })
+      throw mapPostgrestErrorToDomainError(error)
     }
 
     return CollectionLinkSchema.parse(data)
@@ -120,9 +110,7 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
     )
 
     if (error) {
-      throw new OperationError(error.message, {
-        cause: error,
-      })
+      throw mapPostgrestErrorToDomainError(error)
     }
   }
 
@@ -137,9 +125,7 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
       .eq('collection_pk', collectionFingerprint)
 
     if (error) {
-      throw new OperationError(error.message, {
-        cause: error,
-      })
+      throw mapPostgrestErrorToDomainError(error)
     }
 
     const nonNullLinks = data.filter((entry) => entry.link !== null)

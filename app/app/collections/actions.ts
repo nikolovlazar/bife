@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { ZSAError } from 'zsa'
 
+import { CollectionLinkUseCases } from '@/application/use-cases/collection-link-use-cases'
 import { CollectionsUseCases } from '@/application/use-cases/collections-use-cases'
 
 import { OperationError } from '@/entities/errors/common'
@@ -12,7 +13,6 @@ import { CollectionLink } from '@/entities/models/collection-link'
 
 import { getInjection } from '@/di/container'
 import { DI_TYPES } from '@/di/types'
-import { ServiceLocator } from '@/services/serviceLocator'
 import {
   addLinkToCollectionInputSchema,
   createCollectionInputSchema,
@@ -57,11 +57,13 @@ export const updateCollection = authenticatedProcedure
   .createServerAction()
   .input(updateCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionsService = ServiceLocator.getService('CollectionsService')
+    const collectionsUseCases = getInjection<CollectionsUseCases>(
+      DI_TYPES.CollectionsUseCases
+    )
 
     let collection: Collection
     try {
-      collection = await collectionsService.updateCollection(
+      collection = await collectionsUseCases.updateCollection(
         input.fingerprint,
         input
       )
@@ -81,12 +83,14 @@ export const deleteCollection = authenticatedProcedure
   .createServerAction()
   .input(deleteCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionsService = ServiceLocator.getService('CollectionsService')
+    const collectionsUseCases = getInjection<CollectionsUseCases>(
+      DI_TYPES.CollectionsUseCases
+    )
 
     let collection: Collection
 
     try {
-      collection = await collectionsService.deleteCollection(input.fingerprint)
+      collection = await collectionsUseCases.deleteCollection(input.fingerprint)
     } catch (err) {
       throw new ZSAError('ERROR', err)
     }
@@ -99,12 +103,14 @@ export const toggleCollectionPublished = authenticatedProcedure
   .createServerAction()
   .input(toggleCollectionPublishedInputSchema)
   .handler(async ({ input }) => {
-    const collectionsService = ServiceLocator.getService('CollectionsService')
+    const collectionsUseCases = getInjection<CollectionsUseCases>(
+      DI_TYPES.CollectionsUseCases
+    )
 
     let updatedCollection: Collection
 
     try {
-      updatedCollection = await collectionsService.updateCollection(
+      updatedCollection = await collectionsUseCases.updateCollection(
         input.fingerprint,
         { published: input.checked }
       )
@@ -124,14 +130,14 @@ export const addLinkToCollection = authenticatedProcedure
   .createServerAction()
   .input(addLinkToCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionLinkService = ServiceLocator.getService(
-      'CollectionLinkService'
+    const collectionLinkUseCases = getInjection<CollectionLinkUseCases>(
+      DI_TYPES.CollectionLinkUseCases
     )
 
     let relation: CollectionLink
 
     try {
-      relation = await collectionLinkService.addLinkToCollection(
+      relation = await collectionLinkUseCases.addLinkToCollection(
         input.fingerprint,
         input.linkFingerprint
       )
@@ -147,14 +153,14 @@ export const removeLinkFromCollection = authenticatedProcedure
   .createServerAction()
   .input(removeLinkFromCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionLinkService = ServiceLocator.getService(
-      'CollectionLinkService'
+    const collectionLinkUseCases = getInjection<CollectionLinkUseCases>(
+      DI_TYPES.CollectionLinkUseCases
     )
 
     let relation: CollectionLink
 
     try {
-      relation = await collectionLinkService.removeLinkFromCollection(
+      relation = await collectionLinkUseCases.removeLinkFromCollection(
         input.fingerprint,
         input.linkFingerprint
       )
@@ -171,12 +177,12 @@ export const updateLinksOrder = authenticatedProcedure
   .createServerAction()
   .input(updateLinksOrderInputSchema)
   .handler(async ({ input }) => {
-    const collectionLinkService = ServiceLocator.getService(
-      'CollectionLinkService'
+    const collectionLinkUseCases = getInjection<CollectionLinkUseCases>(
+      DI_TYPES.CollectionLinkUseCases
     )
 
     try {
-      await collectionLinkService.updateLinksOrder(
+      await collectionLinkUseCases.updateLinksOrder(
         input.fingerprint,
         input.linksOrder
       )

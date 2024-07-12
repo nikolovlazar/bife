@@ -3,7 +3,6 @@ import { nanoid } from 'nanoid'
 
 import { ILinksRepository } from '@/application/repositories/links-repository.interface'
 
-import { OperationError } from '@/entities/errors/common'
 import {
   Link,
   LinkInsert,
@@ -12,6 +11,8 @@ import {
 } from '@/entities/models/link'
 
 import { createClient } from '@/infrastructure/utils/supabase/server'
+
+import { mapPostgrestErrorToDomainError } from '../utils/supabase/errors'
 
 @injectable()
 export class LinksRepository implements ILinksRepository {
@@ -26,9 +27,7 @@ export class LinksRepository implements ILinksRepository {
       .single()
 
     if (error) {
-      throw new OperationError(error.message, {
-        cause: error,
-      })
+      throw mapPostgrestErrorToDomainError(error)
     }
 
     return LinkSchema.parse(data)
@@ -53,9 +52,7 @@ export class LinksRepository implements ILinksRepository {
       .single()
 
     if (error) {
-      throw new OperationError(error.message, {
-        cause: error,
-      })
+      throw mapPostgrestErrorToDomainError(error)
     }
 
     return LinkSchema.parse(data)
@@ -71,9 +68,7 @@ export class LinksRepository implements ILinksRepository {
       .single()
 
     if (error) {
-      throw new OperationError(error.message, {
-        cause: error,
-      })
+      throw mapPostgrestErrorToDomainError(error)
     }
 
     return LinkSchema.parse(updatedLink)
@@ -87,9 +82,7 @@ export class LinksRepository implements ILinksRepository {
       .eq('fingerprint', fingerprint)
 
     if (error) {
-      throw new OperationError(error.message, {
-        cause: error,
-      })
+      throw mapPostgrestErrorToDomainError(error)
     }
   }
   setLinkVisibility(

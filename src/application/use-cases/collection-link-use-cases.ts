@@ -131,7 +131,9 @@ export class CollectionLinkUseCases {
       )
 
       shouldFilterInvisibleLinks = collection.created_by !== user.id
-    } catch (err) {}
+    } catch (err) {
+      // TODO: handle this
+    }
 
     const links = await this._collectionLinkRepository.getLinksForCollection(
       collectionFingerprint
