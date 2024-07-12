@@ -1,29 +1,14 @@
-import { createClient } from '@/infrastructure/utils/supabase/server'
-
 import { collectionColumns } from './_collections-table/columns'
 import { CollectionsDataTable } from './_collections-table/table'
 import CreateCollection from './create-collection'
+import { getInjection } from '@/di/container'
 
 async function getCollections() {
-  const supabase = createClient()
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser()
-  if (error || !user) {
-    throw new Error('User not found')
-  }
+  const collectionsUseCases = getInjection('CollectionsUseCases')
 
-  const { data, error: collectionError } = await supabase
-    .from('collection')
-    .select()
-    .eq('created_by', user.id)
+  const collections = await collectionsUseCases.getOwnCollections()
 
-  if (collectionError) {
-    throw new Error('Failed to fetch collections')
-  }
-
-  return data
+  return collections
 }
 
 export default async function Collections() {

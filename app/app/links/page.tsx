@@ -1,30 +1,14 @@
-import { createClient } from '@/infrastructure/utils/supabase/server'
-
 import { linkColumns } from './_links-table/columns'
 import { LinksDataTable } from './_links-table/table'
 import { CreateLink } from './create-link'
+import { getInjection } from '@/di/container'
 
 async function getLinks() {
-  const supabase = createClient()
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser()
-  if (error || !user) {
-    throw new Error('User not found')
-  }
+  const linksUseCases = getInjection('LinksUseCases')
 
-  const { data, error: linksError } = await supabase
-    .from('link')
-    .select()
-    .eq('created_by', user.id)
+  const links = await linksUseCases.getOwnLinks()
 
-  if (linksError) {
-    console.error(linksError)
-    throw new Error('Failed to fetch links')
-  }
-
-  return data
+  return links
 }
 export default async function LinksPage() {
   const links = await getLinks()

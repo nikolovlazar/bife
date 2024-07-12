@@ -25,6 +25,13 @@ export class LinksUseCases {
     return link
   }
 
+  async getOwnLinks(): Promise<Link[]> {
+    const user = await this._authenticationService.getUser()
+    const links = await this._linksRepository.getLinksForUser(user.id)
+
+    return links
+  }
+
   async getLink(fingerprint: string): Promise<Link> {
     const user = await this._authenticationService.getUser()
 

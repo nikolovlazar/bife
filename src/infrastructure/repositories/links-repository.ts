@@ -8,6 +8,7 @@ import {
   LinkInsert,
   LinkSchema,
   LinkUpdate,
+  LinksSchema,
 } from '@/entities/models/link'
 
 import { createClient } from '@/infrastructure/utils/supabase/server'
@@ -31,6 +32,20 @@ export class LinksRepository implements ILinksRepository {
     }
 
     return LinkSchema.parse(data)
+  }
+
+  async getLinksForUser(userId: string): Promise<Link[]> {
+    const db = createClient()
+    const { data, error } = await db
+      .from('link')
+      .select()
+      .eq('created_by', userId)
+
+    if (error) {
+      throw mapPostgrestErrorToDomainError(error)
+    }
+
+    return LinksSchema.parse(data)
   }
 
   async createLink(link: LinkInsert, userId: string): Promise<Link> {

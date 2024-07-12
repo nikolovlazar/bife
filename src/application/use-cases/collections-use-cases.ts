@@ -10,6 +10,7 @@ import {
   CollectionUpdate,
 } from '@/entities/models/collection'
 
+import { getInjection } from '@/di/container'
 import { DI_SYMBOLS } from '@/di/types'
 
 @injectable()
@@ -52,6 +53,16 @@ export class CollectionsUseCases {
     }
 
     return collection
+  }
+
+  async getOwnCollections(): Promise<Collection[]> {
+    const user = await this._authenticationService.getUser()
+
+    const collections = await this._collectionsRepository.getCollectionsForUser(
+      user.id
+    )
+
+    return collections
   }
 
   async updateCollection(

@@ -9,6 +9,8 @@ export const CollectionSchema = z.object({
   created_at: z.string(),
 })
 
+export const CollectionsSchema = z.array(CollectionSchema)
+
 export type Collection = z.infer<typeof CollectionSchema>
 
 export const CollectionInsertSchema = CollectionSchema.pick({

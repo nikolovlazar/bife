@@ -10,6 +10,8 @@ export const LinkSchema = z.object({
 
 export type Link = z.infer<typeof LinkSchema>
 
+export const LinksSchema = z.array(LinkSchema)
+
 export const LinkInsertSchema = LinkSchema.pick({
   label: true,
   url: true,

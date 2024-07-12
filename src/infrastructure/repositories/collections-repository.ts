@@ -8,6 +8,7 @@ import {
   CollectionInsert,
   CollectionSchema,
   CollectionUpdate,
+  CollectionsSchema,
 } from '@/entities/models/collection'
 
 import { createClient } from '@/infrastructure/utils/supabase/server'
@@ -56,6 +57,20 @@ export class CollectionsRepository implements ICollectionsRepository {
     }
 
     return CollectionSchema.parse(data)
+  }
+
+  async getCollectionsForUser(userId: string) {
+    const db = createClient()
+    const { data, error } = await db
+      .from('collection')
+      .select()
+      .eq('created_by', userId)
+
+    if (error) {
+      throw mapPostgrestErrorToDomainError(error)
+    }
+
+    return CollectionsSchema.parse(data)
   }
 
   async getUsersCollection(fingerprint: string, userId: string) {
