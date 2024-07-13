@@ -1,9 +1,7 @@
 'use client'
 
-import { rankItem } from '@tanstack/match-sorter-utils'
 import {
   ColumnDef,
-  FilterFn,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
