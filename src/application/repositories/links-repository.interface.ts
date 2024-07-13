@@ -10,10 +10,4 @@ export interface ILinksRepository {
   updateLink(fingerprint: string, link: LinkUpdate): Promise<Link>
 
   deleteLink(fingerprint: string): Promise<void>
-
-  setLinkVisibility(
-    collectionFingerprint: string,
-    linkFingerprint: string,
-    visibility: boolean
-  ): Promise<Link>
 }

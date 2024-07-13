@@ -2,12 +2,9 @@
 
 import {
   ColumnDef,
-  ColumnFiltersState,
-  SortingState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
 import { useState } from 'react'
@@ -23,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/web/_components/ui/table'
+import { fuzzyFilter } from '@/web/_lib/fuzzy-filter'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -33,8 +31,7 @@ export function CollectionsDataTable<TData extends Collection, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [globalFilter, setGlobalFilter] = useState('')
 
   const table = useReactTable({
     data,
@@ -43,13 +40,14 @@ export function CollectionsDataTable<TData extends Collection, TValue>({
       size: Number.MAX_SAFE_INTEGER,
     },
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: 'fuzzy',
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
     state: {
-      sorting,
-      columnFilters,
+      globalFilter,
     },
   })
 
@@ -58,9 +56,9 @@ export function CollectionsDataTable<TData extends Collection, TValue>({
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter collections..."
-          value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
+          value={globalFilter ?? ''}
           onChange={(event) =>
-            table.getColumn('title')?.setFilterValue(event.target.value)
+            setGlobalFilter(String(event.currentTarget.value))
           }
           className="max-w-sm"
         />

@@ -10,7 +10,6 @@ import {
   CollectionUpdate,
 } from '@/entities/models/collection'
 
-import { getInjection } from '@/di/container'
 import { DI_SYMBOLS } from '@/di/types'
 
 @injectable()

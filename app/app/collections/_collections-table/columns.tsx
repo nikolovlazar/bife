@@ -22,6 +22,7 @@ import {
 export const collectionColumns: ColumnDef<Collection>[] = [
   {
     accessorKey: 'title',
+    filterFn: 'includesString',
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -39,6 +40,7 @@ export const collectionColumns: ColumnDef<Collection>[] = [
   },
   {
     accessorKey: 'description',
+    filterFn: 'includesString',
     header: 'Description',
   },
   {
@@ -59,6 +61,7 @@ export const collectionColumns: ColumnDef<Collection>[] = [
   {
     accessorKey: 'fingerprint',
     header: 'Fingerprint',
+    filterFn: 'equalsString',
   },
   {
     id: 'actions',

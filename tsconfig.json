@@ -29,6 +29,7 @@
   "include": [
     "next-env.d.ts",
     "tailwind.d.ts",
+    "react-table.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"

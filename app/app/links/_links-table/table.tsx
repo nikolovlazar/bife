@@ -1,14 +1,19 @@
 'use client'
 
+import { rankItem } from '@tanstack/match-sorter-utils'
 import {
   ColumnDef,
+  FilterFn,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { useState } from 'react'
 
 import { Link } from '@/entities/models/link'
 
+import { Input } from '@/web/_components/ui/input'
 import {
   Table,
   TableBody,
@@ -17,6 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/web/_components/ui/table'
+import { fuzzyFilter } from '@/web/_lib/fuzzy-filter'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -27,6 +33,8 @@ export function LinksDataTable<TData extends Link, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [globalFilter, setGlobalFilter] = useState('')
+
   const table = useReactTable({
     data,
     columns,
@@ -34,10 +42,29 @@ export function LinksDataTable<TData extends Link, TValue>({
       size: Number.MAX_SAFE_INTEGER,
     },
     getCoreRowModel: getCoreRowModel(),
+    onGlobalFilterChange: setGlobalFilter,
+    getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: 'fuzzy',
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
+    state: {
+      globalFilter,
+    },
   })
 
   return (
     <>
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Filter links..."
+          value={globalFilter ?? ''}
+          onChange={(event) =>
+            setGlobalFilter(String(event.currentTarget.value))
+          }
+          className="max-w-sm"
+        />
+      </div>
       <div className="grid rounded-md border">
         <Table>
           <TableHeader>

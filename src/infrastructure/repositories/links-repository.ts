@@ -100,11 +100,4 @@ export class LinksRepository implements ILinksRepository {
       throw mapPostgrestErrorToDomainError(error)
     }
   }
-  setLinkVisibility(
-    collectionFingerprint: string,
-    linkFingerprint: string,
-    visibility: boolean
-  ): Promise<Link> {
-    throw new Error('Method not implemented.')
-  }
 }

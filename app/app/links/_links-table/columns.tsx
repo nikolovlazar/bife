@@ -21,14 +21,17 @@ export const linkColumns: ColumnDef<Link>[] = [
   {
     accessorKey: 'url',
     header: 'URL',
+    filterFn: 'includesString',
   },
   {
     accessorKey: 'label',
     header: 'Label',
+    filterFn: 'includesString',
   },
   {
     accessorKey: 'fingerprint',
     header: 'Fingerprint',
+    filterFn: 'equalsString',
   },
   {
     accessorKey: 'created_at',

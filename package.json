@@ -32,6 +32,7 @@
     "@radix-ui/react-toast": "^1.1.5",
     "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.43.2",
+    "@tanstack/match-sorter-utils": "^8.15.1",
     "@tanstack/react-table": "^8.17.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
