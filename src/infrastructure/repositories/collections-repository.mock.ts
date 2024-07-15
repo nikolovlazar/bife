@@ -6,7 +6,11 @@ import {
   NotFoundError,
   UniqueConstraintViolationError,
 } from '@/entities/errors/common'
-import { Collection, CollectionInsert } from '@/entities/models/collection'
+import {
+  Collection,
+  CollectionInsert,
+  CollectionInsertSchema,
+} from '@/entities/models/collection'
 
 @injectable()
 export class MockCollectionsRepository implements ICollectionsRepository {
@@ -30,6 +34,8 @@ export class MockCollectionsRepository implements ICollectionsRepository {
       )
     }
 
+    CollectionInsertSchema.parse(collection)
+
     const { title, description } = collection
 
     const newCollection: Collection = {
@@ -47,7 +53,6 @@ export class MockCollectionsRepository implements ICollectionsRepository {
   }
 
   getCollection(fingerprint: string): Promise<Collection> {
-    console.log('COLLECTIONS LENGTH', this._collections.length)
     const collection = this._collections.find(
       (collection) => collection.fingerprint === fingerprint
     )

@@ -7,7 +7,7 @@ import {
   initializeContainer,
 } from '@/di/container'
 
-describe('collections-use-cases', () => {
+describe('Create Collections', () => {
   beforeEach(() => {
     initializeContainer()
   })
@@ -28,6 +28,26 @@ describe('collections-use-cases', () => {
 
     expect(collection.title).toBe(title)
     expect(collection.description).toBe(description)
+    expect(collection.fingerprint).not.toBe('test-fingerprint')
+  })
+
+  it('should throw when creating a collection with invalid input', async () => {
+    const collectionsUseCases = getInjection('CollectionsUseCases')
+
+    // @ts-ignore
+    expect(() => collectionsUseCases.createCollection({})).rejects.toThrow(
+      'Required'
+    )
+  })
+})
+
+describe('Get Collection', () => {
+  beforeEach(() => {
+    initializeContainer()
+  })
+
+  afterEach(() => {
+    destroyContainer()
   })
 
   it('should return the collection with a valid fingerprint', async () => {
