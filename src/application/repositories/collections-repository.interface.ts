@@ -7,7 +7,8 @@ import {
 export interface ICollectionsRepository {
   createCollection(
     collection: CollectionInsert,
-    userId: string
+    userId: string,
+    fingerprint: string
   ): Promise<Collection>
 
   getCollection(fingerprint: string): Promise<Collection>

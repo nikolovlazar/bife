@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify'
+import { nanoid } from 'nanoid'
 
 import type { ICollectionsRepository } from '@/application/repositories/collections-repository.interface'
 import type { IAuthenticationService } from '@/application/services/authentication-service.interface'
@@ -25,9 +26,12 @@ export class CollectionsUseCases {
   async createCollection(collection: CollectionInsert): Promise<Collection> {
     const user = await this._authenticationService.getUser()
 
+    const fingerprint = nanoid(8)
+
     const newCollection = await this._collectionsRepository.createCollection(
       collection,
-      user.id
+      user.id,
+      fingerprint
     )
 
     return newCollection

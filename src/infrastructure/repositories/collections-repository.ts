@@ -1,5 +1,4 @@
 import { injectable } from 'inversify'
-import { nanoid } from 'nanoid'
 
 import { ICollectionsRepository } from '@/application/repositories/collections-repository.interface'
 
@@ -19,11 +18,13 @@ import { mapPostgrestErrorToDomainError } from '../utils/supabase/errors'
 export class CollectionsRepository implements ICollectionsRepository {
   constructor() {}
 
-  async createCollection(collection: CollectionInsert, userId: string) {
+  async createCollection(
+    collection: CollectionInsert,
+    userId: string,
+    fingerprint: string
+  ) {
     const db = createClient()
     const { title, description } = collection
-
-    const fingerprint = nanoid(8)
 
     const { data, error } = await db
       .from('collection')

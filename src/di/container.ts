@@ -10,14 +10,23 @@ const ApplicationContainer = new Container({
   defaultScope: 'Singleton',
 })
 
-const initializeContainer = () => {
+export const initializeContainer = () => {
   ApplicationContainer.load(AuthenticationModule)
   ApplicationContainer.load(CollectionsModule)
   ApplicationContainer.load(CollectionLinkModule)
   ApplicationContainer.load(LinksModule)
 }
 
-initializeContainer()
+export const destroyContainer = () => {
+  ApplicationContainer.unload(AuthenticationModule)
+  ApplicationContainer.unload(CollectionsModule)
+  ApplicationContainer.unload(CollectionLinkModule)
+  ApplicationContainer.unload(LinksModule)
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  initializeContainer()
+}
 
 export function getInjection<K extends keyof typeof DI_SYMBOLS>(
   symbol: K
