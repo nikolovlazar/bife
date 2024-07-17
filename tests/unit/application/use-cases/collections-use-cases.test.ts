@@ -1,5 +1,6 @@
+import { nanoid } from 'nanoid'
 import 'reflect-metadata'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   destroyContainer,
@@ -7,13 +8,25 @@ import {
   initializeContainer,
 } from '@/di/container'
 
+vi.mock('nanoid', () => ({
+  nanoid: vi.fn(),
+}))
+
 describe('Create Collections', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    const actualNanoid =
+      await vi.importActual<typeof import('nanoid')>('nanoid')
+
+    vi.mocked(nanoid).mockImplementation((size?: number) =>
+      actualNanoid.nanoid(size)
+    )
+
     initializeContainer()
   })
 
   afterEach(() => {
     destroyContainer()
+    vi.restoreAllMocks()
   })
 
   it('should create a collection with valid input', async () => {
@@ -39,15 +52,34 @@ describe('Create Collections', () => {
       'Required'
     )
   })
+
+  it('should throw when a fingerprint collision happens', async () => {
+    vi.mocked(nanoid).mockReturnValue('test-fingerprint')
+    const collectionsUseCases = getInjection('CollectionsUseCases')
+
+    const firstCollection = await collectionsUseCases.createCollection({
+      title: 'First Collection',
+    })
+    expect(firstCollection.fingerprint).toBe('test-fingerprint')
+
+    expect(() =>
+      collectionsUseCases.createCollection({ title: 'Second Collection' })
+    ).rejects.toThrowError('duplicate key value violates unique constraint')
+  })
 })
 
 describe('Get Collection', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    const actualNanoid =
+      await vi.importActual<typeof import('nanoid')>('nanoid')
+
+    vi.mocked(nanoid).mockImplementation(() => actualNanoid.nanoid())
     initializeContainer()
   })
 
   afterEach(() => {
     destroyContainer()
+    vi.restoreAllMocks()
   })
 
   it('should return the collection with a valid fingerprint', async () => {

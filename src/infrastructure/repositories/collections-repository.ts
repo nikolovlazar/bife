@@ -74,22 +74,6 @@ export class CollectionsRepository implements ICollectionsRepository {
     return CollectionsSchema.parse(data)
   }
 
-  async getUsersCollection(fingerprint: string, userId: string) {
-    const db = createClient()
-    const { data, error } = await db
-      .from('collection')
-      .select()
-      .eq('fingerprint', fingerprint)
-      .eq('created_by', userId)
-      .single()
-
-    if (error) {
-      throw mapPostgrestErrorToDomainError(error)
-    }
-
-    return CollectionSchema.parse(data)
-  }
-
   async updateCollection(fingerprint: string, input: CollectionUpdate) {
     const db = createClient()
     const { data, error } = await db

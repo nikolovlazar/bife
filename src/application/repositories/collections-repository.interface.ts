@@ -15,8 +15,6 @@ export interface ICollectionsRepository {
 
   getCollectionsForUser(userId: string): Promise<Collection[]>
 
-  getUsersCollection(fingerprint: string, userId: string): Promise<Collection>
-
   updateCollection(
     fingerprint: string,
     input: CollectionUpdate

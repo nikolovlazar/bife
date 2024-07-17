@@ -10,6 +10,10 @@ import {
   Collection,
   CollectionInsert,
   CollectionInsertSchema,
+  CollectionSchema,
+  CollectionUpdate,
+  CollectionUpdateSchema,
+  CollectionsSchema,
 } from '@/entities/models/collection'
 
 @injectable()
@@ -49,7 +53,7 @@ export class MockCollectionsRepository implements ICollectionsRepository {
 
     this._collections.push(newCollection)
 
-    return Promise.resolve(newCollection)
+    return Promise.resolve(CollectionSchema.parse(newCollection))
   }
 
   getCollection(fingerprint: string): Promise<Collection> {
@@ -61,58 +65,58 @@ export class MockCollectionsRepository implements ICollectionsRepository {
       throw new NotFoundError('Cannot find a collection with that fingerprint')
     }
 
-    return Promise.resolve(collection)
+    return Promise.resolve(CollectionSchema.parse(collection))
   }
-  getCollectionsForUser(userId: string): Promise<
-    {
-      fingerprint: string
-      title: string
-      published: boolean
-      created_by: string
-      created_at: string
-      description?: string | null | undefined
-    }[]
-  > {
-    throw new Error('Method not implemented.')
+
+  getCollectionsForUser(userId: string): Promise<Collection[]> {
+    const collections = this._collections.filter(
+      (collection) => collection.created_by === userId
+    )
+
+    if (collections.length === 0) {
+      throw new NotFoundError('multiple (or no) rows returned')
+    }
+
+    return Promise.resolve(CollectionsSchema.parse(collections))
   }
-  getUsersCollection(
-    fingerprint: string,
-    userId: string
-  ): Promise<{
-    fingerprint: string
-    title: string
-    published: boolean
-    created_by: string
-    created_at: string
-    description?: string | null | undefined
-  }> {
-    throw new Error('Method not implemented.')
-  }
+
   updateCollection(
     fingerprint: string,
-    input: {
-      title: string
-      published: boolean
-      description?: string | null | undefined
+    input: CollectionUpdate
+  ): Promise<Collection> {
+    const collectionIndex = this._collections.findIndex(
+      (collection) => collection.fingerprint === fingerprint
+    )
+
+    if (!collectionIndex) {
+      throw new NotFoundError('multiple (or no) rows returned')
     }
-  ): Promise<{
-    fingerprint: string
-    title: string
-    published: boolean
-    created_by: string
-    created_at: string
-    description?: string | null | undefined
-  }> {
-    throw new Error('Method not implemented.')
+
+    const data = CollectionUpdateSchema.parse(input)
+
+    let collection = this._collections[collectionIndex]
+
+    collection = { ...collection, ...data }
+
+    this._collections[collectionIndex] = collection
+
+    return Promise.resolve(CollectionSchema.parse(collection))
   }
-  deleteCollection(fingerprint: string): Promise<{
-    fingerprint: string
-    title: string
-    published: boolean
-    created_by: string
-    created_at: string
-    description?: string | null | undefined
-  }> {
-    throw new Error('Method not implemented.')
+
+  deleteCollection(fingerprint: string): Promise<Collection> {
+    const collectionIndex = this._collections.findIndex(
+      (collection) => collection.fingerprint === fingerprint
+    )
+
+    if (!collectionIndex) {
+      throw new NotFoundError('multiple (or no) rows returned')
+    }
+
+    const collection = this._collections[collectionIndex]
+
+    delete this._collections[collectionIndex]
+    this._collections = this._collections.filter(Boolean)
+
+    return Promise.resolve(CollectionSchema.parse(collection))
   }
 }
