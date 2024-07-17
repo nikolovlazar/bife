@@ -17,8 +17,8 @@ describe('Create Collections', () => {
     const actualNanoid =
       await vi.importActual<typeof import('nanoid')>('nanoid')
 
-    vi.mocked(nanoid).mockImplementation((size?: number) =>
-      actualNanoid.nanoid(size)
+    vi.mocked(nanoid).mockImplementation((...args) =>
+      actualNanoid.nanoid(...args)
     )
 
     initializeContainer()
