@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const createLinkInputSchema = z.object({
-  collection: z.string().optional(),
+  collectionFingerprint: z.string().optional(),
   url: z.string().min(6),
   label: z.string().min(1),
 })

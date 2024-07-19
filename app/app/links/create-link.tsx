@@ -48,7 +48,7 @@ export const CreateLink = forwardRef(
       defaultValues: {
         label: '',
         url: '',
-        collection: collectionFingerprint,
+        collectionFingerprint,
       },
     })
 
@@ -113,7 +113,7 @@ export const CreateLink = forwardRef(
               />
               <FormField
                 control={form.control}
-                name="collection"
+                name="collectionFingerprint"
                 render={({ field }) => <HiddenInput {...field} />}
               />
               <SubmitButton className="mt-4">Submit</SubmitButton>

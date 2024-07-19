@@ -4,9 +4,19 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { ZSAError } from 'zsa'
 
-import { OperationError } from '@/entities/errors/common'
+import { createCollectionUseCase } from '@/application/use-cases/collections/create-collection.use-case'
+import { deleteCollectionUseCase } from '@/application/use-cases/collections/delete-collection.use-case'
+import { getCollectionUseCase } from '@/application/use-cases/collections/get-collection.use-case'
+import { updateCollectionUseCase } from '@/application/use-cases/collections/update-collection.use-case'
+import { addLinkToCollectionUseCase } from '@/application/use-cases/links/add-link-to-collection.use-case'
+import { getLinkUseCase } from '@/application/use-cases/links/get-link.use-case'
+import { removeLinkFromCollectionUseCase } from '@/application/use-cases/links/remove-link-from-collection.use-case'
+import { updateLinksOrderUseCase } from '@/application/use-cases/links/update-links-order.use-case'
+
+import { NotFoundError, OperationError } from '@/entities/errors/common'
 import { Collection } from '@/entities/models/collection'
 import { CollectionLink } from '@/entities/models/collection-link'
+import { Link } from '@/entities/models/link'
 
 import { getInjection } from '@/di/container'
 import {
@@ -24,12 +34,10 @@ export const createCollection = authenticatedProcedure
   .createServerAction()
   .input(createCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionsUseCases = getInjection('CollectionsUseCases')
-
     let collection: Collection
 
     try {
-      collection = await collectionsUseCases.createCollection({
+      collection = await createCollectionUseCase({
         title: input.title,
         description: input.description,
       })
@@ -51,14 +59,20 @@ export const updateCollection = authenticatedProcedure
   .createServerAction()
   .input(updateCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionsUseCases = getInjection('CollectionsUseCases')
-
     let collection: Collection
+
     try {
-      collection = await collectionsUseCases.updateCollection(
-        input.fingerprint,
-        input
-      )
+      collection = await getCollectionUseCase(input.fingerprint)
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new ZSAError('ERROR', 'Collection does not exist.')
+      }
+      throw new ZSAError('ERROR', err)
+    }
+
+    let updatedCollection: Collection
+    try {
+      updatedCollection = await updateCollectionUseCase(collection, input)
     } catch (err) {
       // TODO: report err.cause to Sentry
       if (err instanceof OperationError) {
@@ -67,20 +81,27 @@ export const updateCollection = authenticatedProcedure
       throw new ZSAError('ERROR', err)
     }
 
-    revalidatePath(`/app/collections/${collection.fingerprint}`)
-    return collection
+    revalidatePath(`/app/collections/${updatedCollection.fingerprint}`)
+    return updatedCollection
   })
 
 export const deleteCollection = authenticatedProcedure
   .createServerAction()
   .input(deleteCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionsUseCases = getInjection('CollectionsUseCases')
-
     let collection: Collection
 
     try {
-      collection = await collectionsUseCases.deleteCollection(input.fingerprint)
+      collection = await getCollectionUseCase(input.fingerprint)
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new ZSAError('ERROR', 'Collection does not exist')
+      }
+      throw new ZSAError('ERROR', err)
+    }
+
+    try {
+      collection = await deleteCollectionUseCase(collection)
     } catch (err) {
       throw new ZSAError('ERROR', err)
     }
@@ -93,15 +114,22 @@ export const toggleCollectionPublished = authenticatedProcedure
   .createServerAction()
   .input(toggleCollectionPublishedInputSchema)
   .handler(async ({ input }) => {
-    const collectionsUseCases = getInjection('CollectionsUseCases')
+    let collection: Collection
+    try {
+      collection = await getCollectionUseCase(input.fingerprint)
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new ZSAError('ERROR', 'Could not find collection.')
+      }
+      throw new ZSAError('ERROR', err)
+    }
 
     let updatedCollection: Collection
 
     try {
-      updatedCollection = await collectionsUseCases.updateCollection(
-        input.fingerprint,
-        { published: input.checked }
-      )
+      updatedCollection = await updateCollectionUseCase(collection, {
+        published: input.checked,
+      })
     } catch (err) {
       // TODO: report error to Sentry
       throw new ZSAError(
@@ -118,42 +146,61 @@ export const addLinkToCollection = authenticatedProcedure
   .createServerAction()
   .input(addLinkToCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionLinkUseCases = getInjection('CollectionLinkUseCases')
-
-    let relation: CollectionLink
+    let collection: Collection
 
     try {
-      relation = await collectionLinkUseCases.addLinkToCollection(
-        input.fingerprint,
-        input.linkFingerprint
-      )
+      collection = await getCollectionUseCase(input.fingerprint)
+    } catch (err) {
+      throw new ZSAError('ERROR', err)
+    }
+
+    let link: Link
+
+    try {
+      link = await getLinkUseCase(input.linkFingerprint)
+    } catch (err) {
+      throw new ZSAError('ERROR', err)
+    }
+
+    try {
+      await addLinkToCollectionUseCase(link, collection)
     } catch (err) {
       // TODO: report error to Sentry
       throw new ZSAError('ERROR', err)
     }
 
-    revalidatePath(`/app/collections/${relation.collection_pk}`)
+    revalidatePath(`/app/collections/${collection.fingerprint}`)
   })
 
 export const removeLinkFromCollection = authenticatedProcedure
   .createServerAction()
   .input(removeLinkFromCollectionInputSchema)
   .handler(async ({ input }) => {
-    const collectionLinkUseCases = getInjection('CollectionLinkUseCases')
-
-    let relation: CollectionLink
+    let collection: Collection
 
     try {
-      relation = await collectionLinkUseCases.removeLinkFromCollection(
-        input.fingerprint,
-        input.linkFingerprint
-      )
+      collection = await getCollectionUseCase(input.fingerprint)
+    } catch (err) {
+      throw new ZSAError('ERROR', err)
+    }
+
+    let link: Link
+
+    try {
+      link = await getLinkUseCase(input.linkFingerprint)
+    } catch (err) {
+      throw new ZSAError('ERROR', err)
+    }
+
+    try {
+      await removeLinkFromCollectionUseCase(link, collection)
     } catch (err) {
       // TODO: report error to Sentry
       throw new ZSAError('ERROR', err)
     }
 
-    revalidatePath(`/app/collections/${relation.collection_pk}`)
+    revalidatePath(`/app/collections/${collection.fingerprint}`)
+    revalidatePath(`/${collection.fingerprint}`)
     return { message: 'Link removed from collection successfully' }
   })
 
@@ -161,17 +208,20 @@ export const updateLinksOrder = authenticatedProcedure
   .createServerAction()
   .input(updateLinksOrderInputSchema)
   .handler(async ({ input }) => {
-    const collectionLinkUseCases = getInjection('CollectionLinkUseCases')
+    let collection: Collection
+    try {
+      collection = await getCollectionUseCase(input.fingerprint)
+    } catch (err) {
+      throw new ZSAError('ERROR', err)
+    }
 
     try {
-      await collectionLinkUseCases.updateLinksOrder(
-        input.fingerprint,
-        input.linksOrder
-      )
+      await updateLinksOrderUseCase(collection, input.linksOrder)
     } catch (err) {
       // TODO: report error to Sentry
       throw new ZSAError('ERROR', err)
     }
 
-    revalidatePath(`/app/collections/${input.fingerprint}`)
+    revalidatePath(`/app/collections/${collection.fingerprint}`)
+    revalidatePath(`/${collection.fingerprint}`)
   })

@@ -1,12 +1,11 @@
+import { getOwnLinksUseCase } from '@/application/use-cases/links/get-own-links.use-case'
+
 import { linkColumns } from './_links-table/columns'
 import { LinksDataTable } from './_links-table/table'
 import { CreateLink } from './create-link'
-import { getInjection } from '@/di/container'
 
 async function getLinks() {
-  const linksUseCases = getInjection('LinksUseCases')
-
-  const links = await linksUseCases.getOwnLinks()
+  const links = await getOwnLinksUseCase()
 
   return links
 }

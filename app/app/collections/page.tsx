@@ -1,12 +1,11 @@
+import { getOwnCollectionsUseCase } from '@/application/use-cases/collections/get-own-collections.use-case'
+
 import { collectionColumns } from './_collections-table/columns'
 import { CollectionsDataTable } from './_collections-table/table'
 import CreateCollection from './create-collection'
-import { getInjection } from '@/di/container'
 
 async function getCollections() {
-  const collectionsUseCases = getInjection('CollectionsUseCases')
-
-  const collections = await collectionsUseCases.getOwnCollections()
+  const collections = await getOwnCollectionsUseCase()
 
   return collections
 }

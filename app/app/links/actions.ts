@@ -3,7 +3,16 @@
 import { revalidatePath } from 'next/cache'
 import { ZSAError } from 'zsa'
 
+import { getCollectionUseCase } from '@/application/use-cases/collections/get-collection.use-case'
+import { addLinkToCollectionUseCase } from '@/application/use-cases/links/add-link-to-collection.use-case'
+import { createLinkUseCase } from '@/application/use-cases/links/create-link.use-case'
+import { deleteLinkUseCase } from '@/application/use-cases/links/delete-link.use-case'
+import { getLinkUseCase } from '@/application/use-cases/links/get-link.use-case'
+import { updateLinkVisibilityUseCase } from '@/application/use-cases/links/update-link-visibility.use-case'
+import { updateLinkUseCase } from '@/application/use-cases/links/update-link.use-case'
+
 import { OperationError } from '@/entities/errors/common'
+import { Collection } from '@/entities/models/collection'
 import type { CollectionLink } from '@/entities/models/collection-link'
 import { Link } from '@/entities/models/link'
 
@@ -20,20 +29,34 @@ export const createLink = authenticatedProcedure
   .createServerAction()
   .input(createLinkInputSchema)
   .handler(async ({ input }) => {
-    const linksUseCases = getInjection('LinksUseCases')
-
     let link: Link
 
-    const { collection, ...linkInput } = input
+    const { collectionFingerprint, ...linkInput } = input
 
     try {
-      link = await linksUseCases.createLink(linkInput, collection)
+      link = await createLinkUseCase(linkInput)
     } catch (err) {
       // TODO: report to Sentry
       if (err instanceof OperationError) {
         throw new ZSAError('ERROR', err.message)
       }
       throw new ZSAError('ERROR', err)
+    }
+
+    if (collectionFingerprint) {
+      let collection: Collection
+
+      try {
+        collection = await getCollectionUseCase(collectionFingerprint)
+      } catch (err) {
+        throw new ZSAError('ERROR', err)
+      }
+
+      try {
+        await addLinkToCollectionUseCase(link, collection)
+      } catch (err) {
+        throw new ZSAError('ERROR', err)
+      }
     }
 
     revalidatePath('/app/links')
@@ -44,14 +67,18 @@ export const updateLink = authenticatedProcedure
   .createServerAction()
   .input(updateLinkInputSchema)
   .handler(async ({ input }) => {
-    const linksUseCases = getInjection('LinksUseCases')
-
-    let link: Link
-
     const { fingerprint, ...linkData } = input
 
+    let link: Link
     try {
-      link = await linksUseCases.updateLink(fingerprint, linkData)
+      link = await getLinkUseCase(fingerprint)
+    } catch (err) {
+      throw new ZSAError('ERROR', err)
+    }
+
+    let updatedLink: Link
+    try {
+      updatedLink = await updateLinkUseCase(link, linkData)
     } catch (err) {
       // TODO: report to Sentry
       if (err instanceof OperationError) {
@@ -68,10 +95,15 @@ export const deleteLink = authenticatedProcedure
   .createServerAction()
   .input(deleteLinkInputSchema)
   .handler(async ({ input }) => {
-    const linksUseCases = getInjection('LinksUseCases')
+    let link: Link
+    try {
+      link = await getLinkUseCase(input.fingerprint)
+    } catch (err) {
+      throw new ZSAError('ERROR', err)
+    }
 
     try {
-      await linksUseCases.deleteLink(input.fingerprint)
+      await deleteLinkUseCase(link)
     } catch (err) {
       // TODO: report to Sentry
       if (err instanceof OperationError) {
@@ -88,16 +120,22 @@ export const toggleLinkVisibility = authenticatedProcedure
   .createServerAction()
   .input(toggleLinkVisibilityInputSchema)
   .handler(async ({ input }) => {
-    const collectionLinkUseCases = getInjection('CollectionLinkUseCases')
+    let link: Link
+    try {
+      link = await getLinkUseCase(input.link_pk)
+    } catch (err) {
+      throw new ZSAError('ERROR', err)
+    }
 
-    let updated: CollectionLink
+    let collection: Collection
+    try {
+      collection = await getCollectionUseCase(input.collection_pk)
+    } catch (err) {
+      throw new ZSAError('ERROR', err)
+    }
 
     try {
-      updated = await collectionLinkUseCases.setVisibility(
-        input.collection_pk,
-        input.link_pk,
-        input.checked
-      )
+      await updateLinkVisibilityUseCase(link, collection, input.checked)
     } catch (err) {
       // TODO: report to Sentry
       if (err instanceof OperationError) {
@@ -106,6 +144,6 @@ export const toggleLinkVisibility = authenticatedProcedure
       throw new ZSAError('ERROR', err)
     }
 
-    revalidatePath(`/app/collections/${input.collection_pk}`)
-    return updated
+    revalidatePath(`/app/collections/${collection.fingerprint}`)
+    revalidatePath(`/${collection.fingerprint}`)
   })

@@ -2,11 +2,15 @@ import { Utensils } from 'lucide-react'
 import NextLink from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 
+import { getCollectionUseCase } from '@/application/use-cases/collections/get-collection.use-case'
+import { getLinkUseCase } from '@/application/use-cases/links/get-link.use-case'
+import { getLinksForCollectionUseCase } from '@/application/use-cases/links/get-links-for-collection.use-case'
+
 import { NotFoundError } from '@/entities/errors/common'
 import { Collection } from '@/entities/models/collection'
 import { CollectionLinks } from '@/entities/models/collection-link'
+import { Link } from '@/entities/models/link'
 
-import { getInjection } from '@/di/container'
 import {
   Card,
   CardDescription,
@@ -19,19 +23,19 @@ export default async function PublicCollectionPage({
 }: {
   params: { fingerprint: string }
 }) {
-  const getLinkOrCollectionUseCase = getInjection('GetLinkOrCollectionUseCases')
+  let link: Link
+  try {
+    link = await getLinkUseCase(params.fingerprint)
+    return permanentRedirect(link.url)
+  } catch (err) {
+    if (!(err instanceof NotFoundError)) {
+      throw err
+    }
+  }
 
   let collection: Collection
   try {
-    const { link, collection: c } = await getLinkOrCollectionUseCase.execute(
-      params.fingerprint
-    )
-
-    if (link) {
-      return permanentRedirect(link.url)
-    }
-
-    collection = c
+    collection = await getCollectionUseCase(params.fingerprint)
   } catch (err) {
     if (err instanceof NotFoundError) {
       return notFound()
@@ -41,12 +45,9 @@ export default async function PublicCollectionPage({
 
   let displayedLinks: CollectionLinks = []
   try {
-    const collectionLinkUseCases = getInjection('CollectionLinkUseCases')
-    displayedLinks =
-      await collectionLinkUseCases.getLinksForCollection(collection)
+    displayedLinks = await getLinksForCollectionUseCase(collection)
   } catch (err) {
     if (!(err instanceof NotFoundError)) {
-      // TODO: send it to Sentry
       throw err
     }
   }
