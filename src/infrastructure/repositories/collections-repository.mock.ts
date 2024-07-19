@@ -88,7 +88,7 @@ export class MockCollectionsRepository implements ICollectionsRepository {
       (collection) => collection.fingerprint === fingerprint
     )
 
-    if (!collectionIndex) {
+    if (collectionIndex < 0) {
       throw new NotFoundError('multiple (or no) rows returned')
     }
 
@@ -108,7 +108,7 @@ export class MockCollectionsRepository implements ICollectionsRepository {
       (collection) => collection.fingerprint === fingerprint
     )
 
-    if (!collectionIndex) {
+    if (collectionIndex < 0) {
       throw new NotFoundError('multiple (or no) rows returned')
     }
 

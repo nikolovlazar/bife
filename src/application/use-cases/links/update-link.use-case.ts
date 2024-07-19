@@ -1,5 +1,5 @@
 import { UnauthorizedError } from '@/entities/errors/auth'
-import { Link, LinkUpdate } from '@/entities/models/link'
+import { Link, LinkUpdate, LinkUpdateSchema } from '@/entities/models/link'
 
 import { getInjection } from '@/di/container'
 
@@ -14,10 +14,10 @@ export async function updateLinkUseCase(
     throw new UnauthorizedError('Cannot update link. Reason: unauthorized.', {})
   }
 
-  const newData = {
+  const newData = LinkUpdateSchema.parse({
     url: data.url ?? link.url,
     label: data.label ?? link.label,
-  }
+  })
 
   const linksRepository = getInjection('ILinksRepository')
   const updatedLink = await linksRepository.updateLink(

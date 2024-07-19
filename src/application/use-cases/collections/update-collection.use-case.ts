@@ -1,5 +1,9 @@
 import { UnauthorizedError } from '@/entities/errors/auth'
-import { Collection, CollectionUpdate } from '@/entities/models/collection'
+import {
+  Collection,
+  CollectionUpdate,
+  CollectionUpdateSchema,
+} from '@/entities/models/collection'
 
 import { getInjection } from '@/di/container'
 
@@ -16,11 +20,11 @@ export async function updateCollectionUseCase(
     )
   }
 
-  const newData: CollectionUpdate = {
+  const newData = CollectionUpdateSchema.parse({
     title: input.title ?? collection.title,
     description: input.description ?? collection.description,
     published: input.published ?? collection.published,
-  }
+  })
 
   const collectionsRepository = getInjection('ICollectionsRepository')
   const updatedCollection = await collectionsRepository.updateCollection(
