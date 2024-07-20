@@ -13,10 +13,8 @@ import { updateLinkUseCase } from '@/application/use-cases/links/update-link.use
 
 import { OperationError } from '@/entities/errors/common'
 import { Collection } from '@/entities/models/collection'
-import type { CollectionLink } from '@/entities/models/collection-link'
 import { Link } from '@/entities/models/link'
 
-import { getInjection } from '@/di/container'
 import {
   createLinkInputSchema,
   deleteLinkInputSchema,
@@ -36,7 +34,10 @@ export const createLink = authenticatedProcedure
     try {
       link = await createLinkUseCase(linkInput)
     } catch (err) {
-      // TODO: report to Sentry
+      // TODO: report err.cause to Sentry
+      // actually don't - errors should be reported to Sentry at the moment they happen
+      // we shouldn't report rethrown errors
+      // we should just let the client know that an error happened
       if (err instanceof OperationError) {
         throw new ZSAError('ERROR', err.message)
       }
