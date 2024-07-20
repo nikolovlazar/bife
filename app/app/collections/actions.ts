@@ -13,12 +13,11 @@ import { getLinkUseCase } from '@/application/use-cases/links/get-link.use-case'
 import { removeLinkFromCollectionUseCase } from '@/application/use-cases/links/remove-link-from-collection.use-case'
 import { updateLinksOrderUseCase } from '@/application/use-cases/links/update-links-order.use-case'
 
+import { UnauthorizedError } from '@/entities/errors/auth'
 import { NotFoundError, OperationError } from '@/entities/errors/common'
 import { Collection } from '@/entities/models/collection'
-import { CollectionLink } from '@/entities/models/collection-link'
 import { Link } from '@/entities/models/link'
 
-import { getInjection } from '@/di/container'
 import {
   addLinkToCollectionInputSchema,
   createCollectionInputSchema,
@@ -43,6 +42,9 @@ export const createCollection = authenticatedProcedure
       })
     } catch (err) {
       // TODO: report err.cause to Sentry
+      // actually don't - errors should be reported to Sentry at the moment they happen
+      // we shouldn't report rethrown errors
+      // we should just let the client know that an error happened
       if (err instanceof OperationError) {
         throw new ZSAError(
           'ERROR',
@@ -103,6 +105,12 @@ export const deleteCollection = authenticatedProcedure
     try {
       collection = await deleteCollectionUseCase(collection)
     } catch (err) {
+      if (err instanceof UnauthorizedError) {
+        throw new ZSAError(
+          'NOT_AUTHORIZED',
+          'Not authorized to delete this collection'
+        )
+      }
       throw new ZSAError('ERROR', err)
     }
 
