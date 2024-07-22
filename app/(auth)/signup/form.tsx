@@ -9,6 +9,7 @@ import { z } from 'zod'
 
 import { signUp } from '../actions'
 
+import { signUpFormSchema } from '@/interface-adapters/validation-schemas/auth'
 import { Button } from '@/web/_components/ui/button'
 import {
   Form,
@@ -19,7 +20,6 @@ import {
   FormMessage,
 } from '@/web/_components/ui/form'
 import { Input } from '@/web/_components/ui/input'
-import { signUpFormSchema } from '@/web/_lib/validation-schemas/auth'
 
 export const SignUpForm = () => {
   const [tsToken, setTsToken] = useState<string | undefined>()

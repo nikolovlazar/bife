@@ -1,17 +1,10 @@
-import { getOwnCollectionsUseCase } from '@/application/use-cases/collections/get-own-collections.use-case'
-
 import { collectionColumns } from './_collections-table/columns'
 import { CollectionsDataTable } from './_collections-table/table'
 import CreateCollection from './create-collection'
-
-async function getCollections() {
-  const collections = await getOwnCollectionsUseCase()
-
-  return collections
-}
+import { getCollectionsTableController } from '@/interface-adapters/controllers/get-collections-table.controller'
 
 export default async function Collections() {
-  const collections = await getCollections()
+  const collections = await getCollectionsTableController()
 
   return (
     <>

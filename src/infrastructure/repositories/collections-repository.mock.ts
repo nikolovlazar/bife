@@ -32,13 +32,12 @@ export class MockCollectionsRepository implements ICollectionsRepository {
     const existingCollection = this._collections.find(
       (collection) => collection.fingerprint === fingerprint
     )
+
     if (existingCollection) {
       throw new UniqueConstraintViolationError(
         'duplicate key value violates unique constraint'
       )
     }
-
-    CollectionInsertSchema.parse(collection)
 
     const { title, description } = collection
 

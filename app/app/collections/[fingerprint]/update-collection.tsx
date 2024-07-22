@@ -9,6 +9,7 @@ import { useServerAction } from 'zsa-react'
 import { updateCollection } from '../actions'
 
 import { DeleteCollectionConfirmation } from './delete-collection'
+import { updateCollectionInputSchema } from '@/interface-adapters/validation-schemas/collections'
 import { HiddenInput } from '@/web/_components/custom/hidden-input'
 import { Button } from '@/web/_components/ui/button'
 import { Checkbox } from '@/web/_components/ui/checkbox'
@@ -22,7 +23,6 @@ import {
 } from '@/web/_components/ui/form'
 import { Input } from '@/web/_components/ui/input'
 import { SubmitButton } from '@/web/_components/ui/submit'
-import { updateCollectionInputSchema } from '@/web/_lib/validation-schemas/collections'
 
 export default function UpdateOrDeleteCollection({
   title,

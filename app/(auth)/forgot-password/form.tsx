@@ -10,6 +10,7 @@ import { z } from 'zod'
 
 import { forgotPassword } from '../actions'
 
+import { forgotPasswordInputSchema } from '@/interface-adapters/validation-schemas/auth'
 import { Button } from '@/web/_components/ui/button'
 import {
   Form,
@@ -20,7 +21,6 @@ import {
   FormMessage,
 } from '@/web/_components/ui/form'
 import { Input } from '@/web/_components/ui/input'
-import { forgotPasswordInputSchema } from '@/web/_lib/validation-schemas/auth'
 
 export const ForgotPasswordForm = () => {
   const [sent, setSent] = useState(false)

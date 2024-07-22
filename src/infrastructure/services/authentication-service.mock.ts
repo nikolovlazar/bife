@@ -2,7 +2,7 @@ import { injectable } from 'inversify'
 
 import { IAuthenticationService } from '@/application/services/authentication-service.interface'
 
-import { AuthError } from '@/entities/errors/auth'
+import { UnauthenticatedError } from '@/entities/errors/auth'
 import { User } from '@/entities/models/users'
 
 @injectable()
@@ -39,11 +39,10 @@ export class MockAuthenticationService implements IAuthenticationService {
       return Promise.resolve(this._currentUser)
     }
 
-    return Promise.resolve(this._users[0])
-    // throw new AuthError('Not authenticated', 400, {})
+    throw new UnauthenticatedError('Not authenticated')
   }
 
-  signInWithProvider(provider: string): Promise<{ url: string }> {
+  signInWithProvider(_: string): Promise<{ url: string }> {
     throw new Error('Method not implemented.')
   }
 
@@ -54,9 +53,14 @@ export class MockAuthenticationService implements IAuthenticationService {
   ): Promise<void> {
     const user = this._users.find((user) => user.email === email)
     if (!user || this._passwords[user.id] !== password) {
-      throw new AuthError('Invalid credentials', 400, {})
+      throw new UnauthenticatedError('Invalid credentials')
     }
     this._currentUser = user
+    return Promise.resolve()
+  }
+
+  signOut(): Promise<void> {
+    this._currentUser = null
     return Promise.resolve()
   }
 

@@ -20,7 +20,7 @@ import {
   deleteLinkInputSchema,
   toggleLinkVisibilityInputSchema,
   updateLinkInputSchema,
-} from '@/web/_lib/validation-schemas/links'
+} from '@/interface-adapters/validation-schemas/links'
 import { authenticatedProcedure } from '@/web/_lib/zsa-procedures'
 
 export const createLink = authenticatedProcedure

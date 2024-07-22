@@ -12,7 +12,7 @@ import {
   signInWithProviderInputSchema,
   signUpInputSchema,
   signUpOutputSchema,
-} from '@/web/_lib/validation-schemas/auth'
+} from '@/interface-adapters/validation-schemas/auth'
 
 export const signInWithPassword = createServerAction()
   .input(signInWithPasswordInputSchema, { type: 'formData' })

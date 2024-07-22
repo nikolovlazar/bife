@@ -4,7 +4,6 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { ZSAError } from 'zsa'
 
-import { createCollectionUseCase } from '@/application/use-cases/collections/create-collection.use-case'
 import { deleteCollectionUseCase } from '@/application/use-cases/collections/delete-collection.use-case'
 import { getCollectionUseCase } from '@/application/use-cases/collections/get-collection.use-case'
 import { updateCollectionUseCase } from '@/application/use-cases/collections/update-collection.use-case'
@@ -13,49 +12,55 @@ import { getLinkUseCase } from '@/application/use-cases/links/get-link.use-case'
 import { removeLinkFromCollectionUseCase } from '@/application/use-cases/links/remove-link-from-collection.use-case'
 import { updateLinksOrderUseCase } from '@/application/use-cases/links/update-links-order.use-case'
 
-import { UnauthorizedError } from '@/entities/errors/auth'
-import { NotFoundError, OperationError } from '@/entities/errors/common'
+import { UnauthenticatedError, UnauthorizedError } from '@/entities/errors/auth'
+import {
+  InputParseError,
+  NotFoundError,
+  OperationError,
+} from '@/entities/errors/common'
 import { Collection } from '@/entities/models/collection'
 import { Link } from '@/entities/models/link'
 
 import {
+  CreateCollectionControllerOutput,
+  createCollectionController,
+} from '@/interface-adapters/controllers/create-collection.controller'
+import {
+  CreateCollectionInput,
   addLinkToCollectionInputSchema,
-  createCollectionInputSchema,
   deleteCollectionInputSchema,
   removeLinkFromCollectionInputSchema,
   toggleCollectionPublishedInputSchema,
   updateCollectionInputSchema,
   updateLinksOrderInputSchema,
-} from '@/web/_lib/validation-schemas/collections'
+} from '@/interface-adapters/validation-schemas/collections'
 import { authenticatedProcedure } from '@/web/_lib/zsa-procedures'
 
-export const createCollection = authenticatedProcedure
-  .createServerAction()
-  .input(createCollectionInputSchema)
-  .handler(async ({ input }) => {
-    let collection: Collection
+export const createCollection = async (input: CreateCollectionInput) => {
+  let output: CreateCollectionControllerOutput
 
-    try {
-      collection = await createCollectionUseCase({
-        title: input.title,
-        description: input.description,
-      })
-    } catch (err) {
-      // TODO: report err.cause to Sentry
-      // actually don't - errors should be reported to Sentry at the moment they happen
-      // we shouldn't report rethrown errors
-      // we should just let the client know that an error happened
-      if (err instanceof OperationError) {
-        throw new ZSAError(
-          'ERROR',
-          'Cannot create collection. Reason: ' + err.message
-        )
-      }
-      throw new ZSAError('ERROR', err)
+  try {
+    output = await createCollectionController(input)
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      throw new InputParseError(err.message)
     }
+    if (err instanceof UnauthenticatedError) {
+      throw new UnauthenticatedError(
+        'You must be logged in to create a collection.'
+      )
+    }
+    if (err instanceof UnauthorizedError) {
+      throw new UnauthorizedError(err.message)
+    }
+    if (err instanceof OperationError) {
+      throw new OperationError(err.message)
+    }
+    throw err
+  }
 
-    redirect(`/app/collections/${collection.fingerprint}`)
-  })
+  redirect(`/app/collections/${output.fingerprint}`)
+}
 
 export const updateCollection = authenticatedProcedure
   .createServerAction()

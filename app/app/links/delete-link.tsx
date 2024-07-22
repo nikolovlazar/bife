@@ -8,6 +8,7 @@ import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
 import { deleteLink } from './actions'
+import { deleteLinkInputSchema } from '@/interface-adapters/validation-schemas/links'
 import { HiddenInput } from '@/web/_components/custom/hidden-input'
 import {
   Dialog,
@@ -19,7 +20,6 @@ import {
 } from '@/web/_components/ui/dialog'
 import { Form, FormField } from '@/web/_components/ui/form'
 import { SubmitButton } from '@/web/_components/ui/submit'
-import { deleteLinkInputSchema } from '@/web/_lib/validation-schemas/links'
 
 export function DeleteLinkConfirmation({
   fingerprint,

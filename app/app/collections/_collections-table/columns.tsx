@@ -1,16 +1,14 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import dayjs from 'dayjs'
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
-import { Collection } from '@/entities/models/collection'
-
 import { DeleteCollectionConfirmation } from '../[fingerprint]/delete-collection'
 
 import { CollectionPublishedSwitch } from './collection-published-switch'
+import type { GetCollectionsTableControllerOutput } from '@/interface-adapters/controllers/get-collections-table.controller'
 import { Button } from '@/web/_components/ui/button'
 import {
   DropdownMenu,
@@ -19,7 +17,9 @@ import {
   DropdownMenuTrigger,
 } from '@/web/_components/ui/dropdown-menu'
 
-export const collectionColumns: ColumnDef<Collection>[] = [
+type CollectionRow = GetCollectionsTableControllerOutput[0]
+
+export const collectionColumns: ColumnDef<CollectionRow>[] = [
   {
     accessorKey: 'title',
     filterFn: 'includesString',
@@ -56,7 +56,6 @@ export const collectionColumns: ColumnDef<Collection>[] = [
   {
     accessorKey: 'created_at',
     header: 'Date Created',
-    cell: ({ row }) => dayjs(row.original.created_at).format('MMM D, YYYY'),
   },
   {
     accessorKey: 'fingerprint',

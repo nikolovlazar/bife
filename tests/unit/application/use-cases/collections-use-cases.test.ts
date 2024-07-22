@@ -7,6 +7,8 @@ import { deleteCollectionUseCase } from '@/application/use-cases/collections/del
 import { getCollectionUseCase } from '@/application/use-cases/collections/get-collection.use-case'
 import { updateCollectionUseCase } from '@/application/use-cases/collections/update-collection.use-case'
 
+import { InputParseError } from '@/entities/errors/common'
+
 import {
   destroyContainer,
   getInjection,
@@ -34,7 +36,14 @@ describe('Create Collections', () => {
     vi.restoreAllMocks()
   })
 
-  it('should create a collection with valid input', async () => {
+  it('should pass with valid input', async () => {
+    const authenticationService = getInjection('IAuthenticationService')
+    await authenticationService.signInWithPassword(
+      'one@bife.sh',
+      'onepassword',
+      ''
+    )
+
     const title = 'Next.js + Clean Architecture'
     const description = 'Clean Architecture is super fun'
 
@@ -49,12 +58,14 @@ describe('Create Collections', () => {
     expect(collection.fingerprint).not.toBe('test-fingerprint')
   })
 
-  it('should throw when creating a collection with invalid input', async () => {
-    // @ts-ignore
-    expect(createCollectionUseCase({})).rejects.toThrow('Required')
-  })
-
   it('should throw when a fingerprint collision happens', async () => {
+    const authenticationService = getInjection('IAuthenticationService')
+    await authenticationService.signInWithPassword(
+      'one@bife.sh',
+      'onepassword',
+      ''
+    )
+
     vi.mocked(nanoid).mockReturnValue('test-fingerprint')
 
     const firstCollection = await createCollectionUseCase({
@@ -85,13 +96,25 @@ describe('Get Collection', () => {
   })
 
   it('should return the collection with a valid fingerprint', async () => {
+    const authenticationService = getInjection('IAuthenticationService')
+    await authenticationService.signInWithPassword(
+      'one@bife.sh',
+      'onepassword',
+      ''
+    )
+
     const title = 'hello there'
+    const description = 'how are you'
     const { fingerprint } = await createCollectionUseCase({
       title,
+      description,
     })
+    await authenticationService.signOut()
 
-    const collection = await getCollectionUseCase(fingerprint)
-    expect(collection.title).toBe(title)
+    expect(getCollectionUseCase(fingerprint)).resolves.toMatchObject({
+      title,
+      description,
+    })
   })
 
   it('should throw when requesting a collection with invalid fingerprint', async () => {
@@ -118,6 +141,13 @@ describe('Update Collection', () => {
   })
 
   it('should update the collection with valid input', async () => {
+    const authenticationService = getInjection('IAuthenticationService')
+    await authenticationService.signInWithPassword(
+      'one@bife.sh',
+      'onepassword',
+      ''
+    )
+
     const title = 'hello there'
     const description = 'how are you'
 
@@ -125,16 +155,25 @@ describe('Update Collection', () => {
       title,
     })
 
-    const updatedCollection = await updateCollectionUseCase(collection, {
+    expect(
+      updateCollectionUseCase(collection, {
+        description,
+      })
+    ).resolves.toMatchObject({
+      title,
       description,
+      created_by: '1',
     })
-
-    expect(updatedCollection.title).toBe(title)
-    expect(updatedCollection.description).toBe(description)
-    expect(updatedCollection.created_by).toBe('1')
   })
 
   it('should throw when updating a collection with invalid data', async () => {
+    const authenticationService = getInjection('IAuthenticationService')
+    await authenticationService.signInWithPassword(
+      'one@bife.sh',
+      'onepassword',
+      ''
+    )
+
     const title = 'hello there'
     const description = 'how are you'
 
@@ -149,14 +188,20 @@ describe('Update Collection', () => {
   })
 
   it("should throw when updating someone else's collection", async () => {
+    const authenticationService = getInjection('IAuthenticationService')
+    await authenticationService.signInWithPassword(
+      'one@bife.sh',
+      'onepassword',
+      ''
+    )
     const collection = await createCollectionUseCase({
       title: 'hello there',
       description: 'how are you',
     })
-
     expect(collection.created_by).toBe('1')
 
-    const authenticationService = getInjection('IAuthenticationService')
+    await authenticationService.signOut()
+
     await authenticationService.signInWithPassword(
       'two@bife.sh',
       'twopassword',
@@ -189,6 +234,13 @@ describe('Delete Collection', () => {
   })
 
   it('should delete the collection with valid fingerprint', async () => {
+    const authenticationService = getInjection('IAuthenticationService')
+    await authenticationService.signInWithPassword(
+      'one@bife.sh',
+      'onepassword',
+      ''
+    )
+
     const collection = await createCollectionUseCase({
       title: 'hello there',
     })
@@ -197,6 +249,13 @@ describe('Delete Collection', () => {
   })
 
   it("should throw when deleting someone else's collection", async () => {
+    const authenticationService = getInjection('IAuthenticationService')
+    await authenticationService.signInWithPassword(
+      'one@bife.sh',
+      'onepassword',
+      ''
+    )
+
     const collection = await createCollectionUseCase({
       title: 'hello there',
       description: 'how are you',
@@ -204,7 +263,6 @@ describe('Delete Collection', () => {
 
     expect(collection.created_by).toBe('1')
 
-    const authenticationService = getInjection('IAuthenticationService')
     await authenticationService.signInWithPassword(
       'two@bife.sh',
       'twopassword',

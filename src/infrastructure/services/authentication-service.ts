@@ -3,7 +3,7 @@ import { injectable } from 'inversify'
 
 import { IAuthenticationService } from '@/application/services/authentication-service.interface'
 
-import { AuthError } from '@/entities/errors/auth'
+import { UnauthenticatedError } from '@/entities/errors/auth'
 
 import { createClient } from '@/infrastructure/utils/supabase/server'
 
@@ -18,8 +18,7 @@ export class AuthenticationService implements IAuthenticationService {
     const { data, error } = await supabase.auth.getUser()
 
     if (error) {
-      // TODO: check if not logged in throws exception
-      throw new AuthError(error.message, error.status, {
+      throw new UnauthenticatedError(error.message, {
         cause: error.cause,
       })
     }
@@ -32,6 +31,7 @@ export class AuthenticationService implements IAuthenticationService {
 
   async signInWithProvider(provider: string) {
     if (!this._providers.some((p) => p === provider)) {
+      // TODO: move provider validation in Controller
       throw new Error('Provider not supported')
     }
 
@@ -49,7 +49,7 @@ export class AuthenticationService implements IAuthenticationService {
     })
 
     if (error) {
-      throw new AuthError(error.message, error.status, { cause: error.cause })
+      throw new UnauthenticatedError(error.message, { cause: error.cause })
     }
 
     return data
@@ -64,7 +64,15 @@ export class AuthenticationService implements IAuthenticationService {
     })
 
     if (error) {
-      throw new AuthError(error.message, error.status, { cause: error.cause })
+      throw new UnauthenticatedError(error.message, { cause: error.cause })
+    }
+  }
+
+  async signOut() {
+    const supabase = createClient()
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      throw new UnauthenticatedError(error.message, { cause: error.cause })
     }
   }
 
@@ -77,7 +85,7 @@ export class AuthenticationService implements IAuthenticationService {
     })
 
     if (error) {
-      throw new AuthError(error.message, error.status, { cause: error.cause })
+      throw new UnauthenticatedError(error.message, { cause: error.cause })
     }
   }
 
@@ -88,7 +96,7 @@ export class AuthenticationService implements IAuthenticationService {
     })
 
     if (error) {
-      throw new AuthError(error.message, error.status, { cause: error.cause })
+      throw new UnauthenticatedError(error.message, { cause: error.cause })
     }
   }
 
@@ -105,7 +113,7 @@ export class AuthenticationService implements IAuthenticationService {
     })
 
     if (error) {
-      throw new AuthError(error.message, error.status, { cause: error.cause })
+      throw new UnauthenticatedError(error.message, { cause: error.cause })
     }
   }
 }

@@ -9,8 +9,7 @@ import {
 } from '@tanstack/react-table'
 import { useState } from 'react'
 
-import { Collection } from '@/entities/models/collection'
-
+import { GetCollectionsTableControllerOutput } from '@/interface-adapters/controllers/get-collections-table.controller'
 import { Input } from '@/web/_components/ui/input'
 import {
   Table,
@@ -22,12 +21,14 @@ import {
 } from '@/web/_components/ui/table'
 import { fuzzyFilter } from '@/web/_lib/fuzzy-filter'
 
+type CollectionRow = GetCollectionsTableControllerOutput[0]
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
 }
 
-export function CollectionsDataTable<TData extends Collection, TValue>({
+export function CollectionsDataTable<TData extends CollectionRow, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {

@@ -9,6 +9,7 @@ import { useServerAction } from 'zsa-react'
 
 import { removeLinkFromCollection } from '../actions'
 
+import { removeLinkFromCollectionInputSchema } from '@/interface-adapters/validation-schemas/collections'
 import { HiddenInput } from '@/web/_components/custom/hidden-input'
 import {
   Dialog,
@@ -20,7 +21,6 @@ import {
 } from '@/web/_components/ui/dialog'
 import { Form, FormField } from '@/web/_components/ui/form'
 import { SubmitButton } from '@/web/_components/ui/submit'
-import { removeLinkFromCollectionInputSchema } from '@/web/_lib/validation-schemas/collections'
 
 export function RemoveLinkFromCollectionConfirmation({
   linkFingerprint,

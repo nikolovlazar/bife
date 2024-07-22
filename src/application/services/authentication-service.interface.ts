@@ -8,6 +8,7 @@ export interface IAuthenticationService {
     password: string,
     tsToken: string
   ): Promise<void>
+  signOut(): Promise<void>
   signUp(email: string, password: string, tsToken: string): Promise<void>
   resetPassword(password: string): Promise<void>
   forgotPassword(email: string, tsToken: string): Promise<void>

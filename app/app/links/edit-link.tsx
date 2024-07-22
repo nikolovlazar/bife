@@ -8,6 +8,7 @@ import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
 import { updateLink } from './actions'
+import { updateLinkInputSchema } from '@/interface-adapters/validation-schemas/links'
 import { HiddenInput } from '@/web/_components/custom/hidden-input'
 import {
   Dialog,
@@ -26,7 +27,6 @@ import {
 } from '@/web/_components/ui/form'
 import { Input } from '@/web/_components/ui/input'
 import { SubmitButton } from '@/web/_components/ui/submit'
-import { updateLinkInputSchema } from '@/web/_lib/validation-schemas/links'
 
 export function EditLink({
   fingerprint,

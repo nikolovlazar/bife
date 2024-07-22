@@ -9,6 +9,7 @@ import { z } from 'zod'
 import { useServerAction } from 'zsa-react'
 
 import { createLink } from './actions'
+import { createLinkInputSchema } from '@/interface-adapters/validation-schemas/links'
 import { HiddenInput } from '@/web/_components/custom/hidden-input'
 import { Button, type ButtonProps } from '@/web/_components/ui/button'
 import {
@@ -29,7 +30,6 @@ import {
 } from '@/web/_components/ui/form'
 import { Input } from '@/web/_components/ui/input'
 import { SubmitButton } from '@/web/_components/ui/submit'
-import { createLinkInputSchema } from '@/web/_lib/validation-schemas/links'
 
 export const CreateLink = forwardRef(
   (

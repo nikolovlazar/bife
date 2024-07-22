@@ -1,13 +1,6 @@
-export class AuthError extends Error {
-  status: number | undefined
-
-  constructor(
-    message: string,
-    status: number | undefined,
-    options: ErrorOptions
-  ) {
+export class UnauthenticatedError extends Error {
+  constructor(message: string, options?: ErrorOptions) {
     super(message, options)
-    this.status = status
   }
 }
 

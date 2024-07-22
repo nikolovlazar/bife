@@ -5,6 +5,8 @@ export const createCollectionInputSchema = z.object({
   description: z.string().optional(),
 })
 
+export type CreateCollectionInput = z.infer<typeof createCollectionInputSchema>
+
 export const updateCollectionInputSchema = z.object({
   title: z.string(),
   description: z.string().optional(),

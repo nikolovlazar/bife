@@ -6,9 +6,12 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { useServerAction } from 'zsa-react'
 
 import { createCollection } from './actions'
+import {
+  CreateCollectionInput,
+  createCollectionInputSchema,
+} from '@/interface-adapters/validation-schemas/collections'
 import { Button } from '@/web/_components/ui/button'
 import {
   Dialog,
@@ -28,7 +31,6 @@ import {
 } from '@/web/_components/ui/form'
 import { Input } from '@/web/_components/ui/input'
 import { SubmitButton } from '@/web/_components/ui/submit'
-import { createCollectionInputSchema } from '@/web/_lib/validation-schemas/collections'
 
 export default function CreateCollection() {
   const [opened, setOpened] = useState(false)
@@ -40,15 +42,17 @@ export default function CreateCollection() {
     },
   })
 
-  const { execute } = useServerAction(createCollection, {
-    onError: ({ err }) => {
-      toast.error(err.message)
-    },
-    onSuccess: () => {
+  async function execute(input: CreateCollectionInput) {
+    try {
+      await createCollection(input)
       toast.success('Collection created!')
       setOpened(false)
-    },
-  })
+    } catch (err) {
+      // @ts-ignore
+      toast.error(err.message)
+      console.log(typeof err)
+    }
+  }
 
   return (
     <Dialog open={opened} onOpenChange={setOpened}>
