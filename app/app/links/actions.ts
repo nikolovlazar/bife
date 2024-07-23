@@ -4,65 +4,48 @@ import { revalidatePath } from 'next/cache'
 import { ZSAError } from 'zsa'
 
 import { getCollectionUseCase } from '@/application/use-cases/collections/get-collection.use-case'
-import { addLinkToCollectionUseCase } from '@/application/use-cases/links/add-link-to-collection.use-case'
-import { createLinkUseCase } from '@/application/use-cases/links/create-link.use-case'
 import { deleteLinkUseCase } from '@/application/use-cases/links/delete-link.use-case'
 import { getLinkUseCase } from '@/application/use-cases/links/get-link.use-case'
 import { updateLinkVisibilityUseCase } from '@/application/use-cases/links/update-link-visibility.use-case'
 import { updateLinkUseCase } from '@/application/use-cases/links/update-link.use-case'
 
-import { OperationError } from '@/entities/errors/common'
+import { UnauthenticatedError, UnauthorizedError } from '@/entities/errors/auth'
+import { InputParseError, OperationError } from '@/entities/errors/common'
 import { Collection } from '@/entities/models/collection'
 import { Link } from '@/entities/models/link'
 
+import { createLinkController } from '@/interface-adapters/controllers/create-link.controller'
 import {
-  createLinkInputSchema,
+  CreateLinkInput,
   deleteLinkInputSchema,
   toggleLinkVisibilityInputSchema,
   updateLinkInputSchema,
 } from '@/interface-adapters/validation-schemas/links'
 import { authenticatedProcedure } from '@/web/_lib/zsa-procedures'
 
-export const createLink = authenticatedProcedure
-  .createServerAction()
-  .input(createLinkInputSchema)
-  .handler(async ({ input }) => {
-    let link: Link
-
-    const { collectionFingerprint, ...linkInput } = input
-
-    try {
-      link = await createLinkUseCase(linkInput)
-    } catch (err) {
-      // TODO: report err.cause to Sentry
-      // actually don't - errors should be reported to Sentry at the moment they happen
-      // we shouldn't report rethrown errors
-      // we should just let the client know that an error happened
-      if (err instanceof OperationError) {
-        throw new ZSAError('ERROR', err.message)
-      }
-      throw new ZSAError('ERROR', err)
+export const createLink = async (input: CreateLinkInput) => {
+  try {
+    await createLinkController(input)
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      throw new InputParseError(err.message)
     }
-
-    if (collectionFingerprint) {
-      let collection: Collection
-
-      try {
-        collection = await getCollectionUseCase(collectionFingerprint)
-      } catch (err) {
-        throw new ZSAError('ERROR', err)
-      }
-
-      try {
-        await addLinkToCollectionUseCase(link, collection)
-      } catch (err) {
-        throw new ZSAError('ERROR', err)
-      }
+    if (err instanceof UnauthenticatedError) {
+      throw new UnauthenticatedError('You must be logged in to create a link.')
     }
+    if (err instanceof UnauthorizedError) {
+      throw new UnauthorizedError("You're not authorized to create a link.")
+    }
+    if (err instanceof OperationError) {
+      throw new OperationError(err.message)
+    }
+    throw err
+  }
 
-    revalidatePath('/app/links')
-    return { message: 'Link created successfully' }
-  })
+  revalidatePath('/app/links')
+
+  return { message: 'Link created successfully' }
+}
 
 export const updateLink = authenticatedProcedure
   .createServerAction()

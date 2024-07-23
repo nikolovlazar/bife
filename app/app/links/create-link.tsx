@@ -6,10 +6,12 @@ import { forwardRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { useServerAction } from 'zsa-react'
 
 import { createLink } from './actions'
-import { createLinkInputSchema } from '@/interface-adapters/validation-schemas/links'
+import {
+  CreateLinkInput,
+  createLinkInputSchema,
+} from '@/interface-adapters/validation-schemas/links'
 import { HiddenInput } from '@/web/_components/custom/hidden-input'
 import { Button, type ButtonProps } from '@/web/_components/ui/button'
 import {
@@ -52,15 +54,16 @@ export const CreateLink = forwardRef(
       },
     })
 
-    const { execute } = useServerAction(createLink, {
-      onError: ({ err }) => {
-        toast.error(err.message)
-      },
-      onSuccess: () => {
+    const execute = async (input: CreateLinkInput) => {
+      try {
+        await createLink(input)
         toast.success('Link created!')
         setOpened(false)
-      },
-    })
+      } catch (err) {
+        // @ts-ignore
+        toast.error(err.message)
+      }
+    }
 
     return (
       <Dialog open={opened} onOpenChange={setOpened}>
