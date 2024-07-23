@@ -1,14 +1,12 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import dayjs from 'dayjs'
 import { MoreHorizontal } from 'lucide-react'
-
-import { Link } from '@/entities/models/link'
 
 import { DeleteLinkConfirmation } from '../delete-link'
 import { EditLink } from '../edit-link'
 
+import { LinkRow } from '@/interface-adapters/controllers/get-own-links.controller'
 import { Button } from '@/web/_components/ui/button'
 import {
   DropdownMenu,
@@ -17,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from '@/web/_components/ui/dropdown-menu'
 
-export const linkColumns: ColumnDef<Link>[] = [
+export const linkColumns: ColumnDef<LinkRow>[] = [
   {
     accessorKey: 'url',
     header: 'URL',
@@ -36,7 +34,6 @@ export const linkColumns: ColumnDef<Link>[] = [
   {
     accessorKey: 'created_at',
     header: 'Date Created',
-    cell: ({ row }) => dayjs(row.original.created_at).format('MMM D, YYYY'),
   },
   {
     id: 'actions',

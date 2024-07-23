@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import 'reflect-metadata'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, expect, it } from 'vitest'
 
 import { UnauthenticatedError } from '@/entities/errors/auth'
 

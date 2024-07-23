@@ -1,11 +1,10 @@
-import { getOwnLinksUseCase } from '@/application/use-cases/links/get-own-links.use-case'
-
 import { linkColumns } from './_links-table/columns'
 import { LinksDataTable } from './_links-table/table'
 import { CreateLink } from './create-link'
+import { getOwnLinksController } from '@/interface-adapters/controllers/get-own-links.controller'
 
 async function getLinks() {
-  const links = await getOwnLinksUseCase()
+  const links = await getOwnLinksController()
 
   return links
 }

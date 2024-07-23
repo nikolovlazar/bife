@@ -9,8 +9,7 @@ import {
 } from '@tanstack/react-table'
 import { useState } from 'react'
 
-import { Link } from '@/entities/models/link'
-
+import { LinkRow } from '@/interface-adapters/controllers/get-own-links.controller'
 import { Input } from '@/web/_components/ui/input'
 import {
   Table,
@@ -27,7 +26,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-export function LinksDataTable<TData extends Link, TValue>({
+export function LinksDataTable<TData extends LinkRow, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
