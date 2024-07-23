@@ -1,5 +1,4 @@
 import { injectable } from 'inversify'
-import { nanoid } from 'nanoid'
 
 import { ILinksRepository } from '@/application/repositories/links-repository.interface'
 
@@ -48,11 +47,12 @@ export class LinksRepository implements ILinksRepository {
     return LinksSchema.parse(data)
   }
 
-  async createLink(link: LinkInsert, userId: string): Promise<Link> {
+  async createLink(
+    link: LinkInsert,
+    userId: string,
+    fingerprint: string
+  ): Promise<Link> {
     const db = createClient()
-    const fingerprint = nanoid(8)
-
-    // TODO: check collision
 
     const { data, error } = await db
       .from('link')

@@ -1,10 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import { toast } from 'sonner'
-import { useServerAction } from 'zsa-react'
 
 import { toggleCollectionPublished } from '../actions'
 
+import { ToggleCollectionPublishedInput } from '@/interface-adapters/validation-schemas/collections'
 import { Switch } from '@/web/_components/ui/switch'
 
 export function CollectionPublishedSwitch({
@@ -14,16 +15,21 @@ export function CollectionPublishedSwitch({
   fingerprint: string
   checked: boolean
 }) {
-  const { isPending, execute } = useServerAction(toggleCollectionPublished, {
-    onError: ({ err }) => {
-      toast.error(err.message)
-    },
-    onSuccess: ({ data }) => {
+  const [isPending, setIsPending] = useState(false)
+  async function execute(input: ToggleCollectionPublishedInput) {
+    try {
+      setIsPending(true)
+      await toggleCollectionPublished(input)
       toast.success(
-        'Collection ' + (data.published ? 'published!' : 'unpublished!')
+        'Collection ' + (input.checked ? 'published!' : 'unpublished!')
       )
-    },
-  })
+    } catch (err) {
+      // @ts-ignore
+      toast.error(err.message)
+    } finally {
+      setIsPending(false)
+    }
+  }
 
   const handleCheckedChange = async (value: boolean) => {
     execute({

@@ -5,9 +5,13 @@ export interface ILinksRepository {
 
   getLinksForUser(userId: string): Promise<Link[]>
 
-  createLink(link: LinkInsert, userId: string): Promise<Link>
+  createLink(
+    link: LinkInsert,
+    userId: string,
+    fingerprint: string
+  ): Promise<Link>
 
-  updateLink(fingerprint: string, link: LinkUpdate): Promise<Link>
+  updateLink(fingerprint: string, input: LinkUpdate): Promise<Link>
 
   deleteLink(fingerprint: string): Promise<void>
 }

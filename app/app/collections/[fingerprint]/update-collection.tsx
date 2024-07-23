@@ -4,12 +4,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { useServerAction } from 'zsa-react'
 
 import { updateCollection } from '../actions'
 
 import { DeleteCollectionConfirmation } from './delete-collection'
-import { updateCollectionInputSchema } from '@/interface-adapters/validation-schemas/collections'
+import {
+  UpdateCollectionInput,
+  updateCollectionInputSchema,
+} from '@/interface-adapters/validation-schemas/collections'
 import { HiddenInput } from '@/web/_components/custom/hidden-input'
 import { Button } from '@/web/_components/ui/button'
 import { Checkbox } from '@/web/_components/ui/checkbox'
@@ -45,14 +47,15 @@ export default function UpdateOrDeleteCollection({
     },
   })
 
-  const { execute } = useServerAction(updateCollection, {
-    onError: ({ err }) => {
-      toast.error(err.message)
-    },
-    onSuccess: () => {
+  async function execute(input: UpdateCollectionInput) {
+    try {
+      await updateCollection(input)
       toast.success('Collection updated!')
-    },
-  })
+    } catch (err) {
+      // @ts-ignore
+      toast.error(err.message)
+    }
+  }
 
   return (
     <Form {...form}>

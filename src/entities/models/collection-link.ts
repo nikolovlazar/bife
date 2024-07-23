@@ -1,5 +1,6 @@
-import { LinkSchema } from './link'
 import { z } from 'zod'
+
+import { LinkSchema } from './link'
 
 export const CollectionLinkSchema = z.object({
   collection_pk: z.string(),

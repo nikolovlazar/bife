@@ -2,39 +2,29 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { ZSAError } from 'zsa'
-
-import { deleteCollectionUseCase } from '@/application/use-cases/collections/delete-collection.use-case'
-import { getCollectionUseCase } from '@/application/use-cases/collections/get-collection.use-case'
-import { updateCollectionUseCase } from '@/application/use-cases/collections/update-collection.use-case'
-import { addLinkToCollectionUseCase } from '@/application/use-cases/links/add-link-to-collection.use-case'
-import { getLinkUseCase } from '@/application/use-cases/links/get-link.use-case'
-import { removeLinkFromCollectionUseCase } from '@/application/use-cases/links/remove-link-from-collection.use-case'
-import { updateLinksOrderUseCase } from '@/application/use-cases/links/update-links-order.use-case'
 
 import { UnauthenticatedError, UnauthorizedError } from '@/entities/errors/auth'
-import {
-  InputParseError,
-  NotFoundError,
-  OperationError,
-} from '@/entities/errors/common'
-import { Collection } from '@/entities/models/collection'
-import { Link } from '@/entities/models/link'
+import { InputParseError, OperationError } from '@/entities/errors/common'
 
+import { addLinkToCollectionController } from '@/interface-adapters/controllers/add-link-to-collection.controller'
 import {
   CreateCollectionControllerOutput,
   createCollectionController,
 } from '@/interface-adapters/controllers/create-collection.controller'
+import { deleteCollectionController } from '@/interface-adapters/controllers/delete-collection.controller'
+import { removeLinkFromCollectionController } from '@/interface-adapters/controllers/remove-link-from-collection.controller'
+import { toggleCollectionPublishedController } from '@/interface-adapters/controllers/toggle-collection-published.controller'
+import { updateCollectionController } from '@/interface-adapters/controllers/update-collection.controller'
+import { updateLinksOrderController } from '@/interface-adapters/controllers/update-links-order.controller'
 import {
+  AddLinkToCollectionInput,
   CreateCollectionInput,
-  addLinkToCollectionInputSchema,
-  deleteCollectionInputSchema,
-  removeLinkFromCollectionInputSchema,
-  toggleCollectionPublishedInputSchema,
-  updateCollectionInputSchema,
-  updateLinksOrderInputSchema,
+  DeleteCollectionInput,
+  RemoveLinkFromCollectionInput,
+  ToggleCollectionPublishedInput,
+  UpdateCollectionInput,
+  UpdateLinksOrderInput,
 } from '@/interface-adapters/validation-schemas/collections'
-import { authenticatedProcedure } from '@/web/_lib/zsa-procedures'
 
 export const createCollection = async (input: CreateCollectionInput) => {
   let output: CreateCollectionControllerOutput
@@ -51,7 +41,9 @@ export const createCollection = async (input: CreateCollectionInput) => {
       )
     }
     if (err instanceof UnauthorizedError) {
-      throw new UnauthorizedError(err.message)
+      throw new UnauthorizedError(
+        "You're not authorized to create a collection."
+      )
     }
     if (err instanceof OperationError) {
       throw new OperationError(err.message)
@@ -62,179 +54,165 @@ export const createCollection = async (input: CreateCollectionInput) => {
   redirect(`/app/collections/${output.fingerprint}`)
 }
 
-export const updateCollection = authenticatedProcedure
-  .createServerAction()
-  .input(updateCollectionInputSchema)
-  .handler(async ({ input }) => {
-    let collection: Collection
-
-    try {
-      collection = await getCollectionUseCase(input.fingerprint)
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        throw new ZSAError('ERROR', 'Collection does not exist.')
-      }
-      throw new ZSAError('ERROR', err)
+export const updateCollection = async (input: UpdateCollectionInput) => {
+  try {
+    await updateCollectionController(input)
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      throw new InputParseError(err.message)
     }
-
-    let updatedCollection: Collection
-    try {
-      updatedCollection = await updateCollectionUseCase(collection, input)
-    } catch (err) {
-      // TODO: report err.cause to Sentry
-      if (err instanceof OperationError) {
-        throw new ZSAError('ERROR', 'Cannot update collection.')
-      }
-      throw new ZSAError('ERROR', err)
-    }
-
-    revalidatePath(`/app/collections/${updatedCollection.fingerprint}`)
-    return updatedCollection
-  })
-
-export const deleteCollection = authenticatedProcedure
-  .createServerAction()
-  .input(deleteCollectionInputSchema)
-  .handler(async ({ input }) => {
-    let collection: Collection
-
-    try {
-      collection = await getCollectionUseCase(input.fingerprint)
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        throw new ZSAError('ERROR', 'Collection does not exist')
-      }
-      throw new ZSAError('ERROR', err)
-    }
-
-    try {
-      collection = await deleteCollectionUseCase(collection)
-    } catch (err) {
-      if (err instanceof UnauthorizedError) {
-        throw new ZSAError(
-          'NOT_AUTHORIZED',
-          'Not authorized to delete this collection'
-        )
-      }
-      throw new ZSAError('ERROR', err)
-    }
-
-    revalidatePath('/app/collections')
-    redirect('/app/collections')
-  })
-
-export const toggleCollectionPublished = authenticatedProcedure
-  .createServerAction()
-  .input(toggleCollectionPublishedInputSchema)
-  .handler(async ({ input }) => {
-    let collection: Collection
-    try {
-      collection = await getCollectionUseCase(input.fingerprint)
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        throw new ZSAError('ERROR', 'Could not find collection.')
-      }
-      throw new ZSAError('ERROR', err)
-    }
-
-    let updatedCollection: Collection
-
-    try {
-      updatedCollection = await updateCollectionUseCase(collection, {
-        published: input.checked,
-      })
-    } catch (err) {
-      // TODO: report error to Sentry
-      throw new ZSAError(
-        'ERROR',
-        `Cannot ${input.checked ? 'publish' : 'unpublish'} collection`
+    if (err instanceof UnauthenticatedError) {
+      throw new UnauthenticatedError(
+        'You must be logged in to update a collection.'
       )
     }
-
-    revalidatePath(`/app/collections/${updatedCollection.fingerprint}`)
-    return updatedCollection
-  })
-
-export const addLinkToCollection = authenticatedProcedure
-  .createServerAction()
-  .input(addLinkToCollectionInputSchema)
-  .handler(async ({ input }) => {
-    let collection: Collection
-
-    try {
-      collection = await getCollectionUseCase(input.fingerprint)
-    } catch (err) {
-      throw new ZSAError('ERROR', err)
+    if (err instanceof UnauthorizedError) {
+      throw new UnauthorizedError(
+        "You're not authorized to update the collection."
+      )
     }
-
-    let link: Link
-
-    try {
-      link = await getLinkUseCase(input.linkFingerprint)
-    } catch (err) {
-      throw new ZSAError('ERROR', err)
+    if (err instanceof OperationError) {
+      throw new OperationError(err.message)
     }
+    throw err
+  }
 
-    try {
-      await addLinkToCollectionUseCase(link, collection)
-    } catch (err) {
-      // TODO: report error to Sentry
-      throw new ZSAError('ERROR', err)
+  revalidatePath(`/app/collections/${input.fingerprint}`)
+}
+
+export const deleteCollection = async (input: DeleteCollectionInput) => {
+  try {
+    await deleteCollectionController(input)
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      throw new InputParseError(err.message)
     }
-
-    revalidatePath(`/app/collections/${collection.fingerprint}`)
-  })
-
-export const removeLinkFromCollection = authenticatedProcedure
-  .createServerAction()
-  .input(removeLinkFromCollectionInputSchema)
-  .handler(async ({ input }) => {
-    let collection: Collection
-
-    try {
-      collection = await getCollectionUseCase(input.fingerprint)
-    } catch (err) {
-      throw new ZSAError('ERROR', err)
+    if (err instanceof UnauthenticatedError) {
+      throw new UnauthenticatedError(
+        'You must be logged in to delete a collection.'
+      )
     }
-
-    let link: Link
-
-    try {
-      link = await getLinkUseCase(input.linkFingerprint)
-    } catch (err) {
-      throw new ZSAError('ERROR', err)
+    if (err instanceof UnauthorizedError) {
+      throw new UnauthorizedError(
+        "You're not authorized to delete the collection."
+      )
     }
-
-    try {
-      await removeLinkFromCollectionUseCase(link, collection)
-    } catch (err) {
-      // TODO: report error to Sentry
-      throw new ZSAError('ERROR', err)
+    if (err instanceof OperationError) {
+      throw new OperationError(err.message)
     }
+    throw err
+  }
 
-    revalidatePath(`/app/collections/${collection.fingerprint}`)
-    revalidatePath(`/${collection.fingerprint}`)
-    return { message: 'Link removed from collection successfully' }
-  })
+  revalidatePath('/app/collections')
+  redirect('/app/collections')
+}
 
-export const updateLinksOrder = authenticatedProcedure
-  .createServerAction()
-  .input(updateLinksOrderInputSchema)
-  .handler(async ({ input }) => {
-    let collection: Collection
-    try {
-      collection = await getCollectionUseCase(input.fingerprint)
-    } catch (err) {
-      throw new ZSAError('ERROR', err)
+export const toggleCollectionPublished = async (
+  input: ToggleCollectionPublishedInput
+) => {
+  try {
+    await toggleCollectionPublishedController(input)
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      throw new InputParseError(err.message)
     }
-
-    try {
-      await updateLinksOrderUseCase(collection, input.linksOrder)
-    } catch (err) {
-      // TODO: report error to Sentry
-      throw new ZSAError('ERROR', err)
+    if (err instanceof UnauthenticatedError) {
+      throw new UnauthenticatedError(
+        'You must be logged in to publish/unpublish a collection.'
+      )
     }
+    if (err instanceof UnauthorizedError) {
+      throw new UnauthorizedError(
+        `You're not authorized to ${input.checked ? 'publish' : 'unpublish'} the collection.`
+      )
+    }
+    if (err instanceof OperationError) {
+      throw new OperationError(err.message)
+    }
+    throw err
+  }
 
-    revalidatePath(`/app/collections/${collection.fingerprint}`)
-    revalidatePath(`/${collection.fingerprint}`)
-  })
+  revalidatePath(`/app/collections/${input.fingerprint}`)
+}
+
+export const addLinkToCollection = async (input: AddLinkToCollectionInput) => {
+  try {
+    await addLinkToCollectionController(input)
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      throw new InputParseError(err.message)
+    }
+    if (err instanceof UnauthenticatedError) {
+      throw new UnauthenticatedError(
+        'You must be logged in to add links to a collection.'
+      )
+    }
+    if (err instanceof UnauthorizedError) {
+      throw new UnauthorizedError(
+        "You're not authorized to add the link to the collection."
+      )
+    }
+    if (err instanceof OperationError) {
+      throw new OperationError(err.message)
+    }
+    throw err
+  }
+
+  revalidatePath(`/app/collections/${input.fingerprint}`)
+}
+
+export const removeLinkFromCollection = async (
+  input: RemoveLinkFromCollectionInput
+) => {
+  try {
+    await removeLinkFromCollectionController(input)
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      throw new InputParseError(err.message)
+    }
+    if (err instanceof UnauthenticatedError) {
+      throw new UnauthenticatedError(
+        'You must be logged in to remove links to a collection.'
+      )
+    }
+    if (err instanceof UnauthorizedError) {
+      throw new UnauthorizedError(
+        "You're not authorized to remove the link to the collection."
+      )
+    }
+    if (err instanceof OperationError) {
+      throw new OperationError(err.message)
+    }
+    throw err
+  }
+
+  revalidatePath(`/app/collections/${input.fingerprint}`)
+  revalidatePath(`/${input.fingerprint}`)
+}
+
+export const updateLinksOrder = async (input: UpdateLinksOrderInput) => {
+  try {
+    await updateLinksOrderController(input)
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      throw new InputParseError(err.message)
+    }
+    if (err instanceof UnauthenticatedError) {
+      throw new UnauthenticatedError(
+        'You must be logged in to update links order.'
+      )
+    }
+    if (err instanceof UnauthorizedError) {
+      throw new UnauthorizedError(
+        "You're not authorized to update the links order."
+      )
+    }
+    if (err instanceof OperationError) {
+      throw new OperationError(err.message)
+    }
+    throw err
+  }
+
+  revalidatePath(`/app/collections/${input.fingerprint}`)
+  revalidatePath(`/${input.fingerprint}`)
+}

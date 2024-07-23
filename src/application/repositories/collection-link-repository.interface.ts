@@ -4,11 +4,6 @@ import {
 } from '@/entities/models/collection-link'
 
 export interface ICollectionLinkRepository {
-  getRelation(
-    collectionFingerprint: string,
-    linkFingerprint: string
-  ): Promise<CollectionLink>
-
   setVisibility(
     collectionFingerprint: string,
     linkFingerprint: string,

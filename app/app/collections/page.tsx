@@ -1,10 +1,36 @@
+import { redirect } from 'next/navigation'
+
+import { UnauthenticatedError } from '@/entities/errors/auth'
+import { OperationError } from '@/entities/errors/common'
+
 import { collectionColumns } from './_collections-table/columns'
 import { CollectionsDataTable } from './_collections-table/table'
 import CreateCollection from './create-collection'
-import { getCollectionsTableController } from '@/interface-adapters/controllers/get-collections-table.controller'
+import {
+  GetCollectionsTableControllerOutput,
+  getCollectionsTableController,
+} from '@/interface-adapters/controllers/get-collections-table.controller'
+
+async function getCollections() {
+  let collections: GetCollectionsTableControllerOutput
+
+  try {
+    collections = await getCollectionsTableController()
+  } catch (err) {
+    if (err instanceof UnauthenticatedError) {
+      redirect('/signin')
+    }
+    if (err instanceof OperationError) {
+      redirect('/error')
+    }
+    throw err
+  }
+
+  return collections
+}
 
 export default async function Collections() {
-  const collections = await getCollectionsTableController()
+  const collections = await getCollections()
 
   return (
     <>

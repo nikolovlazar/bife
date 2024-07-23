@@ -16,22 +16,6 @@ import { mapPostgrestErrorToDomainError } from '../utils/supabase/errors'
 export class CollectionLinkRepository implements ICollectionLinkRepository {
   constructor() {}
 
-  async getRelation(collectionFingerprint: string, linkFingerprint: string) {
-    const db = createClient()
-    const { data, error } = await db
-      .from('collection_link')
-      .select()
-      .eq('collection_pk', collectionFingerprint)
-      .eq('link_pk', linkFingerprint)
-      .single()
-
-    if (error) {
-      throw mapPostgrestErrorToDomainError(error)
-    }
-
-    return CollectionLinkSchema.parse(data)
-  }
-
   async setVisibility(
     collectionFingerprint: string,
     linkFingerprint: string,

@@ -24,12 +24,12 @@ import {
 } from '@tanstack/react-table'
 import { startTransition, useOptimistic } from 'react'
 import { toast } from 'sonner'
-import { useServerAction } from 'zsa-react'
 
 import { updateLinksOrder } from '../../actions'
 
 import { ColumnsType } from './columns'
 import { DraggableRow } from './draggable-row'
+import { UpdateLinksOrderInput } from '@/interface-adapters/validation-schemas/collections'
 import {
   Table,
   TableBody,
@@ -65,11 +65,14 @@ export function LinksDataTable<TData extends ColumnsType, TValue>({
     useSensor(TouchSensor, {}),
     useSensor(KeyboardSensor, {})
   )
-  const { execute } = useServerAction(updateLinksOrder, {
-    onError: ({ err }) => {
+  const execute = async (input: UpdateLinksOrderInput) => {
+    try {
+      await updateLinksOrder(input)
+    } catch (err) {
+      // @ts-ignore
       toast.error(err.message)
-    },
-  })
+    }
+  }
 
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event

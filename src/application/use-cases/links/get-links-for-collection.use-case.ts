@@ -27,5 +27,5 @@ export async function getLinksForCollectionUseCase(
     displayedLinks = links.filter((link) => link.visible)
   }
 
-  return displayedLinks
+  return displayedLinks.sort((a, b) => a.order - b.order)
 }

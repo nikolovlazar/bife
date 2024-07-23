@@ -9,7 +9,6 @@ import {
 import {
   Collection,
   CollectionInsert,
-  CollectionInsertSchema,
   CollectionSchema,
   CollectionUpdate,
   CollectionUpdateSchema,
@@ -57,7 +56,7 @@ export class MockCollectionsRepository implements ICollectionsRepository {
 
   getCollection(fingerprint: string): Promise<Collection> {
     const collection = this._collections.find(
-      (collection) => collection.fingerprint === fingerprint
+      (c) => c.fingerprint === fingerprint
     )
 
     if (!collection) {
