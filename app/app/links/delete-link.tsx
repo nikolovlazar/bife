@@ -5,10 +5,12 @@ import { ReactNode, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { useServerAction } from 'zsa-react'
 
 import { deleteLink } from './actions'
-import { deleteLinkInputSchema } from '@/interface-adapters/validation-schemas/links'
+import {
+  DeleteLinkInput,
+  deleteLinkInputSchema,
+} from '@/interface-adapters/validation-schemas/links'
 import { HiddenInput } from '@/web/_components/custom/hidden-input'
 import {
   Dialog,
@@ -37,15 +39,16 @@ export function DeleteLinkConfirmation({
     },
   })
 
-  const { execute } = useServerAction(deleteLink, {
-    onError: ({ err }) => {
-      toast.error(err.message)
-    },
-    onSuccess: () => {
+  const execute = async (input: DeleteLinkInput) => {
+    try {
+      await deleteLink(input)
       toast.success('Link deleted!')
       setOpened(false)
-    },
-  })
+    } catch (err) {
+      // @ts-ignore
+      toast.error(err.message)
+    }
+  }
 
   return (
     <Dialog open={opened} onOpenChange={setOpened}>

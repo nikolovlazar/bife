@@ -4,7 +4,6 @@ import { revalidatePath } from 'next/cache'
 import { ZSAError } from 'zsa'
 
 import { getCollectionUseCase } from '@/application/use-cases/collections/get-collection.use-case'
-import { deleteLinkUseCase } from '@/application/use-cases/links/delete-link.use-case'
 import { getLinkUseCase } from '@/application/use-cases/links/get-link.use-case'
 import { updateLinkVisibilityUseCase } from '@/application/use-cases/links/update-link-visibility.use-case'
 
@@ -14,11 +13,12 @@ import { Collection } from '@/entities/models/collection'
 import { Link } from '@/entities/models/link'
 
 import { createLinkController } from '@/interface-adapters/controllers/create-link.controller'
+import { deleteLinkController } from '@/interface-adapters/controllers/delete-link.controller'
 import { updateLinkController } from '@/interface-adapters/controllers/update-link.controller'
 import {
   CreateLinkInput,
+  DeleteLinkInput,
   UpdateLinkInput,
-  deleteLinkInputSchema,
   toggleLinkVisibilityInputSchema,
 } from '@/interface-adapters/validation-schemas/links'
 import { authenticatedProcedure } from '@/web/_lib/zsa-procedures'
@@ -70,30 +70,28 @@ export const updateLink = async (input: UpdateLinkInput) => {
   return { message: 'Link updated successfully' }
 }
 
-export const deleteLink = authenticatedProcedure
-  .createServerAction()
-  .input(deleteLinkInputSchema)
-  .handler(async ({ input }) => {
-    let link: Link
-    try {
-      link = await getLinkUseCase(input.fingerprint)
-    } catch (err) {
-      throw new ZSAError('ERROR', err)
+export const deleteLink = async (input: DeleteLinkInput) => {
+  try {
+    await deleteLinkController(input)
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      throw new InputParseError(err.message)
     }
-
-    try {
-      await deleteLinkUseCase(link)
-    } catch (err) {
-      // TODO: report to Sentry
-      if (err instanceof OperationError) {
-        throw new ZSAError('ERROR', err.message)
-      }
-      throw new ZSAError('ERROR', err)
+    if (err instanceof UnauthenticatedError) {
+      throw new UnauthenticatedError('You must be logged in to delete a link.')
     }
+    if (err instanceof UnauthorizedError) {
+      throw new UnauthorizedError("You're not authorized to delete a link.")
+    }
+    if (err instanceof OperationError) {
+      throw new OperationError(err.message)
+    }
+    throw err
+  }
 
-    revalidatePath('/app/links')
-    return { message: 'Link deleted successfully' }
-  })
+  revalidatePath('/app/links')
+  return { message: 'Link deleted successfully' }
+}
 
 export const toggleLinkVisibility = authenticatedProcedure
   .createServerAction()
