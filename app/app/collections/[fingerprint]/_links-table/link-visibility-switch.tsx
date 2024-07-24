@@ -1,8 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import { toast } from 'sonner'
-import { useServerAction } from 'zsa-react'
 
+import { ToggleLinkVisibilityInput } from '@/interface-adapters/validation-schemas/links'
 import { Switch } from '@/web/_components/ui/switch'
 import { toggleLinkVisibility } from '@/web/app/links/actions'
 
@@ -15,16 +16,21 @@ export function LinkVisibilitySwitch({
   collectionFingerprint: string
   checked: boolean
 }) {
-  const { isPending, execute } = useServerAction(toggleLinkVisibility, {
-    onError: ({ err }) => {
+  const [isPending, setIsPending] = useState(false)
+  const execute = async (input: ToggleLinkVisibilityInput) => {
+    try {
+      setIsPending(true)
+      await toggleLinkVisibility(input)
+      toast.success('Link visibility changed!')
+    } catch (err) {
       toast.error('Failed to update link visibility', {
+        // @ts-ignore
         description: err.message,
       })
-    },
-    onSuccess: () => {
-      toast.success('Link visibility changed!')
-    },
-  })
+    } finally {
+      setIsPending(false)
+    }
+  }
 
   const handleVisibilityChange = async (value: boolean) => {
     execute({

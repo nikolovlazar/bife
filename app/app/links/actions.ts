@@ -1,27 +1,20 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { ZSAError } from 'zsa'
-
-import { getCollectionUseCase } from '@/application/use-cases/collections/get-collection.use-case'
-import { getLinkUseCase } from '@/application/use-cases/links/get-link.use-case'
-import { updateLinkVisibilityUseCase } from '@/application/use-cases/links/update-link-visibility.use-case'
 
 import { UnauthenticatedError, UnauthorizedError } from '@/entities/errors/auth'
 import { InputParseError, OperationError } from '@/entities/errors/common'
-import { Collection } from '@/entities/models/collection'
-import { Link } from '@/entities/models/link'
 
 import { createLinkController } from '@/interface-adapters/controllers/create-link.controller'
 import { deleteLinkController } from '@/interface-adapters/controllers/delete-link.controller'
+import { toggleLinkVisibilityController } from '@/interface-adapters/controllers/toggle-link-visibility.controller'
 import { updateLinkController } from '@/interface-adapters/controllers/update-link.controller'
 import {
   CreateLinkInput,
   DeleteLinkInput,
+  ToggleLinkVisibilityInput,
   UpdateLinkInput,
-  toggleLinkVisibilityInputSchema,
 } from '@/interface-adapters/validation-schemas/links'
-import { authenticatedProcedure } from '@/web/_lib/zsa-procedures'
 
 export const createLink = async (input: CreateLinkInput) => {
   try {
@@ -93,34 +86,31 @@ export const deleteLink = async (input: DeleteLinkInput) => {
   return { message: 'Link deleted successfully' }
 }
 
-export const toggleLinkVisibility = authenticatedProcedure
-  .createServerAction()
-  .input(toggleLinkVisibilityInputSchema)
-  .handler(async ({ input }) => {
-    let link: Link
-    try {
-      link = await getLinkUseCase(input.link_pk)
-    } catch (err) {
-      throw new ZSAError('ERROR', err)
+export const toggleLinkVisibility = async (
+  input: ToggleLinkVisibilityInput
+) => {
+  try {
+    await toggleLinkVisibilityController(input)
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      throw new InputParseError(err.message)
     }
-
-    let collection: Collection
-    try {
-      collection = await getCollectionUseCase(input.collection_pk)
-    } catch (err) {
-      throw new ZSAError('ERROR', err)
+    if (err instanceof UnauthenticatedError) {
+      throw new UnauthenticatedError(
+        'You must be logged in to toggle link visibility.'
+      )
     }
-
-    try {
-      await updateLinkVisibilityUseCase(link, collection, input.checked)
-    } catch (err) {
-      // TODO: report to Sentry
-      if (err instanceof OperationError) {
-        throw new ZSAError('ERROR', err.message)
-      }
-      throw new ZSAError('ERROR', err)
+    if (err instanceof UnauthorizedError) {
+      throw new UnauthorizedError(
+        "You're not authorized to toggle link visibility."
+      )
     }
+    if (err instanceof OperationError) {
+      throw new OperationError(err.message)
+    }
+    throw err
+  }
 
-    revalidatePath(`/app/collections/${collection.fingerprint}`)
-    revalidatePath(`/${collection.fingerprint}`)
-  })
+  revalidatePath(`/app/collections/${input.collection_pk}`)
+  revalidatePath(`/${input.collection_pk}`)
+}
