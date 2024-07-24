@@ -5,10 +5,12 @@ import { ReactNode, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { useServerAction } from 'zsa-react'
 
 import { updateLink } from './actions'
-import { updateLinkInputSchema } from '@/interface-adapters/validation-schemas/links'
+import {
+  UpdateLinkInput,
+  updateLinkInputSchema,
+} from '@/interface-adapters/validation-schemas/links'
 import { HiddenInput } from '@/web/_components/custom/hidden-input'
 import {
   Dialog,
@@ -49,15 +51,16 @@ export function EditLink({
     },
   })
 
-  const { execute } = useServerAction(updateLink, {
-    onError: ({ err }) => {
-      toast.error(err.message)
-    },
-    onSuccess: () => {
+  const execute = async (input: UpdateLinkInput) => {
+    try {
+      await updateLink(input)
       toast.success('Link updated!')
       setOpened(false)
-    },
-  })
+    } catch (err) {
+      // @ts-ignore
+      toast.error(err.message)
+    }
+  }
 
   return (
     <Dialog open={opened} onOpenChange={setOpened}>

@@ -106,3 +106,89 @@ it('should pass with valid input', async () => {
     ]
   )
 })
+
+it('should throw InputParseError on invalid input', () => {
+  // @ts-ignore
+  expect(updateLinksOrderController({})).rejects.toBeInstanceOf(InputParseError)
+})
+
+it('should throw UnauthenticatedError when unauthenticated', async () => {
+  const authenticationService = getInjection('IAuthenticationService')
+  await authenticationService.signInWithPassword(
+    'one@bife.sh',
+    'onepassword',
+    ''
+  )
+  const collection = await createCollectionUseCase({ title: 'collection' })
+  const link = await createLinkUseCase({
+    url: 'one.com',
+    label: '',
+  })
+
+  await authenticationService.signOut()
+
+  expect(
+    updateLinksOrderController({
+      fingerprint: collection.fingerprint,
+      linksOrder: [{ order: 1, fingerprint: link.fingerprint }],
+    })
+  ).rejects.toBeInstanceOf(UnauthenticatedError)
+})
+
+it('should throw UnauthorizedError when updating not-owned', async () => {
+  const authenticationService = getInjection('IAuthenticationService')
+  await authenticationService.signInWithPassword(
+    'one@bife.sh',
+    'onepassword',
+    ''
+  )
+  const collection = await createCollectionUseCase({ title: 'collection' })
+  const linkOne = await createLinkUseCase({
+    url: 'one.com',
+    label: '',
+  })
+
+  await authenticationService.signOut()
+
+  await authenticationService.signInWithPassword(
+    'two@bife.sh',
+    'twopassword',
+    ''
+  )
+
+  // Not own collection & not own link
+  await expect(
+    updateLinksOrderController({
+      fingerprint: collection.fingerprint,
+      linksOrder: [{ order: 1, fingerprint: linkOne.fingerprint }],
+    })
+  ).rejects.toBeInstanceOf(UnauthorizedError)
+
+  const linkTwo = await createLinkUseCase({
+    url: 'two.com',
+    label: '',
+  })
+
+  // Not own collection & own link
+  await expect(
+    updateLinksOrderController({
+      fingerprint: collection.fingerprint,
+      linksOrder: [{ order: 1, fingerprint: linkTwo.fingerprint }],
+    })
+  ).rejects.toBeInstanceOf(UnauthorizedError)
+
+  await authenticationService.signOut()
+  await authenticationService.signInWithPassword(
+    'one@bife.sh',
+    'onepassword',
+    ''
+  )
+
+  // Own collection & not own link
+  await expect(
+    updateLinksOrderController({
+      fingerprint: collection.fingerprint,
+      linksOrder: [{ order: 1, fingerprint: linkTwo.fingerprint }],
+    })
+  ).rejects.toBeInstanceOf(UnauthorizedError)
+})

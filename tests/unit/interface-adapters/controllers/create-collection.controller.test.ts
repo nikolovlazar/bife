@@ -19,7 +19,7 @@ afterEach(() => {
   destroyContainer()
 })
 
-it('should throw InputParseError with invalid input', () => {
+it('should throw InputParseError on invalid input', () => {
   expect(createCollectionController({})).rejects.toBeInstanceOf(InputParseError)
 })
 
