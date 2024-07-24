@@ -48,17 +48,14 @@ export class MockCollectionLinkRepository implements ICollectionLinkRepository {
 
   async addLinkToCollection(
     collectionFingerprint: string,
-    linkFingerprint: string
+    linkFingerprint: string,
+    order: number
   ) {
-    const numberOfExistingLinks = this._relations.filter(
-      (r) => r.collection_pk === collectionFingerprint
-    ).length
-
     const relation: CollectionLink = {
       collection_pk: collectionFingerprint,
       link_pk: linkFingerprint,
       visible: true,
-      order: numberOfExistingLinks + 1,
+      order: order,
     }
     this._relations.push(relation)
 

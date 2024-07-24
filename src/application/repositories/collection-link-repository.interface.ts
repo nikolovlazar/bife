@@ -12,7 +12,8 @@ export interface ICollectionLinkRepository {
 
   addLinkToCollection(
     collectionFingerprint: string,
-    linkFingerprint: string
+    linkFingerprint: string,
+    order: number
   ): Promise<CollectionLink>
 
   removeLinkFromCollection(

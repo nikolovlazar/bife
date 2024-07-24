@@ -18,8 +18,19 @@ export async function addLinkToCollectionUseCase(
   }
 
   const collectionLinkRepository = getInjection('ICollectionLinkRepository')
+
+  let numExistingLinks = 0
+
+  try {
+    const existingLinks = await collectionLinkRepository.getLinksForCollection(
+      collection.fingerprint
+    )
+    numExistingLinks = existingLinks.length
+  } catch (err) {}
+
   await collectionLinkRepository.addLinkToCollection(
     collection.fingerprint,
-    link.fingerprint
+    link.fingerprint,
+    numExistingLinks + 1
   )
 }

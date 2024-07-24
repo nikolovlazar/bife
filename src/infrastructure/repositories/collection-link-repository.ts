@@ -39,7 +39,8 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
 
   async addLinkToCollection(
     collectionFingerprint: string,
-    linkFingerprint: string
+    linkFingerprint: string,
+    order: number
   ) {
     const db = createClient()
     const { data, error } = await db
@@ -48,6 +49,7 @@ export class CollectionLinkRepository implements ICollectionLinkRepository {
         collection_pk: collectionFingerprint,
         link_pk: linkFingerprint,
         visible: true,
+        order,
       })
       .select()
       .single()
