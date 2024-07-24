@@ -9,7 +9,10 @@ import { useServerAction } from 'zsa-react'
 
 import { removeLinkFromCollection } from '../actions'
 
-import { removeLinkFromCollectionInputSchema } from '@/interface-adapters/validation-schemas/collections'
+import {
+  RemoveLinkFromCollectionInput,
+  removeLinkFromCollectionInputSchema,
+} from '@/interface-adapters/validation-schemas/collections'
 import { HiddenInput } from '@/web/_components/custom/hidden-input'
 import {
   Dialog,
@@ -41,15 +44,17 @@ export function RemoveLinkFromCollectionConfirmation({
     },
   })
 
-  const { execute } = useServerAction(removeLinkFromCollection, {
-    onError: ({ err }) => {
-      toast.error(err.message)
-    },
-    onSuccess: () => {
+  const execute = async (input: RemoveLinkFromCollectionInput) => {
+    try {
+      await removeLinkFromCollection(input)
       toast.success('Link removed from collection!')
       setOpened(false)
-    },
-  })
+    } catch (err) {
+      // @ts-ignore
+      toast.error(err.message)
+    }
+  }
+
   return (
     <Dialog open={opened} onOpenChange={setOpened}>
       <DialogTrigger asChild>{children}</DialogTrigger>
