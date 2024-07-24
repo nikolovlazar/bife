@@ -36,17 +36,18 @@ export const SignInForm = () => {
   async function onSubmit(
     values: z.infer<typeof signInWithPasswordFormSchema>
   ) {
-    const data = new FormData()
-    data.append('email', values.email)
-    data.append('password', values.password)
-    data.append('tsToken', tsToken!)
-
-    const res = await signInWithPassword(data)
-    if (res && res[1]) {
-      const error = res[1]
-      turnstile.reset()
-      form.setError('password', { message: error.message })
-      form.setError('email', { message: error.message })
+    try {
+      await signInWithPassword({
+        email: values.email,
+        password: values.password,
+        tsToken: tsToken!,
+      })
+    } catch (err) {
+      if (err instanceof Error) {
+        turnstile.reset()
+        form.setError('password', { message: err.message })
+        form.setError('email', { message: err.message })
+      }
     }
   }
 

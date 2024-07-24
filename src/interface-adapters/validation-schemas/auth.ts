@@ -7,15 +7,27 @@ export const signInWithPasswordFormSchema = z.object({
     .min(6, { message: 'Password must be at least 6 characters' }),
 })
 
+export type SignInWithPasswordForm = z.infer<
+  typeof signInWithPasswordFormSchema
+>
+
 export const signInWithPasswordInputSchema = signInWithPasswordFormSchema.merge(
   z.object({
     tsToken: z.string(),
   })
 )
 
+export type SignInWithPasswordInput = z.infer<
+  typeof signInWithPasswordInputSchema
+>
+
 export const signInWithProviderInputSchema = z.object({
   provider: z.string().min(1),
 })
+
+export type SignInWithProviderInput = z.infer<
+  typeof signInWithProviderInputSchema
+>
 
 export const signUpOutputSchema = z.object({
   errors: z
@@ -28,6 +40,8 @@ export const signUpOutputSchema = z.object({
   success: z.boolean().optional(),
 })
 
+export type SignUpOutput = z.infer<typeof signUpOutputSchema>
+
 export const signUpFormSchema = z.object({
   email: z.string().email('Invalid email'),
   password: z
@@ -37,6 +51,8 @@ export const signUpFormSchema = z.object({
     .string()
     .min(6, { message: 'Password must be at least 6 characters' }),
 })
+
+export type SignUpForm = z.infer<typeof signUpFormSchema>
 
 export const signUpInputSchema = signUpFormSchema
   .merge(
@@ -58,6 +74,8 @@ export const signUpInputSchema = signUpFormSchema
       })
     }
   })
+
+export type SignUpInput = z.infer<typeof signUpInputSchema>
 
 export const resetPasswordInputSchema = z
   .object({
@@ -83,7 +101,11 @@ export const resetPasswordInputSchema = z
     }
   })
 
+export type ResetPasswordInput = z.infer<typeof resetPasswordInputSchema>
+
 export const forgotPasswordInputSchema = z.object({
   email: z.string().email('Invalid email'),
   tsToken: z.string(),
 })
+
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordInputSchema>

@@ -3,7 +3,11 @@ import { injectable } from 'inversify'
 
 import { IAuthenticationService } from '@/application/services/authentication-service.interface'
 
-import { UnauthenticatedError } from '@/entities/errors/auth'
+import {
+  AuthenticationError,
+  UnauthenticatedError,
+  UnauthorizedError,
+} from '@/entities/errors/auth'
 
 import { createClient } from '@/infrastructure/utils/supabase/server'
 
@@ -64,7 +68,7 @@ export class AuthenticationService implements IAuthenticationService {
     })
 
     if (error) {
-      throw new UnauthenticatedError(error.message, { cause: error.cause })
+      throw new AuthenticationError(error.message, { cause: error.cause })
     }
   }
 
@@ -72,7 +76,7 @@ export class AuthenticationService implements IAuthenticationService {
     const supabase = createClient()
     const { error } = await supabase.auth.signOut()
     if (error) {
-      throw new UnauthenticatedError(error.message, { cause: error.cause })
+      throw new AuthenticationError(error.message, { cause: error.cause })
     }
   }
 
@@ -85,7 +89,7 @@ export class AuthenticationService implements IAuthenticationService {
     })
 
     if (error) {
-      throw new UnauthenticatedError(error.message, { cause: error.cause })
+      throw new AuthenticationError(error.message, { cause: error.cause })
     }
   }
 
@@ -96,7 +100,7 @@ export class AuthenticationService implements IAuthenticationService {
     })
 
     if (error) {
-      throw new UnauthenticatedError(error.message, { cause: error.cause })
+      throw new UnauthorizedError(error.message, { cause: error.cause })
     }
   }
 
@@ -113,7 +117,7 @@ export class AuthenticationService implements IAuthenticationService {
     })
 
     if (error) {
-      throw new UnauthenticatedError(error.message, { cause: error.cause })
+      throw new AuthenticationError(error.message, { cause: error.cause })
     }
   }
 }

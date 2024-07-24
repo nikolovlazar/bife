@@ -2,7 +2,10 @@ import { injectable } from 'inversify'
 
 import { IAuthenticationService } from '@/application/services/authentication-service.interface'
 
-import { UnauthenticatedError } from '@/entities/errors/auth'
+import {
+  AuthenticationError,
+  UnauthenticatedError,
+} from '@/entities/errors/auth'
 import { User } from '@/entities/models/users'
 
 @injectable()
@@ -53,8 +56,9 @@ export class MockAuthenticationService implements IAuthenticationService {
   ): Promise<void> {
     const user = this._users.find((user) => user.email === email)
     if (!user || this._passwords[user.id] !== password) {
-      throw new UnauthenticatedError('Invalid credentials')
+      throw new AuthenticationError('Invalid credentials')
     }
+
     this._currentUser = user
     return Promise.resolve()
   }
