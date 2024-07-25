@@ -1,11 +1,7 @@
 import 'reflect-metadata'
 import { afterEach, beforeEach, expect, it } from 'vitest'
 
-import {
-  AuthenticationError,
-  UnauthenticatedError,
-  UnauthorizedError,
-} from '@/entities/errors/auth'
+import { AuthenticationError } from '@/entities/errors/auth'
 import { InputParseError } from '@/entities/errors/common'
 
 import {
