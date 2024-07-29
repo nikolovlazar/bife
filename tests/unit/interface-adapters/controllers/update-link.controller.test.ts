@@ -7,12 +7,12 @@ import { getLinksForCollectionUseCase } from '@/application/use-cases/links/get-
 import { UnauthenticatedError, UnauthorizedError } from '@/entities/errors/auth'
 import { InputParseError } from '@/entities/errors/common'
 
+import { createLinkController } from '@/interface-adapters/controllers/create-link.controller'
 import {
   destroyContainer,
   getInjection,
   initializeContainer,
-} from '@/di/container'
-import { createLinkController } from '@/interface-adapters/controllers/create-link.controller'
+} from '~/di/container'
 
 beforeEach(async () => {
   initializeContainer()

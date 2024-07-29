@@ -4,12 +4,12 @@ import { afterEach, beforeEach, expect, it } from 'vitest'
 import { AuthenticationError } from '@/entities/errors/auth'
 import { InputParseError } from '@/entities/errors/common'
 
+import { signInWithPasswordController } from '@/interface-adapters/controllers/sign-in-with-password.controller'
 import {
   destroyContainer,
   getInjection,
   initializeContainer,
-} from '@/di/container'
-import { signInWithPasswordController } from '@/interface-adapters/controllers/sign-in-with-password.controller'
+} from '~/di/container'
 
 beforeEach(async () => {
   initializeContainer()

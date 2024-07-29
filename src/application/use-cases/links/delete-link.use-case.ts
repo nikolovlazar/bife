@@ -1,7 +1,7 @@
 import { UnauthorizedError } from '@/entities/errors/auth'
 import { Link } from '@/entities/models/link'
 
-import { getInjection } from '@/di/container'
+import { getInjection } from '~/di/container'
 
 export async function deleteLinkUseCase(link: Link): Promise<void> {
   const authenticationService = getInjection('IAuthenticationService')

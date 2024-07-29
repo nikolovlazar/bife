@@ -6,12 +6,12 @@ import { createLinkUseCase } from '@/application/use-cases/links/create-link.use
 
 import { UnauthenticatedError } from '@/entities/errors/auth'
 
+import { getOwnLinksController } from '@/interface-adapters/controllers/get-own-links.controller'
 import {
   destroyContainer,
   getInjection,
   initializeContainer,
-} from '@/di/container'
-import { getOwnLinksController } from '@/interface-adapters/controllers/get-own-links.controller'
+} from '~/di/container'
 
 beforeEach(async () => {
   initializeContainer()

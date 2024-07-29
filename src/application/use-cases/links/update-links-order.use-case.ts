@@ -1,7 +1,7 @@
 import { UnauthorizedError } from '@/entities/errors/auth'
 import { Collection } from '@/entities/models/collection'
 
-import { getInjection } from '@/di/container'
+import { getInjection } from '~/di/container'
 
 export async function updateLinksOrderUseCase(
   collection: Collection,

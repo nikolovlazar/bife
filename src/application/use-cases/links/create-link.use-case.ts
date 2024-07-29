@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid'
 
 import { Link, LinkInsert } from '@/entities/models/link'
 
-import { getInjection } from '@/di/container'
+import { getInjection } from '~/di/container'
 
 export async function createLinkUseCase(data: LinkInsert): Promise<Link> {
   const authenticationService = getInjection('IAuthenticationService')

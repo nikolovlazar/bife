@@ -1,6 +1,6 @@
 import { Link } from '@/entities/models/link'
 
-import { getInjection } from '@/di/container'
+import { getInjection } from '~/di/container'
 
 export async function getLinkUseCase(fingerprint: string): Promise<Link> {
   const linksRepository = getInjection('ILinksRepository')

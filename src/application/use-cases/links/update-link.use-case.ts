@@ -1,7 +1,7 @@
 import { UnauthorizedError } from '@/entities/errors/auth'
 import { Link, LinkUpdate, LinkUpdateSchema } from '@/entities/models/link'
 
-import { getInjection } from '@/di/container'
+import { getInjection } from '~/di/container'
 
 export async function updateLinkUseCase(
   link: Link,

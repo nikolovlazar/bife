@@ -1,6 +1,6 @@
 import { Link } from '@/entities/models/link'
 
-import { getInjection } from '@/di/container'
+import { getInjection } from '~/di/container'
 
 export async function getOwnLinksUseCase(): Promise<Link[]> {
   const authenticationService = getInjection('IAuthenticationService')

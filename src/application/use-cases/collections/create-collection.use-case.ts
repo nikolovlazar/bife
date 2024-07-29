@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid'
 
 import { Collection, CollectionInsert } from '@/entities/models/collection'
 
-import { getInjection } from '@/di/container'
+import { getInjection } from '~/di/container'
 
 export async function createCollectionUseCase(
   collection: CollectionInsert

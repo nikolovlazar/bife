@@ -5,7 +5,7 @@ import {
   signInWithPasswordInputSchema,
 } from '../validation-schemas/auth'
 
-import { getInjection } from '@/di/container'
+import { getInjection } from '~/di/container'
 
 export async function signInWithPasswordController(
   input: SignInWithPasswordInput

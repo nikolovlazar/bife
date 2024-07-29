@@ -4,12 +4,12 @@ import { afterEach, beforeEach, expect, it } from 'vitest'
 import { UnauthenticatedError } from '@/entities/errors/auth'
 import { InputParseError } from '@/entities/errors/common'
 
+import { createCollectionController } from '@/interface-adapters/controllers/create-collection.controller'
 import {
   destroyContainer,
   getInjection,
   initializeContainer,
-} from '@/di/container'
-import { createCollectionController } from '@/interface-adapters/controllers/create-collection.controller'
+} from '~/di/container'
 
 beforeEach(async () => {
   initializeContainer()

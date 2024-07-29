@@ -2,7 +2,7 @@ import { Collection } from '@/entities/models/collection'
 import { CollectionLinks } from '@/entities/models/collection-link'
 import { User } from '@/entities/models/users'
 
-import { getInjection } from '@/di/container'
+import { getInjection } from '~/di/container'
 
 export async function getLinksForCollectionUseCase(
   collection: Collection

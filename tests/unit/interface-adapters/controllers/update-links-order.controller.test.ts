@@ -8,13 +8,13 @@ import { getLinksForCollectionUseCase } from '@/application/use-cases/links/get-
 import { UnauthenticatedError, UnauthorizedError } from '@/entities/errors/auth'
 import { InputParseError } from '@/entities/errors/common'
 
+import { addLinkToCollectionController } from '@/interface-adapters/controllers/add-link-to-collection.controller'
+import { updateLinksOrderController } from '@/interface-adapters/controllers/update-links-order.controller'
 import {
   destroyContainer,
   getInjection,
   initializeContainer,
-} from '@/di/container'
-import { addLinkToCollectionController } from '@/interface-adapters/controllers/add-link-to-collection.controller'
-import { updateLinksOrderController } from '@/interface-adapters/controllers/update-links-order.controller'
+} from '~/di/container'
 
 beforeEach(async () => {
   initializeContainer()

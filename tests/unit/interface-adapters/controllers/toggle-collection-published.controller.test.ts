@@ -6,12 +6,12 @@ import { createCollectionUseCase } from '@/application/use-cases/collections/cre
 import { UnauthenticatedError, UnauthorizedError } from '@/entities/errors/auth'
 import { InputParseError } from '@/entities/errors/common'
 
+import { toggleCollectionPublishedController } from '@/interface-adapters/controllers/toggle-collection-published.controller'
 import {
   destroyContainer,
   getInjection,
   initializeContainer,
-} from '@/di/container'
-import { toggleCollectionPublishedController } from '@/interface-adapters/controllers/toggle-collection-published.controller'
+} from '~/di/container'
 
 beforeEach(async () => {
   initializeContainer()

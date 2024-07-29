@@ -7,7 +7,6 @@ import { ZSAError, createServerAction } from 'zsa'
 import { AuthenticationError } from '@/entities/errors/auth'
 import { InputParseError } from '@/entities/errors/common'
 
-import { getInjection } from '@/di/container'
 import { signInWithPasswordController } from '@/interface-adapters/controllers/sign-in-with-password.controller'
 import {
   SignInWithPasswordInput,
@@ -17,6 +16,7 @@ import {
   signUpInputSchema,
   signUpOutputSchema,
 } from '@/interface-adapters/validation-schemas/auth'
+import { getInjection } from '~/di/container'
 
 export const signInWithPassword = async (input: SignInWithPasswordInput) => {
   try {

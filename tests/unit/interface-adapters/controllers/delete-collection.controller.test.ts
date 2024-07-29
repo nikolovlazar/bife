@@ -6,12 +6,12 @@ import { createCollectionUseCase } from '@/application/use-cases/collections/cre
 import { UnauthenticatedError, UnauthorizedError } from '@/entities/errors/auth'
 import { InputParseError } from '@/entities/errors/common'
 
+import { deleteCollectionController } from '@/interface-adapters/controllers/delete-collection.controller'
 import {
   destroyContainer,
   getInjection,
   initializeContainer,
-} from '@/di/container'
-import { deleteCollectionController } from '@/interface-adapters/controllers/delete-collection.controller'
+} from '~/di/container'
 
 beforeEach(async () => {
   initializeContainer()

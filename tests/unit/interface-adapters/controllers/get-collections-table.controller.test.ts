@@ -4,13 +4,13 @@ import { afterEach, beforeEach, expect, it } from 'vitest'
 
 import { UnauthenticatedError } from '@/entities/errors/auth'
 
+import { createCollectionController } from '@/interface-adapters/controllers/create-collection.controller'
+import { getCollectionsTableController } from '@/interface-adapters/controllers/get-collections-table.controller'
 import {
   destroyContainer,
   getInjection,
   initializeContainer,
-} from '@/di/container'
-import { createCollectionController } from '@/interface-adapters/controllers/create-collection.controller'
-import { getCollectionsTableController } from '@/interface-adapters/controllers/get-collections-table.controller'
+} from '~/di/container'
 
 beforeEach(async () => {
   initializeContainer()

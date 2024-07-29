@@ -1,6 +1,6 @@
 import { Collection } from '@/entities/models/collection'
 
-import { getInjection } from '@/di/container'
+import { getInjection } from '~/di/container'
 
 export async function getOwnCollectionsUseCase(): Promise<Collection[]> {
   const authenticationService = getInjection('IAuthenticationService')

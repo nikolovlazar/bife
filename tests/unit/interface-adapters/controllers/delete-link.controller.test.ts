@@ -6,12 +6,12 @@ import { createLinkUseCase } from '@/application/use-cases/links/create-link.use
 import { UnauthenticatedError, UnauthorizedError } from '@/entities/errors/auth'
 import { InputParseError, NotFoundError } from '@/entities/errors/common'
 
+import { deleteLinkController } from '@/interface-adapters/controllers/delete-link.controller'
 import {
   destroyContainer,
   getInjection,
   initializeContainer,
-} from '@/di/container'
-import { deleteLinkController } from '@/interface-adapters/controllers/delete-link.controller'
+} from '~/di/container'
 
 beforeEach(async () => {
   initializeContainer()

@@ -7,13 +7,11 @@ import { deleteCollectionUseCase } from '@/application/use-cases/collections/del
 import { getCollectionUseCase } from '@/application/use-cases/collections/get-collection.use-case'
 import { updateCollectionUseCase } from '@/application/use-cases/collections/update-collection.use-case'
 
-import { InputParseError } from '@/entities/errors/common'
-
 import {
   destroyContainer,
   getInjection,
   initializeContainer,
-} from '@/di/container'
+} from '~/di/container'
 
 vi.mock('nanoid', () => ({
   nanoid: vi.fn(),

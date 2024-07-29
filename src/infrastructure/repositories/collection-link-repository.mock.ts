@@ -11,7 +11,7 @@ import {
   CollectionLinksSchema,
 } from '@/entities/models/collection-link'
 
-import { DI_SYMBOLS } from '@/di/types'
+import { DI_SYMBOLS } from '~/di/types'
 
 @injectable()
 export class MockCollectionLinkRepository implements ICollectionLinkRepository {
