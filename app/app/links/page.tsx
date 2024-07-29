@@ -1,10 +1,30 @@
+import { redirect } from 'next/navigation'
+
+import { UnauthenticatedError } from '@/entities/errors/auth'
+import { OperationError } from '@/entities/errors/common'
+
 import { linkColumns } from './_links-table/columns'
 import { LinksDataTable } from './_links-table/table'
 import { CreateLink } from './create-link'
-import { getOwnLinksController } from '@/interface-adapters/controllers/get-own-links.controller'
+import {
+  LinkRow,
+  getOwnLinksController,
+} from '@/interface-adapters/controllers/get-own-links.controller'
 
 async function getLinks() {
-  const links = await getOwnLinksController()
+  let links: LinkRow[]
+
+  try {
+    links = await getOwnLinksController()
+  } catch (err) {
+    if (err instanceof UnauthenticatedError) {
+      redirect('/signin')
+    }
+    if (err instanceof OperationError) {
+      redirect('/error')
+    }
+    throw err
+  }
 
   return links
 }
