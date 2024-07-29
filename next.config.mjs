@@ -18,6 +18,7 @@ const nextConfig = {
           banner: 'require("reflect-metadata");',
           raw: true,
           entryOnly: true,
+          exclude: ['./middleware.ts'],
         })
       )
     }
