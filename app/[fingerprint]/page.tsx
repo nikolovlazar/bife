@@ -62,7 +62,7 @@ export default async function PublicCollectionPage({
               className="group flex flex-row items-center justify-between gap-2 overflow-hidden py-2 font-semibold max-md:flex-col max-md:items-start"
             >
               <span className="flex shrink-0 gap-4">{link.label}</span>
-              <span className="h-5 flex-1 border-b-2 border-dotted border-b-muted-foreground max-md:hidden" />
+              <span className="h-5 flex-1 border-b-2 border-dotted group-hover:border-b-secondary-foreground max-md:hidden" />
               <span className="w-max max-w-full truncate text-xs font-normal text-muted-foreground group-hover:text-primary">
                 {new URL(link.url).origin
                   .replace('https://', '')
