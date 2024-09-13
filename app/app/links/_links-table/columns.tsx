@@ -2,6 +2,7 @@
 
 import { ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { DeleteLinkConfirmation } from '../delete-link'
 import { EditLink } from '../edit-link'
@@ -51,6 +52,17 @@ export const linkColumns: ColumnDef<LinkRow>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${window.location.origin}/${link.fingerprint}`
+                )
+                toast.success('URL copied to clipboard')
+              }}
+            >
+              Copy URL
+            </DropdownMenuItem>
             <EditLink
               fingerprint={link.fingerprint}
               label={link.label}
