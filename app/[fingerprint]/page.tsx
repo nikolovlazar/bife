@@ -72,8 +72,13 @@ export default async function PublicCollectionPage({
           ))}
         </div>
         <hr />
-        <NextLink href="https://bife.sh" className="text-center">
-          Create your own Bife collection
+        <NextLink
+          href="https://bife.sh"
+          className="text-center text-muted-foreground"
+        >
+          Create your own{' '}
+          <span className="font-semibold text-secondary-foreground">Bife</span>{' '}
+          collection
         </NextLink>
       </div>
     </>
