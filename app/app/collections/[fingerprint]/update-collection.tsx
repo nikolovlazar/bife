@@ -1,6 +1,8 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ExternalLink } from 'lucide-react'
+import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -119,6 +121,16 @@ export default function UpdateOrDeleteCollection({
           <DeleteCollectionConfirmation fingerprint={fingerprint}>
             <Button variant="destructive">Delete</Button>
           </DeleteCollectionConfirmation>
+          <Button asChild variant="ghost">
+            <Link
+              href={`/${fingerprint}`}
+              target="_blank"
+              className="flex items-center gap-2"
+            >
+              View collection page
+              <ExternalLink className="w-4" />
+            </Link>
+          </Button>
         </fieldset>
       </form>
     </Form>

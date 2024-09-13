@@ -91,7 +91,7 @@ export function AddOrCreateLink({
                             }
                           }
                         }}
-                        className="flex cursor-pointer gap-2"
+                        className="grid cursor-pointer grid-cols-[24px_1fr] gap-2 overflow-hidden"
                       >
                         <Check
                           className={cn(

@@ -1,5 +1,3 @@
-import { ExternalLink } from 'lucide-react'
-import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 
 import { createClient } from '@/infrastructure/utils/supabase/server'
@@ -7,15 +5,6 @@ import { createClient } from '@/infrastructure/utils/supabase/server'
 import { AddOrCreateLink } from './add-create-link'
 import { LinksList } from './links-list'
 import UpdateOrDeleteCollection from './update-collection'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/web/_components/ui/breadcrumb'
-import { Button } from '@/web/_components/ui/button'
 
 export default async function CollectionDetails({
   params,
@@ -67,51 +56,24 @@ export default async function CollectionDetails({
   const linksInCollection = collectionLinks?.map(({ link }) => link!)
 
   return (
-    <>
-      <div className="flex items-center justify-between">
-        <Breadcrumb className="max-md:hidden">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/app/collections">Collections</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{collection?.title}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <Button asChild variant="ghost">
-          <Link
-            href={`/${collection?.fingerprint}`}
-            target="_blank"
-            className="flex items-center gap-2"
-          >
-            View collection page
-            <ExternalLink className="w-4" />
-          </Link>
-        </Button>
+    <div className="flex flex-col gap-4 xl:flex-row">
+      <UpdateOrDeleteCollection
+        title={collection.title}
+        description={collection.description ?? undefined}
+        fingerprint={collection.fingerprint}
+        published={collection.published}
+      />
+      <div className="mt-4 flex-1">
+        <fieldset className="grid items-start gap-4 rounded-lg border p-4">
+          <legend className="-ml-1 px-1 text-sm font-medium">Links</legend>
+          <AddOrCreateLink
+            userLinks={userLinks ?? []}
+            linksInCollection={linksInCollection ?? []}
+            collectionFingerprint={params.fingerprint}
+          />
+          <LinksList fingerprint={params.fingerprint} />
+        </fieldset>
       </div>
-      <div className="flex flex-col gap-4 xl:flex-row">
-        <UpdateOrDeleteCollection
-          title={collection.title}
-          description={collection.description ?? undefined}
-          fingerprint={collection.fingerprint}
-          published={collection.published}
-        />
-        <div className="mt-4 flex-1">
-          <fieldset className="grid items-start gap-4 rounded-lg border p-4">
-            <legend className="-ml-1 px-1 text-sm font-medium">Links</legend>
-            <AddOrCreateLink
-              userLinks={userLinks ?? []}
-              linksInCollection={linksInCollection ?? []}
-              collectionFingerprint={params.fingerprint}
-            />
-            <LinksList fingerprint={params.fingerprint} />
-          </fieldset>
-        </div>
-      </div>
-    </>
+    </div>
   )
 }

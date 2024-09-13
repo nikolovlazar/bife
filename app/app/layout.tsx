@@ -1,4 +1,4 @@
-import { LinkIcon, Menu, Scroll } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import Link from 'next/link'
 import { ReactNode, Suspense } from 'react'
 
@@ -24,39 +24,37 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen w-full">
       <div className="flex flex-col overflow-hidden">
-        <header className="flex h-14 items-center justify-between gap-4 border-b bg-muted/40 px-4 md:flex-row-reverse lg:h-[60px] lg:px-6">
+        <header className="flex h-14 items-center justify-between gap-4 border-b bg-muted/40 px-4 sm:flex-row-reverse lg:h-[60px] lg:px-6">
           {/* Mobile sidebar */}
           <Sheet>
             <SheetTrigger asChild>
               <Button
                 variant="outline"
                 size="icon"
-                className="shrink-0 md:hidden"
+                className="shrink-0 sm:hidden"
               >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
-              <nav className="grid gap-2 text-lg font-medium">
+              <nav className="grid gap-4 text-lg font-medium">
                 <SidebarLink
                   href="/app"
-                  className="flex items-center gap-2 text-2xl font-semibold"
+                  className="flex items-center text-2xl font-semibold"
                 >
                   <span className="">Bife</span>
                 </SidebarLink>
                 <SidebarLink
                   href="/app/collections"
-                  className="mx-[-0.65rem] flex items-center gap-4 px-3 py-2 text-muted-foreground hover:text-foreground"
+                  className="mx-[-0.65rem] px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
-                  <Scroll className="h-5 w-5" />
                   Collections
                 </SidebarLink>
                 <SidebarLink
                   href="/app/links"
-                  className="mx-[-0.65rem] flex items-center gap-4 px-3 py-2 text-muted-foreground hover:text-foreground"
+                  className="mx-[-0.65rem] px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
-                  <LinkIcon className="h-5 w-5" />
                   Links
                 </SidebarLink>
               </nav>
@@ -89,7 +87,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <SignOut />
             </DropdownMenuContent>
           </DropdownMenu>
-          <nav className="flex items-center gap-8 max-md:hidden">
+          <nav className="flex items-center gap-8 max-sm:hidden">
             <h1 className="text-xl font-semibold">Bife</h1>
             <ul className="flex gap-4">
               <li>
