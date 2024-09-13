@@ -1,4 +1,3 @@
-import { Utensils } from 'lucide-react'
 import NextLink from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 
@@ -10,13 +9,6 @@ import { NotFoundError } from '@/entities/errors/common'
 import { Collection } from '@/entities/models/collection'
 import { CollectionLinks } from '@/entities/models/collection-link'
 import { Link } from '@/entities/models/link'
-
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/web/_components/ui/card'
 
 export default async function PublicCollectionPage({
   params,
@@ -54,37 +46,33 @@ export default async function PublicCollectionPage({
 
   return (
     <>
-      <Card className="rounded-none">
-        <CardHeader>
-          <CardTitle>{collection.title}</CardTitle>
-          <CardDescription>{collection.description}</CardDescription>
-        </CardHeader>
-      </Card>
+      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+        {collection.title}
+      </h1>
+      <p className="leading-7">{collection.description}</p>
+      <hr />
       <div className="flex flex-1 flex-col justify-between gap-8">
-        <div className="flex flex-1 flex-col gap-4">
+        <div className="flex flex-1 flex-col">
           {displayedLinks.map(({ link }) => (
             <a
               key={link.fingerprint}
               href={link.url}
               target="_blank"
               rel="noopener nofollow"
-              className="group flex flex-row items-center justify-between gap-2 overflow-hidden bg-background px-4 py-2 font-semibold shadow max-md:flex-col max-md:items-start md:gap-4"
+              className="group flex flex-row items-center justify-between gap-2 overflow-hidden py-2 font-semibold max-md:flex-col max-md:items-start"
             >
-              <div className="flex gap-4">
-                <span>🔗</span>
-                <span className="shrink-0">{link.label}</span>
-              </div>
-              <span className="w-max max-w-full truncate text-xs font-normal text-muted-foreground group-hover:text-purple-500">
-                {link.url}
+              <span className="flex shrink-0 gap-4">{link.label}</span>
+              <span className="h-5 flex-1 border-b-2 border-dotted border-b-muted-foreground max-md:hidden" />
+              <span className="w-max max-w-full truncate text-xs font-normal text-muted-foreground group-hover:text-primary">
+                {new URL(link.url).origin
+                  .replace('https://', '')
+                  .replace('http://', '')}
               </span>
             </a>
           ))}
         </div>
-        <NextLink
-          href="/"
-          className="flex w-max self-center bg-background px-3 py-2 shadow"
-        >
-          <Utensils className="mr-1" />
+        <hr />
+        <NextLink href="https://bife.sh" className="text-center">
           Create your own Bife collection
         </NextLink>
       </div>
