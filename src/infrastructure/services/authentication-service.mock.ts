@@ -12,7 +12,7 @@ import { User } from '@/entities/models/users'
 export class MockAuthenticationService implements IAuthenticationService {
   private _users: User[]
   private _passwords: Record<string, string>
-  private _currentUser: User | null
+  private _currentUser: User | undefined
 
   constructor() {
     this._users = [
@@ -34,7 +34,7 @@ export class MockAuthenticationService implements IAuthenticationService {
       '2': 'twopassword',
       '3': 'threepassword',
     }
-    this._currentUser = null
+    this._currentUser = undefined
   }
 
   getUser(): Promise<User> {
@@ -64,7 +64,7 @@ export class MockAuthenticationService implements IAuthenticationService {
   }
 
   signOut(): Promise<void> {
-    this._currentUser = null
+    this._currentUser = undefined
     return Promise.resolve()
   }
 

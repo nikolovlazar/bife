@@ -15,10 +15,6 @@ import {
   LinksSchema,
 } from '@/entities/models/link'
 
-import { createClient } from '@/infrastructure/utils/supabase/server'
-
-import { mapPostgrestErrorToDomainError } from '../utils/supabase/errors'
-
 @injectable()
 export class MockLinksRepository implements ILinksRepository {
   private _links: Link[]

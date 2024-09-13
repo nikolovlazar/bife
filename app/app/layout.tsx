@@ -1,4 +1,4 @@
-import { LinkIcon, Menu, Scroll, Utensils } from 'lucide-react'
+import { LinkIcon, Menu, Scroll } from 'lucide-react'
 import Link from 'next/link'
 import { ReactNode, Suspense } from 'react'
 
@@ -28,7 +28,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/app" className="flex items-center gap-2 font-semibold">
-              <Utensils className="h-6 w-6" />
               <span className="">Bife</span>
             </Link>
           </div>
@@ -36,14 +35,14 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             <nav className="grid items-start px-2 pt-2 text-sm font-medium lg:px-4">
               <SidebarLink
                 href="/app/collections"
-                className="flex items-center gap-3 rounded-lg p-3 text-muted-foreground transition-all hover:text-primary"
+                className="flex items-center gap-3 p-3 text-muted-foreground transition-all hover:text-primary"
               >
                 <Scroll className="h-5 w-5" />
                 Collections
               </SidebarLink>
               <SidebarLink
                 href="/app/links"
-                className="flex items-center gap-3 rounded-lg p-3 text-muted-foreground transition-all hover:text-primary"
+                className="flex items-center gap-3 p-3 text-muted-foreground transition-all hover:text-primary"
               >
                 <LinkIcon className="h-5 w-5" />
                 Links
@@ -70,21 +69,20 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <nav className="grid gap-2 text-lg font-medium">
                 <SidebarLink
                   href="/app"
-                  className="flex items-center gap-2 text-lg font-semibold"
+                  className="flex items-center gap-2 text-2xl font-semibold"
                 >
-                  <Utensils className="h-6 w-6" />
                   <span className="">Bife</span>
                 </SidebarLink>
                 <SidebarLink
                   href="/app/collections"
-                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                  className="mx-[-0.65rem] flex items-center gap-4 px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
                   <Scroll className="h-5 w-5" />
                   Collections
                 </SidebarLink>
                 <SidebarLink
                   href="/app/links"
-                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                  className="mx-[-0.65rem] flex items-center gap-4 px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
                   <LinkIcon className="h-5 w-5" />
                   Links

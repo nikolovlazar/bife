@@ -8,6 +8,7 @@ import {
   UnauthenticatedError,
   UnauthorizedError,
 } from '@/entities/errors/auth'
+import { UserSchema } from '@/entities/models/users'
 
 import { createClient } from '@/infrastructure/utils/supabase/server'
 

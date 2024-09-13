@@ -54,7 +54,7 @@ export default async function PublicCollectionPage({
 
   return (
     <>
-      <Card>
+      <Card className="rounded-none">
         <CardHeader>
           <CardTitle>{collection.title}</CardTitle>
           <CardDescription>{collection.description}</CardDescription>
@@ -68,7 +68,7 @@ export default async function PublicCollectionPage({
               href={link.url}
               target="_blank"
               rel="noopener nofollow"
-              className="group flex flex-row items-center justify-between gap-2 overflow-hidden rounded-sm bg-background px-4 py-2 font-semibold shadow max-md:flex-col max-md:items-start md:gap-4"
+              className="group flex flex-row items-center justify-between gap-2 overflow-hidden bg-background px-4 py-2 font-semibold shadow max-md:flex-col max-md:items-start md:gap-4"
             >
               <div className="flex gap-4">
                 <span>🔗</span>
@@ -82,7 +82,7 @@ export default async function PublicCollectionPage({
         </div>
         <NextLink
           href="/"
-          className="flex w-max self-center rounded-md bg-background px-3 py-2 shadow"
+          className="flex w-max self-center bg-background px-3 py-2 shadow"
         >
           <Utensils className="mr-1" />
           Create your own Bife collection

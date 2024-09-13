@@ -1,12 +1,9 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
 
 import './globals.css'
 import { ThemeProvider } from '@/web/_components/theme-provider'
 import { Toaster } from '@/web/_components/ui/sonner'
 import { cn } from '@/web/_lib/utils'
-
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 export const metadata: Metadata = {
   title: 'Bife - All you can link',
@@ -28,12 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body
-        className={cn(
-          'min-h-screen bg-background font-sans antialiased',
-          inter.variable
-        )}
-      >
+      <body className={cn('min-h-screen bg-background font-sans antialiased')}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -42,7 +34,10 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
-        <Toaster position="bottom-center" />
+        <Toaster
+          position="bottom-center"
+          toastOptions={{ classNames: { toast: 'rounded-none' } }}
+        />
       </body>
     </html>
   )
