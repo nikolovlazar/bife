@@ -63,7 +63,7 @@ export default async function CollectionDetails({
         fingerprint={collection.fingerprint}
         published={collection.published}
       />
-      <div className="mt-4 flex-1">
+      <div className="flex-1">
         <fieldset className="grid items-start gap-4 rounded-lg border p-4">
           <legend className="-ml-1 px-1 text-sm font-medium">Links</legend>
           <AddOrCreateLink

@@ -63,7 +63,7 @@ export default function UpdateOrDeleteCollection({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((values) => execute(values))}
-        className="mt-4 w-full xl:max-w-lg"
+        className="w-full xl:max-w-lg"
       >
         <fieldset className="grid items-start gap-4 rounded-lg border p-4">
           <legend className="-ml-1 px-1 text-sm font-medium">
