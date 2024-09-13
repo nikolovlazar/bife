@@ -34,7 +34,7 @@ export default async function LinksPage() {
 
   return (
     <>
-      <div className="mb-4 flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold md:text-2xl">Links</h1>
         <CreateLink />
       </div>

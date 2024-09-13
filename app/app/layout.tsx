@@ -22,35 +22,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/web/_components/ui/sheet'
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      {/* Desktop sidebar */}
-      <div className="hidden border-r bg-muted/40 md:block">
-        <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/app" className="flex items-center gap-2 font-semibold">
-              <span className="">Bife</span>
-            </Link>
-          </div>
-          <div className="flex-1">
-            <nav className="grid items-start px-2 pt-2 text-sm font-medium lg:px-4">
-              <SidebarLink
-                href="/app/collections"
-                className="flex items-center gap-3 p-3 text-muted-foreground transition-all hover:text-primary"
-              >
-                <Scroll className="h-5 w-5" />
-                Collections
-              </SidebarLink>
-              <SidebarLink
-                href="/app/links"
-                className="flex items-center gap-3 p-3 text-muted-foreground transition-all hover:text-primary"
-              >
-                <LinkIcon className="h-5 w-5" />
-                Links
-              </SidebarLink>
-            </nav>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen w-full">
       <div className="flex flex-col overflow-hidden">
         <header className="flex h-14 items-center justify-between gap-4 border-b bg-muted/40 px-4 md:flex-row-reverse lg:h-[60px] lg:px-6">
           {/* Mobile sidebar */}
@@ -117,6 +89,17 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <SignOut />
             </DropdownMenuContent>
           </DropdownMenu>
+          <nav className="flex items-center gap-8 max-md:hidden">
+            <h1 className="text-xl font-semibold">Bife</h1>
+            <ul className="flex gap-4">
+              <li>
+                <Link href="/app/collections">Collections</Link>
+              </li>
+              <li>
+                <Link href="/app/links">Links</Link>
+              </li>
+            </ul>
+          </nav>
         </header>
         <main className="flex flex-1 flex-col p-4 lg:p-6">{children}</main>
       </div>
