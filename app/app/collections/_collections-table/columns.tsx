@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/web/_components/ui/dropdown-menu'
 
-type CollectionRow = GetCollectionsTableControllerOutput[0]
+type CollectionRow = GetCollectionsTableControllerOutput['data'][0]
 
 export const collectionColumns: ColumnDef<CollectionRow>[] = [
   {

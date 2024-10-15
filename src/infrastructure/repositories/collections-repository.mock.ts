@@ -66,16 +66,24 @@ export class MockCollectionsRepository implements ICollectionsRepository {
     return Promise.resolve(CollectionSchema.parse(collection))
   }
 
-  getCollectionsForUser(userId: string): Promise<Collection[]> {
+  getCollectionsForUser(
+    userId: string,
+    page: number,
+    pageSize: number
+  ): Promise<{ collections: Collection[]; totalCount: number }> {
     const collections = this._collections.filter(
       (collection) => collection.created_by === userId
     )
 
-    if (collections.length === 0) {
-      throw new NotFoundError('multiple (or no) rows returned')
-    }
+    const totalCount = collections.length
+    const startIndex = (page - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    const paginatedCollections = collections.slice(startIndex, endIndex)
 
-    return Promise.resolve(CollectionsSchema.parse(collections))
+    return Promise.resolve({
+      collections: CollectionsSchema.parse(paginatedCollections),
+      totalCount,
+    })
   }
 
   updateCollection(

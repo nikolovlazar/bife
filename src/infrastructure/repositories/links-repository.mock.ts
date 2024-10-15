@@ -33,14 +33,26 @@ export class MockLinksRepository implements ILinksRepository {
     return Promise.resolve(LinkSchema.parse(link))
   }
 
-  async getLinksForUser(userId: string): Promise<Link[]> {
-    const links = this._links.filter((l) => l.created_by === userId)
+  async getLinksForUser(
+    userId: string,
+    page: number = 1,
+    pageSize: number = 10
+  ): Promise<{ links: Link[]; totalCount: number }> {
+    const allLinks = this._links.filter((l) => l.created_by === userId)
+    const totalCount = allLinks.length
 
-    if (links.length === 0) {
-      throw new NotFoundError('multiple (or no) rows returned')
+    const startIndex = (page - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    const paginatedLinks = allLinks.slice(startIndex, endIndex)
+
+    if (paginatedLinks.length === 0 && page > 1) {
+      throw new NotFoundError('No links found for the given page')
     }
 
-    return Promise.resolve(LinksSchema.parse(links))
+    return Promise.resolve({
+      links: LinksSchema.parse(paginatedLinks),
+      totalCount,
+    })
   }
 
   async createLink(
