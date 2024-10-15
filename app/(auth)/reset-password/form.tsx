@@ -28,20 +28,14 @@ export const ResetPasswordForm = () => {
   })
 
   async function onSubmit(values: z.infer<typeof resetPasswordInputSchema>) {
-    const data = new FormData()
-    data.append('password', values.password)
-    data.append('confirmPassword', values.confirmPassword)
-    const res = await resetPassword(data)
-    console.log(res)
+    const res = await resetPassword(values)
 
-    // if (res.errors) {
-    //   res.errors.password &&
-    //     form.setError('password', { message: res.errors.password })
-    //   res.errors.confirmPassword &&
-    //     form.setError('confirmPassword', {
-    //       message: res.errors.confirmPassword,
-    //     })
-    // }
+    if (res && res.error) {
+      form.setError('password', { message: res.error })
+      form.setError('confirmPassword', {
+        message: res.error,
+      })
+    }
   }
 
   return (

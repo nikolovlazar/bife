@@ -10,7 +10,7 @@ import { z } from 'zod'
 
 import { forgotPassword } from '../actions'
 
-import { forgotPasswordInputSchema } from '@/interface-adapters/validation-schemas/auth'
+import { forgotPasswordFormSchema } from '@/interface-adapters/validation-schemas/auth'
 import { Button } from '@/web/_components/ui/button'
 import {
   Form,
@@ -25,32 +25,28 @@ import { Input } from '@/web/_components/ui/input'
 export const ForgotPasswordForm = () => {
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [tsToken, setTsToken] = useState<string | undefined>()
+  const [tsToken, setTsToken] = useState<string | undefined>('')
   const turnstile = useTurnstile()
 
-  const form = useForm<z.infer<typeof forgotPasswordInputSchema>>({
-    resolver: zodResolver(forgotPasswordInputSchema),
+  const form = useForm<z.infer<typeof forgotPasswordFormSchema>>({
+    resolver: zodResolver(forgotPasswordFormSchema),
     defaultValues: {
       email: '',
     },
   })
 
-  async function onSubmit(values: z.infer<typeof forgotPasswordInputSchema>) {
-    const data = new FormData()
-    data.append('email', values.email)
-    data.append('tsToken', tsToken!)
+  async function onSubmit(values: z.infer<typeof forgotPasswordFormSchema>) {
     setLoading(true)
-    const res = await forgotPassword(data)
-    console.log(res)
-    // if (res.errors) {
-    //   res.errors.email && form.setError('email', { message: res.errors.email })
-    //   turnstile.reset()
-    // } else if (res.success) {
-    //   setSent(true)
-    //   toast.success(res.message, {
-    //     description: 'Check your email for further instructions',
-    //   })
-    // }
+    const res = await forgotPassword({ ...values, tsToken: tsToken! })
+    if (res.error) {
+      form.setError('email', { message: res.error })
+      turnstile.reset()
+    } else if (res.success) {
+      setSent(true)
+      toast.success(res.message, {
+        description: 'Check your email for further instructions',
+      })
+    }
   }
 
   return !sent ? (
@@ -85,7 +81,6 @@ export const ForgotPasswordForm = () => {
             </FormControl>
             <FormMessage />
           </FormItem>
-          <input className="hidden" name="tsToken" value={tsToken} />
           <Button
             type="submit"
             className="w-full"

@@ -35,29 +35,18 @@ export const SignUpForm = () => {
   })
 
   async function onSubmit(values: z.infer<typeof signUpFormSchema>) {
-    const data = new FormData()
-    data.append('email', values.email)
-    data.append('password', values.password)
-    data.append('confirmPassword', values.confirmPassword)
-    data.append('tsToken', tsToken!)
-
-    const [output] = await signUp(data)
-    if (output) {
-      if (output.errors) {
-        turnstile.reset()
-        output.errors.email &&
-          form.setError('email', { message: output.errors.email })
-        output.errors.password &&
-          form.setError('password', { message: output.errors.password })
-        output.errors.confirmPassword &&
-          form.setError('confirmPassword', {
-            message: output.errors.confirmPassword,
-          })
-      } else if (output.success) {
-        toast.success('Sign up successful!', {
-          description: 'Check your email for further instructions',
-        })
-      }
+    const output = await signUp({ ...values, tsToken: tsToken! })
+    if (output.error) {
+      turnstile.reset()
+      form.setError('email', { message: output.error })
+      form.setError('password', { message: output.error })
+      form.setError('confirmPassword', {
+        message: output.error,
+      })
+    } else if (output.success) {
+      toast.success('Sign up successful!', {
+        description: 'Check your email for further instructions',
+      })
     }
   }
   return (
@@ -126,7 +115,6 @@ export const SignUpForm = () => {
             </FormControl>
             <FormMessage />
           </FormItem>
-          <input className="hidden" name="tsToken" value={tsToken} />
           <Button type="submit" className="w-full" disabled={!tsToken}>
             Sign up
           </Button>

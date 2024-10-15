@@ -2,21 +2,21 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { ZSAError, createServerAction } from 'zsa'
 
 import { AuthenticationError } from '@/entities/errors/auth'
 import { InputParseError } from '@/entities/errors/common'
 
+import { forgotPasswordController } from '@/interface-adapters/controllers/forgot-password.controller'
+import { resetPasswordController } from '@/interface-adapters/controllers/reset-password.controller'
 import { signInWithPasswordController } from '@/interface-adapters/controllers/sign-in-with-password.controller'
+import { signInWithProviderController } from '@/interface-adapters/controllers/sign-in-with-provider.controller'
+import { signUpController } from '@/interface-adapters/controllers/sign-up.controller'
 import {
+  ForgotPasswordInput,
+  ResetPasswordInput,
   SignInWithPasswordInput,
-  forgotPasswordInputSchema,
-  resetPasswordInputSchema,
-  signInWithProviderInputSchema,
-  signUpInputSchema,
-  signUpOutputSchema,
+  SignUpInput,
 } from '@/interface-adapters/validation-schemas/auth'
-import { getInjection } from '~/di/container'
 
 export const signInWithPassword = async (input: SignInWithPasswordInput) => {
   try {
@@ -34,62 +34,72 @@ export const signInWithPassword = async (input: SignInWithPasswordInput) => {
   redirect('/app/collections')
 }
 
-export const signInWithProvider = createServerAction()
-  .input(signInWithProviderInputSchema, { type: 'formData' })
-  .handler(async ({ input }) => {
-    const authenticationService = getInjection('IAuthenticationService')
-    const data = await authenticationService.signInWithProvider(input.provider)
-    revalidatePath('/', 'layout')
-    redirect(data.url)
-  })
+export async function signInWithProvider(formData: FormData) {
+  const provider = formData.get('provider') as string
+  let url: string = ''
 
-export const signUp = createServerAction()
-  .input(signUpInputSchema, { type: 'formData' })
-  .output(signUpOutputSchema)
-  .handler(async ({ input }) => {
-    const authenticationService = getInjection('IAuthenticationService')
-    try {
-      await authenticationService.signUp(
-        input.email,
-        input.password,
-        input.tsToken
-      )
-    } catch (err) {
-      // TODO: report to Sentry
-      throw new ZSAError('ERROR', err)
+  try {
+    const data = await signInWithProviderController({ provider })
+    url = data.url
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      throw new InputParseError(err.message)
     }
-
-    revalidatePath('/', 'layout')
-    return { success: true }
-  })
-
-export const resetPassword = createServerAction()
-  .input(resetPasswordInputSchema, { type: 'formData' })
-  .handler(async ({ input }) => {
-    const authenticationService = getInjection('IAuthenticationService')
-    try {
-      await authenticationService.resetPassword(input.password)
-    } catch (err) {
-      // TODO: report to Sentry
-      throw new ZSAError('ERROR', err)
+    if (err instanceof AuthenticationError) {
+      throw new AuthenticationError(err.message)
     }
+    throw err
+  }
 
-    redirect('/signin')
-  })
+  revalidatePath('/', 'layout')
+  redirect(url)
+}
 
-export const forgotPassword = createServerAction()
-  .input(forgotPasswordInputSchema, { type: 'formData' })
-  .handler(async ({ input }) => {
-    const authenticationService = getInjection('IAuthenticationService')
-    try {
-      await authenticationService.forgotPassword(input.email, input.tsToken)
-    } catch (err) {
-      // TODO: report to Sentry
-      throw new ZSAError('ERROR', err)
+export async function signUp(input: SignUpInput) {
+  try {
+    await signUpController(input)
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      return { error: err.message }
     }
-
-    return {
-      success: true,
-      message: 'Password reset request submitted successfully',
+    if (err instanceof AuthenticationError) {
+      return { error: err.message }
     }
-  })
+    throw err
+  }
+  revalidatePath('/', 'layout')
+  return { success: true }
+}
+
+export async function resetPassword(input: ResetPasswordInput) {
+  try {
+    await resetPasswordController(input)
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      return { error: err.message }
+    }
+    if (err instanceof AuthenticationError) {
+      return { error: err.message }
+    }
+    throw err
+  }
+  redirect('/signin')
+}
+
+export async function forgotPassword(input: ForgotPasswordInput) {
+  try {
+    await forgotPasswordController(input)
+  } catch (err) {
+    if (err instanceof InputParseError) {
+      return { error: err.message }
+    }
+    if (err instanceof AuthenticationError) {
+      return { error: err.message }
+    }
+    throw err
+  }
+  return {
+    success: true,
+    message: 'Password reset request submitted successfully',
+  }
+}

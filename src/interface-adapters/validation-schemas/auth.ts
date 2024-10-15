@@ -103,9 +103,14 @@ export const resetPasswordInputSchema = z
 
 export type ResetPasswordInput = z.infer<typeof resetPasswordInputSchema>
 
-export const forgotPasswordInputSchema = z.object({
+export const forgotPasswordFormSchema = z.object({
   email: z.string().email('Invalid email'),
-  tsToken: z.string(),
 })
+
+export const forgotPasswordInputSchema = forgotPasswordFormSchema.merge(
+  z.object({
+    tsToken: z.string(),
+  })
+)
 
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordInputSchema>
