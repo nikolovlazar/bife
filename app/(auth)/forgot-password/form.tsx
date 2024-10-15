@@ -47,6 +47,7 @@ export const ForgotPasswordForm = () => {
         description: 'Check your email for further instructions',
       })
     }
+    setLoading(false)
   }
 
   return !sent ? (
