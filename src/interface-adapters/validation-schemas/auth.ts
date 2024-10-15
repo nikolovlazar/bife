@@ -22,7 +22,7 @@ export type SignInWithPasswordInput = z.infer<
 >
 
 export const signInWithProviderInputSchema = z.object({
-  provider: z.string().min(1),
+  provider: z.enum(['google', 'github']),
 })
 
 export type SignInWithProviderInput = z.infer<

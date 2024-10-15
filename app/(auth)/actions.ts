@@ -39,7 +39,9 @@ export async function signInWithProvider(formData: FormData) {
   let url: string = ''
 
   try {
-    const data = await signInWithProviderController({ provider })
+    const data = await signInWithProviderController({
+      provider: provider as 'google' | 'github',
+    })
     url = data.url
   } catch (err) {
     if (err instanceof InputParseError) {

@@ -45,8 +45,8 @@ export class MockAuthenticationService implements IAuthenticationService {
     throw new UnauthenticatedError('Not authenticated')
   }
 
-  signInWithProvider(_: string): Promise<{ url: string }> {
-    throw new Error('Method not implemented.')
+  signInWithProvider(provider: string): Promise<{ url: string }> {
+    return Promise.resolve({ url: 'https://bife.sh' })
   }
 
   signInWithPassword(
@@ -68,15 +68,30 @@ export class MockAuthenticationService implements IAuthenticationService {
     return Promise.resolve()
   }
 
-  signUp(email: string, password: string, tsToken: string): Promise<void> {
-    throw new Error('Method not implemented.')
+  signUp(email: string, password: string, _: string): Promise<void> {
+    const existingUser = this._users.find((user) => user.email === email)
+    if (existingUser) {
+      throw new AuthenticationError('User already exists')
+    }
+
+    const newUserId = (this._users.length + 1).toString()
+    const newUser: User = {
+      id: newUserId,
+      email: email,
+    }
+
+    this._users.push(newUser)
+    this._passwords[newUserId] = password
+    this._currentUser = newUser
+
+    return Promise.resolve()
   }
 
-  resetPassword(password: string): Promise<void> {
-    throw new Error('Method not implemented.')
+  resetPassword(_: string): Promise<void> {
+    return Promise.resolve()
   }
 
-  forgotPassword(email: string, tsToken: string): Promise<void> {
-    throw new Error('Method not implemented.')
+  forgotPassword(_: string, ___: string): Promise<void> {
+    return Promise.resolve()
   }
 }
