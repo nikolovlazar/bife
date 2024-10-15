@@ -13,7 +13,11 @@ export interface ICollectionsRepository {
 
   getCollection(fingerprint: string): Promise<Collection>
 
-  getCollectionsForUser(userId: string): Promise<Collection[]>
+  getCollectionsForUser(
+    userId: string,
+    page: number,
+    pageSize: number
+  ): Promise<{ collections: Collection[]; totalCount: number }>
 
   updateCollection(
     fingerprint: string,

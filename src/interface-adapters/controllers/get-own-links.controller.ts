@@ -16,10 +16,14 @@ function presenter(links: Link[]) {
 type PresenterOutput = ReturnType<typeof presenter>
 export type LinkRow = PresenterOutput[0]
 
-export async function getOwnLinksController(): Promise<
-  ReturnType<typeof presenter>
-> {
-  const links = await getOwnLinksUseCase()
+export async function getOwnLinksController(
+  page: number,
+  pageSize: number
+): Promise<{ data: ReturnType<typeof presenter>; totalCount: number }> {
+  const { links, totalCount } = await getOwnLinksUseCase(page, pageSize)
 
-  return presenter(links)
+  return {
+    data: presenter(links),
+    totalCount,
+  }
 }

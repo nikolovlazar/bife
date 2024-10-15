@@ -5,11 +5,15 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { LinkRow } from '@/interface-adapters/controllers/get-own-links.controller'
+import { Button } from '@/web/_components/ui/button'
 import { Input } from '@/web/_components/ui/input'
 import {
   Table,
@@ -24,13 +28,21 @@ import { fuzzyFilter } from '@/web/_lib/fuzzy-filter'
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  totalCount: number
+  page: number
+  pageSize: number
 }
 
 export function LinksDataTable<TData extends LinkRow, TValue>({
   columns,
   data,
+  totalCount,
+  page,
+  pageSize,
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = useState('')
+  const router = useRouter()
+  const pathname = usePathname()
 
   const table = useReactTable({
     data,
@@ -41,14 +53,25 @@ export function LinksDataTable<TData extends LinkRow, TValue>({
     getCoreRowModel: getCoreRowModel(),
     onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     globalFilterFn: 'fuzzy',
     filterFns: {
       fuzzy: fuzzyFilter,
     },
     state: {
       globalFilter,
+      pagination: {
+        pageIndex: page - 1,
+        pageSize,
+      },
     },
+    manualPagination: true,
+    pageCount: Math.ceil(totalCount / pageSize),
   })
+
+  const handlePageChange = (newPage: number) => {
+    router.push(`${pathname}?page=${newPage}&pageSize=${pageSize}`)
+  }
 
   return (
     <>
@@ -117,6 +140,24 @@ export function LinksDataTable<TData extends LinkRow, TValue>({
             )}
           </TableBody>
         </Table>
+      </div>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handlePageChange(page - 1)}
+          disabled={page === 1}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handlePageChange(page + 1)}
+          disabled={page * pageSize >= totalCount}
+        >
+          Next
+        </Button>
       </div>
     </>
   )

@@ -33,18 +33,29 @@ export class LinksRepository implements ILinksRepository {
     return LinkSchema.parse(data)
   }
 
-  async getLinksForUser(userId: string): Promise<Link[]> {
+  async getLinksForUser(
+    userId: string,
+    page: number,
+    pageSize: number
+  ): Promise<{ links: Link[]; totalCount: number }> {
     const db = createClient()
-    const { data, error } = await db
+    const from = (page - 1) * pageSize
+    const to = from + pageSize - 1
+
+    const { data, error, count } = await db
       .from('link')
-      .select()
+      .select('*', { count: 'exact' })
       .eq('created_by', userId)
+      .range(from, to)
 
     if (error) {
       throw mapPostgrestErrorToDomainError(error)
     }
 
-    return LinksSchema.parse(data)
+    return {
+      links: LinksSchema.parse(data),
+      totalCount: count || 0,
+    }
   }
 
   async createLink(

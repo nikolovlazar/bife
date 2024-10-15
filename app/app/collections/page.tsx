@@ -11,11 +11,11 @@ import {
   getCollectionsTableController,
 } from '@/interface-adapters/controllers/get-collections-table.controller'
 
-async function getCollections() {
+async function getCollections(page: number, pageSize: number) {
   let collections: GetCollectionsTableControllerOutput
 
   try {
-    collections = await getCollectionsTableController()
+    collections = await getCollectionsTableController(page, pageSize)
   } catch (err) {
     if (err instanceof UnauthenticatedError) {
       redirect('/signin')
@@ -29,8 +29,14 @@ async function getCollections() {
   return collections
 }
 
-export default async function Collections() {
-  const collections = await getCollections()
+export default async function Collections({
+  searchParams,
+}: {
+  searchParams: { page?: string; pageSize?: string }
+}) {
+  const page = Number(searchParams.page) || 1
+  const pageSize = Number(searchParams.pageSize) || 10
+  const { data: collections, totalCount } = await getCollections(page, pageSize)
 
   return (
     <>
@@ -39,7 +45,13 @@ export default async function Collections() {
         <CreateCollection />
       </div>
       {collections && collections.length > 0 ? (
-        <CollectionsDataTable columns={collectionColumns} data={collections} />
+        <CollectionsDataTable
+          columns={collectionColumns}
+          data={collections}
+          totalCount={totalCount}
+          page={page}
+          pageSize={pageSize}
+        />
       ) : (
         <div className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-1 text-center">

@@ -11,11 +11,11 @@ import {
   getOwnLinksController,
 } from '@/interface-adapters/controllers/get-own-links.controller'
 
-async function getLinks() {
-  let links: LinkRow[]
+async function getLinks(page: number, pageSize: number) {
+  let links: { data: LinkRow[]; totalCount: number }
 
   try {
-    links = await getOwnLinksController()
+    links = await getOwnLinksController(page, pageSize)
   } catch (err) {
     if (err instanceof UnauthenticatedError) {
       redirect('/signin')
@@ -29,8 +29,14 @@ async function getLinks() {
   return links
 }
 
-export default async function LinksPage() {
-  const links = await getLinks()
+export default async function LinksPage({
+  searchParams,
+}: {
+  searchParams: { page?: string; pageSize?: string }
+}) {
+  const page = Number(searchParams.page) || 1
+  const pageSize = Number(searchParams.pageSize) || 10
+  const { data: links, totalCount } = await getLinks(page, pageSize)
 
   return (
     <>
@@ -39,7 +45,13 @@ export default async function LinksPage() {
         <CreateLink />
       </div>
       {links && links.length > 0 ? (
-        <LinksDataTable columns={linkColumns} data={links} />
+        <LinksDataTable
+          columns={linkColumns}
+          data={links}
+          totalCount={totalCount}
+          page={page}
+          pageSize={pageSize}
+        />
       ) : (
         <div className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-1 text-center">

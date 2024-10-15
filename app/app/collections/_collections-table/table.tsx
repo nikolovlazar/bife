@@ -5,11 +5,14 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { GetCollectionsTableControllerOutput } from '@/interface-adapters/controllers/get-collections-table.controller'
+import { Button } from '@/web/_components/ui/button'
 import { Input } from '@/web/_components/ui/input'
 import {
   Table,
@@ -21,18 +24,26 @@ import {
 } from '@/web/_components/ui/table'
 import { fuzzyFilter } from '@/web/_lib/fuzzy-filter'
 
-type CollectionRow = GetCollectionsTableControllerOutput[0]
+type CollectionRow = GetCollectionsTableControllerOutput['data'][0]
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  totalCount: number
+  page: number
+  pageSize: number
 }
 
 export function CollectionsDataTable<TData extends CollectionRow, TValue>({
   columns,
   data,
+  totalCount,
+  page,
+  pageSize,
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = useState('')
+  const router = useRouter()
+  const pathname = usePathname()
 
   const table = useReactTable({
     data,
@@ -43,14 +54,25 @@ export function CollectionsDataTable<TData extends CollectionRow, TValue>({
     getCoreRowModel: getCoreRowModel(),
     onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     globalFilterFn: 'fuzzy',
     filterFns: {
       fuzzy: fuzzyFilter,
     },
     state: {
       globalFilter,
+      pagination: {
+        pageIndex: page - 1,
+        pageSize,
+      },
     },
+    manualPagination: true,
+    pageCount: Math.ceil(totalCount / pageSize),
   })
+
+  const handlePageChange = (newPage: number) => {
+    router.push(`${pathname}?page=${newPage}&pageSize=${pageSize}`)
+  }
 
   return (
     <>
@@ -119,6 +141,24 @@ export function CollectionsDataTable<TData extends CollectionRow, TValue>({
             )}
           </TableBody>
         </Table>
+      </div>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handlePageChange(page - 1)}
+          disabled={page === 1}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handlePageChange(page + 1)}
+          disabled={page * pageSize >= totalCount}
+        >
+          Next
+        </Button>
       </div>
     </>
   )

@@ -4,25 +4,38 @@ import { getOwnCollectionsUseCase } from '@/application/use-cases/collections/ge
 
 import { Collection } from '@/entities/models/collection'
 
-export type GetCollectionsTableControllerOutput = Pick<
-  Collection,
-  'fingerprint' | 'title' | 'published' | 'created_at' | 'description'
->[]
-
-function presenter(
-  collections: Collection[]
-): GetCollectionsTableControllerOutput {
-  return collections.map((collection) => ({
-    fingerprint: collection.fingerprint,
-    title: collection.title,
-    published: collection.published,
-    created_at: dayjs(collection.created_at).format('MMM D, YYYY'),
-    description: collection.description,
-  }))
+export type GetCollectionsTableControllerOutput = {
+  data: Pick<
+    Collection,
+    'fingerprint' | 'title' | 'published' | 'created_at' | 'description'
+  >[]
+  totalCount: number
 }
 
-export async function getCollectionsTableController(): Promise<GetCollectionsTableControllerOutput> {
-  const collections = await getOwnCollectionsUseCase()
+function presenter(
+  collections: Collection[],
+  totalCount: number
+): GetCollectionsTableControllerOutput {
+  return {
+    data: collections.map((collection) => ({
+      fingerprint: collection.fingerprint,
+      title: collection.title,
+      published: collection.published,
+      created_at: dayjs(collection.created_at).format('MMM D, YYYY'),
+      description: collection.description,
+    })),
+    totalCount,
+  }
+}
 
-  return presenter(collections)
+export async function getCollectionsTableController(
+  page: number = 1,
+  pageSize: number = 10
+): Promise<GetCollectionsTableControllerOutput> {
+  const { collections, totalCount } = await getOwnCollectionsUseCase(
+    page,
+    pageSize
+  )
+
+  return presenter(collections, totalCount)
 }

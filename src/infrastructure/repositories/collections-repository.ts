@@ -60,18 +60,29 @@ export class CollectionsRepository implements ICollectionsRepository {
     return CollectionSchema.parse(data)
   }
 
-  async getCollectionsForUser(userId: string) {
+  async getCollectionsForUser(
+    userId: string,
+    page: number,
+    pageSize: number
+  ): Promise<{ collections: Collection[]; totalCount: number }> {
     const db = createClient()
-    const { data, error } = await db
+    const offset = (page - 1) * pageSize
+
+    const { data, error, count } = await db
       .from('collection')
-      .select()
+      .select('*', { count: 'exact' })
       .eq('created_by', userId)
+      .range(offset, offset + pageSize - 1)
+      .order('created_at', { ascending: false })
 
     if (error) {
       throw mapPostgrestErrorToDomainError(error)
     }
 
-    return CollectionsSchema.parse(data)
+    return {
+      collections: CollectionsSchema.parse(data),
+      totalCount: count ?? 0,
+    }
   }
 
   async updateCollection(fingerprint: string, input: CollectionUpdate) {

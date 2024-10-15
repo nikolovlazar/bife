@@ -21,20 +21,24 @@ export const linkColumns: ColumnDef<LinkRow>[] = [
     accessorKey: 'url',
     header: 'URL',
     filterFn: 'includesString',
+    enableResizing: true,
   },
   {
     accessorKey: 'label',
     header: 'Label',
     filterFn: 'includesString',
+    enableResizing: true,
   },
   {
     accessorKey: 'fingerprint',
     header: 'Fingerprint',
     filterFn: 'equalsString',
+    enableResizing: true,
   },
   {
     accessorKey: 'created_at',
     header: 'Date Created',
+    enableResizing: true,
   },
   {
     id: 'actions',
