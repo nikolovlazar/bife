@@ -4,7 +4,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table'
@@ -13,7 +12,6 @@ import { useState } from 'react'
 
 import { GetCollectionsTableControllerOutput } from '@/interface-adapters/controllers/get-collections-table.controller'
 import { Button } from '@/web/_components/ui/button'
-import { Input } from '@/web/_components/ui/input'
 import {
   Table,
   TableBody,
@@ -22,7 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/web/_components/ui/table'
-import { fuzzyFilter } from '@/web/_lib/fuzzy-filter'
 
 type CollectionRow = GetCollectionsTableControllerOutput['data'][0]
 
@@ -53,12 +50,7 @@ export function CollectionsDataTable<TData extends CollectionRow, TValue>({
     },
     getCoreRowModel: getCoreRowModel(),
     onGlobalFilterChange: setGlobalFilter,
-    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    globalFilterFn: 'fuzzy',
-    filterFns: {
-      fuzzy: fuzzyFilter,
-    },
     state: {
       globalFilter,
       pagination: {
@@ -76,17 +68,7 @@ export function CollectionsDataTable<TData extends CollectionRow, TValue>({
 
   return (
     <>
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter collections..."
-          value={globalFilter ?? ''}
-          onChange={(event) =>
-            setGlobalFilter(String(event.currentTarget.value))
-          }
-          className="max-w-sm"
-        />
-      </div>
-      <div className="grid rounded-md border">
+      <div className="my-4 grid rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
