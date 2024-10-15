@@ -77,7 +77,15 @@ export function CollectionsDataTable<TData extends CollectionRow, TValue>({
                   const { headerClassName } =
                     header.column.columnDef.meta ?? ({} as any)
                   return (
-                    <TableHead className={headerClassName} key={header.id}>
+                    <TableHead
+                      className={headerClassName}
+                      key={header.id}
+                      style={{
+                        width: !Number.isNaN(header.column.getSize())
+                          ? `${header.column.getSize()}px`
+                          : 'auto',
+                      }}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(

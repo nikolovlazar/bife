@@ -23,6 +23,7 @@ export const collectionColumns: ColumnDef<CollectionRow>[] = [
   {
     accessorKey: 'title',
     filterFn: 'includesString',
+    size: 500,
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -42,10 +43,12 @@ export const collectionColumns: ColumnDef<CollectionRow>[] = [
     accessorKey: 'description',
     filterFn: 'includesString',
     header: 'Description',
+    size: NaN,
   },
   {
     accessorKey: 'published',
     header: 'Published',
+    size: 100,
     cell: ({ row }) => (
       <CollectionPublishedSwitch
         fingerprint={row.original.fingerprint}
@@ -56,11 +59,13 @@ export const collectionColumns: ColumnDef<CollectionRow>[] = [
   {
     accessorKey: 'created_at',
     header: 'Date Created',
+    size: 130,
   },
   {
     accessorKey: 'fingerprint',
     header: 'Fingerprint',
     filterFn: 'equalsString',
+    size: 130,
   },
   {
     id: 'actions',
