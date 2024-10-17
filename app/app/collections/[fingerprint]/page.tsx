@@ -56,7 +56,7 @@ export default async function CollectionDetails({
   const linksInCollection = collectionLinks?.map(({ link }) => link!)
 
   return (
-    <div className="flex flex-col gap-4 xl:flex-row">
+    <div className="flex flex-col gap-4 pb-12 xl:flex-row">
       <UpdateOrDeleteCollection
         title={collection.title}
         description={collection.description ?? undefined}

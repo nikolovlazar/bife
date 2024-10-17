@@ -1,5 +1,6 @@
 'use server'
 
+import * as Sentry from '@sentry/nextjs'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
@@ -22,6 +23,7 @@ export const signInWithPassword = async (input: SignInWithPasswordInput) => {
   try {
     await signInWithPasswordController(input)
   } catch (err) {
+    Sentry.captureException(err)
     if (err instanceof InputParseError) {
       throw new InputParseError(err.message)
     }
@@ -30,6 +32,8 @@ export const signInWithPassword = async (input: SignInWithPasswordInput) => {
     }
     throw err
   }
+
+  Sentry.setUser({ email: input.email })
 
   redirect('/app/collections')
 }

@@ -5,7 +5,8 @@ import { ReactNode, Suspense } from 'react'
 import { SidebarLink } from './sidebar-link'
 import { SignOut } from './signout'
 import { ThemeSwitcher } from './theme-switcher'
-import { UserAvatar } from './user-avatar'
+import { UserAvatar } from '@/web/_components/custom/user-avatar'
+import UserFeedbackWidget from '@/web/_components/custom/user-feedback-widget'
 import { Button } from '@/web/_components/ui/button'
 import {
   DropdownMenu,
@@ -24,6 +25,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen w-full">
       <div className="flex flex-col overflow-hidden">
+        <UserFeedbackWidget />
         <header className="flex h-14 items-center justify-between gap-4 border-b bg-muted/40 px-4 sm:flex-row-reverse lg:h-[60px] lg:px-6">
           {/* Mobile sidebar */}
           <Sheet>

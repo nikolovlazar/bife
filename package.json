@@ -31,6 +31,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-toast": "^1.1.5",
+    "@sentry/nextjs": "^8.34.0",
     "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.43.2",
     "@tanstack/match-sorter-utils": "^8.15.1",
