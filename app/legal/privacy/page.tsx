@@ -97,9 +97,10 @@ export default function PrivacyPage() {
       <p className="mb-6">
         We use <strong>Sentry</strong> to capture performance metrics and track
         crashes. This helps us maintain and improve the Service. The data sent
-        to Sentry does not contain any personally identifiable information
-        (PII). For more information on Sentry&apos;s practices, please refer to
-        their{' '}
+        to Sentry includes your email address, which we use to identify and
+        track issues specific to your account. This allows us to provide better
+        support and more quickly resolve any problems you may encounter. For
+        more information on Sentry&apos;s practices, please refer to their{' '}
         <a
           href="https://sentry.io/privacy/"
           className="text-blue-600 hover:underline"
