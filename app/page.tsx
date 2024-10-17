@@ -84,6 +84,20 @@ export default async function Home() {
             </Link>
             .
           </p>
+          <nav className="mt-4 flex justify-center space-x-4">
+            <Link
+              href="/legal/privacy"
+              className="text-sm text-muted-foreground hover:underline"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/legal/terms"
+              className="text-sm text-muted-foreground hover:underline"
+            >
+              Terms of Service
+            </Link>
+          </nav>
         </footer>
       </div>
     </main>
