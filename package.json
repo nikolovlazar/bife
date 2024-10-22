@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "NODE_OPTIONS='--require reflect-metadata' next dev",
+    "build": "NODE_OPTIONS='--require reflect-metadata' next build",
+    "start": "NODE_OPTIONS='--require reflect-metadata' next start",
     "lint": "next lint",
     "test": "vitest",
     "supabase:start": "supabase start",
