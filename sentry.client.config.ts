@@ -8,7 +8,9 @@ Sentry.init({
 
   // Add optional integrations for additional features
   integrations: [
-    Sentry.replayIntegration(),
+    Sentry.replayIntegration({
+      unmask: ['.sentry-unmask, [data-sentry-unmask]'],
+    }),
     Sentry.feedbackIntegration({ colorScheme: 'system', autoInject: false }),
   ],
 

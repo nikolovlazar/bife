@@ -89,7 +89,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <SignOut />
             </DropdownMenuContent>
           </DropdownMenu>
-          <nav className="flex items-center gap-8 max-sm:hidden">
+          <nav className="sentry-unmask flex items-center gap-8 max-sm:hidden">
             <h1 className="text-xl font-semibold">Bife</h1>
             <ul className="flex gap-4">
               <li>

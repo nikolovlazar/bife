@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/web/_components/ui/table'
+import { cn } from '@/web/_lib/utils'
 
 type CollectionRow = GetCollectionsTableControllerOutput['data'][0]
 
@@ -78,7 +79,7 @@ export function CollectionsDataTable<TData extends CollectionRow, TValue>({
                     header.column.columnDef.meta ?? ({} as any)
                   return (
                     <TableHead
-                      className={headerClassName}
+                      className={cn('sentry-unmask', headerClassName)}
                       key={header.id}
                       style={{
                         width: !Number.isNaN(header.column.getSize())
@@ -132,7 +133,7 @@ export function CollectionsDataTable<TData extends CollectionRow, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="sentry-unmask flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
           size="sm"

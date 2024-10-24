@@ -40,7 +40,7 @@ export default async function LinksPage({
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="sentry-unmask flex items-center justify-between">
         <h1 className="text-lg font-semibold md:text-2xl">Links</h1>
         <CreateLink />
       </div>

@@ -1,6 +1,6 @@
 export default function PrivacyPage() {
   return (
-    <>
+    <article className="sentry-unmask">
       <h1 className="mb-6 text-3xl font-bold">Privacy Policy</h1>
       <p className="mb-4 text-sm text-gray-600">
         <strong>Effective Date:</strong> 17 October 2024
@@ -238,6 +238,6 @@ export default function PrivacyPage() {
           </a>
         </li>
       </ul>
-    </>
+    </article>
   )
 }

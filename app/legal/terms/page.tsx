@@ -1,6 +1,6 @@
 export default function Terms() {
   return (
-    <>
+    <article className="sentry-unmask">
       <h1 className="mb-6 text-3xl font-bold">Terms of Service</h1>
 
       <p className="mb-4 text-sm text-gray-600">
@@ -192,6 +192,6 @@ export default function Terms() {
           </a>
         </li>
       </ul>
-    </>
+    </article>
   )
 }
