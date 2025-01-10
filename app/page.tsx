@@ -65,11 +65,6 @@ export default async function Home() {
               Just like the links, collections also have a short URL that you
               can share.
             </dd>
-            <dt className="text-lg font-semibold">Track Analytics</dt>
-            <dd className="mb-4 ml-4 font-serif italic">
-              Monitor the performance of your links and collections with visit
-              analytics.
-            </dd>
           </dl>
         </section>
         <hr />
