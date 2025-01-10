@@ -72,8 +72,8 @@ export class CollectionsRepository implements ICollectionsRepository {
       .from('collection')
       .select('*', { count: 'exact' })
       .eq('created_by', userId)
-      .range(offset, offset + pageSize - 1)
       .order('created_at', { ascending: false })
+      .range(offset, offset + pageSize - 1)
 
     if (error) {
       throw mapPostgrestErrorToDomainError(error)

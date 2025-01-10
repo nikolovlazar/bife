@@ -43,8 +43,8 @@ export class LinksRepository implements ILinksRepository {
     let query = db
       .from('link')
       .select('*', { count: 'exact' })
-      .order('created_at', { ascending: false })
       .eq('created_by', userId)
+      .order('created_at', { ascending: false })
 
     if (page && pageSize) {
       const from = (page - 1) * pageSize
