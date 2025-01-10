@@ -35,7 +35,7 @@ export default async function LinksPage({
   searchParams: { page?: string; pageSize?: string }
 }) {
   const page = Number(searchParams.page) || 1
-  const pageSize = Number(searchParams.pageSize) || 10
+  const pageSize = Number(searchParams.pageSize) || 20
   const { data: links, totalCount } = await getLinks(page, pageSize)
 
   return (
