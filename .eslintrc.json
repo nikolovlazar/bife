@@ -1,3 +1,129 @@
 {
-  "extends": ["next/core-web-vitals"]
+  "extends": ["next/core-web-vitals"],
+  "plugins": ["boundaries"],
+  "settings": {
+    "boundaries/include": ["src/**/*", "app/**/*", "di/**/*"],
+    "boundaries/elements": [
+      {
+        "mode": "full",
+        "type": "web",
+        "pattern": ["app/**/*"]
+      },
+      {
+        "mode": "full",
+        "type": "controllers",
+        "pattern": ["src/interface-adapters/controllers/**/*"]
+      },
+      {
+        "mode": "full",
+        "type": "validation-schemas",
+        "pattern": ["src/interface-adapters/validation-schemas/**/*"]
+      },
+      {
+        "mode": "full",
+        "type": "use-cases",
+        "pattern": ["src/application/use-cases/**/*"]
+      },
+      {
+        "mode": "full",
+        "type": "service-interfaces",
+        "pattern": ["src/application/services/**/*"]
+      },
+      {
+        "mode": "full",
+        "type": "repository-interfaces",
+        "pattern": ["src/application/repositories/**/*"]
+      },
+      {
+        "mode": "full",
+        "type": "entities",
+        "pattern": ["src/entities/**/*"]
+      },
+      {
+        "mode": "full",
+        "type": "infrastructure",
+        "pattern": ["src/infrastructure/**/*"]
+      },
+      {
+        "mode": "full",
+        "type": "di",
+        "pattern": ["di/**/*"]
+      }
+    ]
+  },
+  "rules": {
+    "boundaries/no-unknown": "error",
+    "boundaries/no-unknown-files": "error",
+    "boundaries/element-types": [
+      "error",
+      {
+        "default": "disallow",
+        "rules": [
+          {
+            "from": "web",
+            "allow": [
+              "web",
+              "entities",
+              "di",
+              "controllers",
+              "validation-schemas"
+            ]
+          },
+          {
+            "from": "controllers",
+            "allow": [
+              "entities",
+              "service-interfaces",
+              "repository-interfaces",
+              "use-cases",
+              "validation-schemas",
+              "di"
+            ]
+          },
+          {
+            "from": "infrastructure",
+            "allow": [
+              "service-interfaces",
+              "repository-interfaces",
+              "infrastructure",
+              "entities",
+              "di"
+            ]
+          },
+          {
+            "from": "use-cases",
+            "allow": [
+              "entities",
+              "service-interfaces",
+              "repository-interfaces",
+              "di"
+            ]
+          },
+          {
+            "from": "service-interfaces",
+            "allow": ["entities"]
+          },
+          {
+            "from": "repository-interfaces",
+            "allow": ["entities"]
+          },
+          {
+            "from": "entities",
+            "allow": ["entities"]
+          },
+          {
+            "from": "di",
+            "allow": [
+              "di",
+              "controllers",
+              "service-interfaces",
+              "repository-interfaces",
+              "use-cases",
+              "infrastructure"
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }

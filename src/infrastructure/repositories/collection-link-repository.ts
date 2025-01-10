@@ -8,9 +8,8 @@ import {
   CollectionLinksSchema,
 } from '@/entities/models/collection-link'
 
+import { mapPostgrestErrorToDomainError } from '@/infrastructure/utils/supabase/errors'
 import { createClient } from '@/infrastructure/utils/supabase/server'
-
-import { mapPostgrestErrorToDomainError } from '../utils/supabase/errors'
 
 @injectable()
 export class CollectionLinkRepository implements ICollectionLinkRepository {

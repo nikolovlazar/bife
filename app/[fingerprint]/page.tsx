@@ -1,47 +1,45 @@
 import NextLink from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 
-import { getCollectionUseCase } from '@/application/use-cases/collections/get-collection.use-case'
-import { getLinkUseCase } from '@/application/use-cases/links/get-link.use-case'
-import { getLinksForCollectionUseCase } from '@/application/use-cases/links/get-links-for-collection.use-case'
-
 import { NotFoundError } from '@/entities/errors/common'
 import { Collection } from '@/entities/models/collection'
 import { CollectionLinks } from '@/entities/models/collection-link'
-import { Link } from '@/entities/models/link'
+
+import { getByFingerprintController } from '@/interface-adapters/controllers/get-by-fingerprint.controller'
 
 export default async function PublicCollectionPage({
   params,
 }: {
   params: { fingerprint: string }
 }) {
-  let link: Link
-  try {
-    link = await getLinkUseCase(params.fingerprint)
-    return permanentRedirect(link.url)
-  } catch (err) {
-    if (!(err instanceof NotFoundError)) {
-      throw err
-    }
+  if (!params.fingerprint) {
+    return notFound()
   }
 
+  let displayLinks: CollectionLinks = []
   let collection: Collection
+
   try {
-    collection = await getCollectionUseCase(params.fingerprint)
-  } catch (err) {
-    if (err instanceof NotFoundError) {
+    const resource = await getByFingerprintController({
+      fingerprint: params.fingerprint,
+    })
+
+    if (!resource) {
       return notFound()
     }
-    throw err
-  }
 
-  let displayedLinks: CollectionLinks = []
-  try {
-    displayedLinks = await getLinksForCollectionUseCase(collection)
+    if (resource.link) {
+      return permanentRedirect(resource.link.url)
+    }
+
+    displayLinks = resource.displayLinks
+    collection = resource.collection
   } catch (err) {
     if (!(err instanceof NotFoundError)) {
       throw err
     }
+
+    return notFound()
   }
 
   return (
@@ -53,7 +51,7 @@ export default async function PublicCollectionPage({
       <hr />
       <div className="flex flex-1 flex-col justify-between gap-8">
         <div className="flex flex-1 flex-col">
-          {displayedLinks.map(({ link }) => (
+          {displayLinks.map(({ link }) => (
             <a
               key={link.fingerprint}
               href={link.url}
