@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { createClient } from '@/infrastructure/utils/supabase/server'
+import { passwordResetCodeController } from '@/interface-adapters/controllers/password-reset-code.controller'
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
@@ -11,15 +11,13 @@ export async function GET(request: NextRequest) {
       ? 'http://localhost:3000'
       : 'https://bife.sh'
 
-  if (code) {
-    const supabase = createClient()
-    await supabase.auth.exchangeCodeForSession(code)
-
+  try {
+    await passwordResetCodeController({ code })
     return NextResponse.redirect(`${origin}/reset-password`)
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('ERROR: Invalid auth code or no auth code found')
+
+    return NextResponse.redirect(`${origin}/signin`)
   }
-
-  // eslint-disable-next-line no-console
-  console.error('ERROR: Invalid auth code or no auth code found')
-
-  return NextResponse.redirect(`${origin}/signin`)
 }

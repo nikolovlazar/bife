@@ -1,59 +1,27 @@
-import { notFound, redirect } from 'next/navigation'
-
-import { createClient } from '@/infrastructure/utils/supabase/server'
+import { notFound } from 'next/navigation'
 
 import { AddOrCreateLink } from './add-create-link'
 import { LinksList } from './links-list'
 import UpdateOrDeleteCollection from './update-collection'
+import { getCollectionLinksController } from '@/interface-adapters/controllers/get-collection-links.controller'
+import { getCollectionController } from '@/interface-adapters/controllers/get-collection.controller'
+import { getOwnLinksController } from '@/interface-adapters/controllers/get-own-links.controller'
 
 export default async function CollectionDetails({
   params,
 }: {
   params: { fingerprint: string }
 }) {
-  const supabase = createClient()
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser()
-
-  const { data: collection, error } = await supabase
-    .from('collection')
-    .select('*')
-    .eq('fingerprint', params.fingerprint)
-    .single()
-
-  if (error) {
-    console.error(error)
-  }
-
-  if (userError || !user) {
-    redirect('/signin')
-  }
+  const collection = await getCollectionController(params.fingerprint)
 
   if (!collection) {
     return notFound()
   }
 
-  const { data: userLinks, error: linksError } = await supabase
-    .from('link')
-    .select('*')
-    .eq('created_by', user.id)
+  const { data: userLinks } = await getOwnLinksController()
+  const collectionLinks = await getCollectionLinksController(params.fingerprint)
 
-  if (linksError) {
-    console.error(linksError)
-  }
-
-  const { data: collectionLinks, error: collectionLinksError } = await supabase
-    .from('collection_link')
-    .select('link(*)')
-    .eq('collection_pk', params.fingerprint)
-
-  if (collectionLinksError) {
-    console.error(collectionLinksError)
-  }
-
-  const linksInCollection = collectionLinks?.map(({ link }) => link!)
+  const linksInCollection = collectionLinks.links.map(({ link }) => link!)
 
   return (
     <div className="flex flex-col gap-4 pb-12 xl:flex-row">

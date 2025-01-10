@@ -7,6 +7,7 @@ function presenter(user: User) {
   return {
     id: user.id,
     email: user.email,
+    user_metadata: user.user_metadata,
   }
 }
 

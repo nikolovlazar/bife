@@ -1,19 +1,14 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { createClient } from '@/infrastructure/utils/supabase/server'
-
+import { signOutController } from '@/interface-adapters/controllers/sign-out.controller'
 import { Button } from '@/web/_components/ui/button'
 import { DropdownMenuItem } from '@/web/_components/ui/dropdown-menu'
 
 export function SignOut() {
   async function signout() {
     'use server'
-    const supabase = createClient()
-    const { error } = await supabase.auth.signOut()
-    if (error) {
-      throw error
-    }
+    await signOutController()
     revalidatePath('/', 'layout')
     redirect('/')
   }

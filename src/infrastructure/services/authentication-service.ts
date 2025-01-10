@@ -8,7 +8,6 @@ import {
   UnauthenticatedError,
   UnauthorizedError,
 } from '@/entities/errors/auth'
-import { UserSchema } from '@/entities/models/users'
 
 import { createClient } from '@/infrastructure/utils/supabase/server'
 
@@ -17,6 +16,11 @@ export class AuthenticationService implements IAuthenticationService {
   private _providers: Provider[] = ['github', 'google']
 
   constructor() {}
+
+  async exchangeCodeForSession(code: string): Promise<void> {
+    const supabase = createClient()
+    await supabase.auth.exchangeCodeForSession(code)
+  }
 
   async getUser() {
     const supabase = createClient()
@@ -31,6 +35,7 @@ export class AuthenticationService implements IAuthenticationService {
     return {
       id: data.user.id,
       email: data.user.email,
+      user_metadata: data.user.user_metadata,
     }
   }
 

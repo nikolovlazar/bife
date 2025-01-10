@@ -35,18 +35,23 @@ export class LinksRepository implements ILinksRepository {
 
   async getLinksForUser(
     userId: string,
-    page: number,
-    pageSize: number
+    page?: number,
+    pageSize?: number
   ): Promise<{ links: Link[]; totalCount: number }> {
     const db = createClient()
-    const from = (page - 1) * pageSize
-    const to = from + pageSize - 1
 
-    const { data, error, count } = await db
+    let query = db
       .from('link')
       .select('*', { count: 'exact' })
       .eq('created_by', userId)
-      .range(from, to)
+
+    if (page && pageSize) {
+      const from = (page - 1) * pageSize
+      const to = from + pageSize - 1
+      query = query.range(from, to)
+    }
+
+    const { data, error, count } = await query
 
     if (error) {
       throw mapPostgrestErrorToDomainError(error)

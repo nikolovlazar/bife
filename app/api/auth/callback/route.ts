@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 
+// eslint-disable-next-line boundaries/element-types
 import { createClient } from '@/infrastructure/utils/supabase/server'
 
 export async function GET(request: Request) {

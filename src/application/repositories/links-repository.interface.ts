@@ -5,8 +5,8 @@ export interface ILinksRepository {
 
   getLinksForUser(
     userId: string,
-    page: number,
-    pageSize: number
+    page?: number,
+    pageSize?: number
   ): Promise<{ links: Link[]; totalCount: number }>
 
   createLink(

@@ -1,7 +1,6 @@
 import { CircleUser, User } from 'lucide-react'
 
-import { createClient } from '@/infrastructure/utils/supabase/server'
-
+import { getUserController } from '@/interface-adapters/controllers/get-user.controller'
 import { SetSentryUser } from '@/web/_components/custom/set-sentry-user'
 import {
   Avatar,
@@ -10,10 +9,10 @@ import {
 } from '@/web/_components/ui/avatar'
 
 export async function UserAvatar() {
-  const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  let user: { id: string; email?: string; user_metadata: any } | undefined
+  try {
+    user = await getUserController()
+  } catch (err) {}
 
   return user ? (
     <Avatar>

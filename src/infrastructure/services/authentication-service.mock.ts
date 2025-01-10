@@ -19,14 +19,17 @@ export class MockAuthenticationService implements IAuthenticationService {
       {
         id: '1',
         email: 'one@bife.sh',
+        user_metadata: {},
       },
       {
         id: '2',
         email: 'two@bife.sh',
+        user_metadata: {},
       },
       {
         id: '3',
         email: 'three@bife.sh',
+        user_metadata: {},
       },
     ]
     this._passwords = {
@@ -35,6 +38,9 @@ export class MockAuthenticationService implements IAuthenticationService {
       '3': 'threepassword',
     }
     this._currentUser = undefined
+  }
+  exchangeCodeForSession(_: string): Promise<void> {
+    return Promise.resolve()
   }
 
   getUser(): Promise<User> {
@@ -45,7 +51,7 @@ export class MockAuthenticationService implements IAuthenticationService {
     throw new UnauthenticatedError('Not authenticated')
   }
 
-  signInWithProvider(provider: string): Promise<{ url: string }> {
+  signInWithProvider(_: string): Promise<{ url: string }> {
     return Promise.resolve({ url: 'https://bife.sh' })
   }
 
@@ -78,6 +84,7 @@ export class MockAuthenticationService implements IAuthenticationService {
     const newUser: User = {
       id: newUserId,
       email: email,
+      user_metadata: {},
     }
 
     this._users.push(newUser)

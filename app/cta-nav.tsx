@@ -1,12 +1,9 @@
 import Link from 'next/link'
 
-import { createClient } from '@/infrastructure/utils/supabase/server'
+import { getUserController } from '@/interface-adapters/controllers/get-user.controller'
 
 export async function NavCTA() {
-  const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getUserController()
 
   return !!user ? (
     <Link

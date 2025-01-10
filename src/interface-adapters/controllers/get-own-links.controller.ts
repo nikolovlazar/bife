@@ -10,6 +10,7 @@ function presenter(links: Link[]) {
     url: link.url,
     label: link.label,
     created_at: dayjs(link.created_at).format('MMM D, YYYY'),
+    created_by: link.created_by,
   }))
 }
 

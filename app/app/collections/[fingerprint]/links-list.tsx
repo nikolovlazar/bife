@@ -1,27 +1,18 @@
-import { createClient } from '@/infrastructure/utils/supabase/server'
-
 import { type ColumnsType, linkColumns } from './_links-table/columns'
 import { LinksDataTable } from './_links-table/table'
+import { getCollectionLinksController } from '@/interface-adapters/controllers/get-collection-links.controller'
 
 export async function LinksList({ fingerprint }: { fingerprint: string }) {
-  const supabase = createClient()
-  const { data, error } = await supabase
-    .from('collection_link')
-    .select('visible, order, link(*)')
-    .order('order', { ascending: true })
-    .eq('collection_pk', fingerprint)
+  const data = await getCollectionLinksController(fingerprint)
 
-  const links = data?.map((link) => ({
+  const links = data?.links.map((link) => ({
     ...link.link,
     visible: link.visible,
     order: link.order,
     collectionFingerprint: fingerprint,
   })) as ColumnsType[]
 
-  if (error) {
-    console.error(error)
-  }
-  return data && data.length > 0 ? (
+  return data && data.links.length > 0 ? (
     <LinksDataTable
       collectionFingerprint={fingerprint}
       data={links}
