@@ -30,7 +30,7 @@ it('should pass with valid input', async () => {
   )
   const collection = await createCollectionUseCase({ title: 'collectin' })
 
-  expect(
+  await expect(
     updateCollectionController({
       fingerprint: collection.fingerprint,
       title: 'collection',
@@ -39,9 +39,11 @@ it('should pass with valid input', async () => {
   ).resolves.toBeUndefined()
 })
 
-it('should throw InputParseError on invalid input', () => {
+it('should throw InputParseError on invalid input', async () => {
   // @ts-ignore
-  expect(updateCollectionController({})).rejects.toBeInstanceOf(InputParseError)
+  await expect(updateCollectionController({})).rejects.toBeInstanceOf(
+    InputParseError
+  )
 })
 
 it('should throw UnauthenticatedError when unauthenticated', async () => {
@@ -54,7 +56,7 @@ it('should throw UnauthenticatedError when unauthenticated', async () => {
   const collection = await createCollectionUseCase({ title: 'collectin' })
   await authenticationService.signOut()
 
-  expect(
+  await expect(
     updateCollectionController({
       fingerprint: collection.fingerprint,
       title: 'collection',
@@ -78,7 +80,7 @@ it('should throw UnauthorizedError when updating not-owned', async () => {
     ''
   )
 
-  expect(
+  await expect(
     updateCollectionController({
       fingerprint: collection.fingerprint,
       title: 'collection',

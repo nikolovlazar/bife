@@ -71,7 +71,7 @@ describe('Create Collections', () => {
     })
     expect(firstCollection.fingerprint).toBe('test-fingerprint')
 
-    expect(
+    await expect(
       createCollectionUseCase({ title: 'Second Collection' })
     ).rejects.toThrowError('duplicate key value violates unique constraint')
   })
@@ -109,16 +109,16 @@ describe('Get Collection', () => {
     })
     await authenticationService.signOut()
 
-    expect(getCollectionUseCase(fingerprint)).resolves.toMatchObject({
+    await expect(getCollectionUseCase(fingerprint)).resolves.toMatchObject({
       title,
       description,
     })
   })
 
   it('should throw when requesting a collection with invalid fingerprint', async () => {
-    expect(getCollectionUseCase('non-existing-fingerprint')).rejects.toThrow(
-      'Cannot find a collection with that fingerprint'
-    )
+    await expect(
+      getCollectionUseCase('non-existing-fingerprint')
+    ).rejects.toThrow('Cannot find a collection with that fingerprint')
   })
 })
 
@@ -153,7 +153,7 @@ describe('Update Collection', () => {
       title,
     })
 
-    expect(
+    await expect(
       updateCollectionUseCase(collection, {
         description,
       })
@@ -180,9 +180,9 @@ describe('Update Collection', () => {
       description,
     })
 
-    expect(updateCollectionUseCase(collection, { title: '' })).rejects.toThrow(
-      'String must contain at least 1 character(s)'
-    )
+    await expect(
+      updateCollectionUseCase(collection, { title: '' })
+    ).rejects.toThrow('String must contain at least 1 character(s)')
   })
 
   it("should throw when updating someone else's collection", async () => {
@@ -206,7 +206,7 @@ describe('Update Collection', () => {
       ''
     )
 
-    expect(
+    await expect(
       updateCollectionUseCase(collection, {
         title: 'hi',
         description: "i'm fine i guess",
@@ -243,7 +243,7 @@ describe('Delete Collection', () => {
       title: 'hello there',
     })
 
-    expect(deleteCollectionUseCase(collection)).resolves.toBeTruthy()
+    await expect(deleteCollectionUseCase(collection)).resolves.toBeTruthy()
   })
 
   it("should throw when deleting someone else's collection", async () => {
@@ -267,7 +267,7 @@ describe('Delete Collection', () => {
       ''
     )
 
-    expect(() => deleteCollectionUseCase(collection)).rejects.toThrow(
+    await expect(() => deleteCollectionUseCase(collection)).rejects.toThrow(
       'unauthorized'
     )
   })

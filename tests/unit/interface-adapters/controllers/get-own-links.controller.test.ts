@@ -35,7 +35,7 @@ it('should pass when logged in', async () => {
   await createLinkUseCase({ label: 'Two', url: 'two@bife.sh' })
   await createLinkUseCase({ label: 'Three', url: 'three@bife.sh' })
 
-  expect(getOwnLinksController()).resolves.toMatchObject({
+  await expect(getOwnLinksController()).resolves.toMatchObject({
     data: [
       { label: 'One', url: 'one@bife.sh', created_at },
       { label: 'Two', url: 'two@bife.sh', created_at },
@@ -45,8 +45,10 @@ it('should pass when logged in', async () => {
   })
 })
 
-it('should throw UnauthenticatedError when not logged in', () => {
-  expect(getOwnLinksController()).rejects.toBeInstanceOf(UnauthenticatedError)
+it('should throw UnauthenticatedError when not logged in', async () => {
+  await expect(getOwnLinksController()).rejects.toBeInstanceOf(
+    UnauthenticatedError
+  )
 })
 
 it('should return paginated links when logged in', async () => {
@@ -104,8 +106,8 @@ it('should return paginated links when logged in', async () => {
   })
 })
 
-it('should throw UnauthenticatedError when not logged in', () => {
-  expect(getOwnLinksController(1, 10)).rejects.toBeInstanceOf(
+it('should throw UnauthenticatedError when not logged in', async () => {
+  await expect(getOwnLinksController(1, 10)).rejects.toBeInstanceOf(
     UnauthenticatedError
   )
 })

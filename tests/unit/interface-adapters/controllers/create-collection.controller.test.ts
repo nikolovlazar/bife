@@ -19,16 +19,18 @@ afterEach(() => {
   destroyContainer()
 })
 
-it('should throw InputParseError on invalid input', () => {
-  expect(createCollectionController({})).rejects.toBeInstanceOf(InputParseError)
+it('should throw InputParseError on invalid input', async () => {
+  await expect(createCollectionController({})).rejects.toBeInstanceOf(
+    InputParseError
+  )
 })
 
-it('should throw UnauthenticatedError when unauthenticated', () => {
+it('should throw UnauthenticatedError when unauthenticated', async () => {
   const title = 'Hey stream!'
   const description = 'Controllers are cool'
   const input = { title, description }
 
-  expect(createCollectionController(input)).rejects.toBeInstanceOf(
+  await expect(createCollectionController(input)).rejects.toBeInstanceOf(
     UnauthenticatedError
   )
 })
@@ -45,7 +47,7 @@ it('should pass with valid input', async () => {
     ''
   )
 
-  expect(createCollectionController(input)).resolves.toHaveProperty(
+  await expect(createCollectionController(input)).resolves.toHaveProperty(
     'fingerprint'
   )
 })

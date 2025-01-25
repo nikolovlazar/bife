@@ -62,13 +62,13 @@ it('should pass with valid input', async () => {
   ])
 })
 
-it('should throw InputParseError on invalid input', () => {
+it('should throw InputParseError on invalid input', async () => {
   // @ts-ignore
-  expect(createLinkController({})).rejects.toBeInstanceOf(InputParseError)
+  await expect(createLinkController({})).rejects.toBeInstanceOf(InputParseError)
 })
 
-it('should throw UnauthenticatedError when unauthenticated', () => {
-  expect(
+it('should throw UnauthenticatedError when unauthenticated', async () => {
+  await expect(
     createLinkController({ label: 'Bife.sh', url: 'https://bife.sh' })
   ).rejects.toBeInstanceOf(UnauthenticatedError)
 })
@@ -90,7 +90,7 @@ it('should throw UnauthorizedError when passing not-owned collection', async () 
     ''
   )
 
-  expect(
+  await expect(
     createLinkController({
       label: 'Bife.sh',
       url: 'https://bife.sh',

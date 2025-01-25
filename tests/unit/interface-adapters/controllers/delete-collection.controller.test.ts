@@ -31,14 +31,16 @@ it('should pass for valid input', async () => {
 
   const collection = await createCollectionUseCase({ title: 'collection' })
 
-  expect(
+  await expect(
     deleteCollectionController({ fingerprint: collection.fingerprint })
   ).resolves.toBeUndefined()
 })
 
 it('should throw InputParseError on invalid input', async () => {
   // @ts-ignore
-  expect(deleteCollectionController({})).rejects.toBeInstanceOf(InputParseError)
+  await expect(deleteCollectionController({})).rejects.toBeInstanceOf(
+    InputParseError
+  )
 })
 
 it('should throw UnauthenticatedError when unauthenticated', async () => {
@@ -52,7 +54,7 @@ it('should throw UnauthenticatedError when unauthenticated', async () => {
   const collection = await createCollectionUseCase({ title: 'collection' })
   await authenticationService.signOut()
 
-  expect(
+  await expect(
     deleteCollectionController({ fingerprint: collection.fingerprint })
   ).rejects.toBeInstanceOf(UnauthenticatedError)
 })
@@ -74,7 +76,7 @@ it('should throw UnauthorizedError when deleting not-owned', async () => {
     ''
   )
 
-  expect(
+  await expect(
     deleteCollectionController({ fingerprint: collection.fingerprint })
   ).rejects.toBeInstanceOf(UnauthorizedError)
 })

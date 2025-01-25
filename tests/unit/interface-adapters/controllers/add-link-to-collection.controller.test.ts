@@ -36,7 +36,7 @@ it('should pass for valid input', async () => {
     label: 'Bife.sh',
   })
 
-  expect(
+  await expect(
     addLinkToCollectionController({
       fingerprint: collection.fingerprint,
       linkFingerprint: link.fingerprint,
@@ -46,7 +46,7 @@ it('should pass for valid input', async () => {
 
 it('should throw InputParseError on invalid input', async () => {
   // @ts-ignore
-  expect(addLinkToCollectionController({})).rejects.toBeInstanceOf(
+  await expect(addLinkToCollectionController({})).rejects.toBeInstanceOf(
     InputParseError
   )
 })
@@ -67,7 +67,7 @@ it('should throw UnauthenticatedError when unauthenticated', async () => {
 
   await authenticationService.signOut()
 
-  expect(
+  await expect(
     addLinkToCollectionController({
       fingerprint: collection.fingerprint,
       linkFingerprint: link.fingerprint,
@@ -98,7 +98,7 @@ it('should throw UnauthorizedError when adding not owned links to not owned coll
   })
 
   // Link -> not owned Collection
-  expect(
+  await expect(
     addLinkToCollectionController({
       fingerprint: collection.fingerprint,
       linkFingerprint: link.fingerprint,
@@ -113,7 +113,7 @@ it('should throw UnauthorizedError when adding not owned links to not owned coll
   )
 
   // not owned Link -> Collection
-  expect(
+  await expect(
     addLinkToCollectionController({
       fingerprint: collection.fingerprint,
       linkFingerprint: link.fingerprint,

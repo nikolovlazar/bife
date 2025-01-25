@@ -107,9 +107,11 @@ it('should pass with valid input', async () => {
   )
 })
 
-it('should throw InputParseError on invalid input', () => {
+it('should throw InputParseError on invalid input', async () => {
   // @ts-ignore
-  expect(updateLinksOrderController({})).rejects.toBeInstanceOf(InputParseError)
+  await expect(updateLinksOrderController({})).rejects.toBeInstanceOf(
+    InputParseError
+  )
 })
 
 it('should throw UnauthenticatedError when unauthenticated', async () => {
@@ -127,7 +129,7 @@ it('should throw UnauthenticatedError when unauthenticated', async () => {
 
   await authenticationService.signOut()
 
-  expect(
+  await expect(
     updateLinksOrderController({
       fingerprint: collection.fingerprint,
       linksOrder: [{ order: 1, fingerprint: link.fingerprint }],

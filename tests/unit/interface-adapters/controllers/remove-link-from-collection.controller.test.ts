@@ -42,7 +42,7 @@ it('should pass for valid input', async () => {
     fingerprint: collection.fingerprint,
   })
 
-  expect(
+  await expect(
     removeLinkFromCollectionController({
       linkFingerprint: link.fingerprint,
       fingerprint: collection.fingerprint,
@@ -50,9 +50,9 @@ it('should pass for valid input', async () => {
   ).resolves.toBeUndefined()
 })
 
-it('should throw InputParseError on invalid input', () => {
+it('should throw InputParseError on invalid input', async () => {
   // @ts-ignore
-  expect(removeLinkFromCollectionController({})).rejects.toBeInstanceOf(
+  await expect(removeLinkFromCollectionController({})).rejects.toBeInstanceOf(
     InputParseError
   )
 })
@@ -78,7 +78,7 @@ it('should throw UnauthenticatedError when unauthenticated', async () => {
 
   await authenticationService.signOut()
 
-  expect(
+  await expect(
     removeLinkFromCollectionController({
       linkFingerprint: link.fingerprint,
       fingerprint: collection.fingerprint,
@@ -107,7 +107,7 @@ it('should throw UnauthorizedError error when removing not-owned', async () => {
   )
 
   // not owned Link -> not owned Collection
-  expect(
+  await expect(
     removeLinkFromCollectionController({
       linkFingerprint: link.fingerprint,
       fingerprint: collection.fingerprint,

@@ -51,9 +51,9 @@ it('should pass for valid input', async () => {
   ).rejects.toBeInstanceOf(NotFoundError)
 })
 
-it('should throw InputParseError on invalid input', () => {
+it('should throw InputParseError on invalid input', async () => {
   // @ts-ignore
-  expect(deleteLinkController({})).rejects.toBeInstanceOf(InputParseError)
+  await expect(deleteLinkController({})).rejects.toBeInstanceOf(InputParseError)
 })
 
 it('should throw UnauthenticatedError when unauthenticated', async () => {

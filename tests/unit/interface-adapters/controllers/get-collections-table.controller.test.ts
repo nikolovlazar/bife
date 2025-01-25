@@ -33,7 +33,7 @@ it('should pass when logged in', async () => {
   await createCollectionController({ title: 'two' })
   await createCollectionController({ title: 'three' })
 
-  expect(getCollectionsTableController()).resolves.toMatchObject({
+  await expect(getCollectionsTableController()).resolves.toMatchObject({
     data: [
       { title: 'one', created_at },
       { title: 'two', created_at },
@@ -78,8 +78,8 @@ it('should return paginated collections when logged in', async () => {
   expect(customPageSize.data[4].title).toBe('Collection 5')
 })
 
-it('should throw UnauthenticatedError when not logged in', () => {
-  expect(getCollectionsTableController(1, 10)).rejects.toBeInstanceOf(
+it('should throw UnauthenticatedError when not logged in', async () => {
+  await expect(getCollectionsTableController(1, 10)).rejects.toBeInstanceOf(
     UnauthenticatedError
   )
 })

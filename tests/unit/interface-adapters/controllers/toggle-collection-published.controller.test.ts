@@ -31,7 +31,7 @@ it('should pass for valid input', async () => {
 
   const collection = await createCollectionUseCase({ title: 'collection' })
 
-  expect(
+  await expect(
     toggleCollectionPublishedController({
       fingerprint: collection.fingerprint,
       checked: !collection.published,
@@ -39,9 +39,9 @@ it('should pass for valid input', async () => {
   ).resolves.toBeUndefined()
 })
 
-it('should throw InputParseError on invalid input', () => {
+it('should throw InputParseError on invalid input', async () => {
   // @ts-ignore
-  expect(toggleCollectionPublishedController({})).rejects.toBeInstanceOf(
+  await expect(toggleCollectionPublishedController({})).rejects.toBeInstanceOf(
     InputParseError
   )
 })
@@ -57,7 +57,7 @@ it('should throw UnauthenticatedError when unauthenticated', async () => {
   const collection = await createCollectionUseCase({ title: 'collection' })
   await authenticationService.signOut()
 
-  expect(
+  await expect(
     toggleCollectionPublishedController({
       fingerprint: collection.fingerprint,
       checked: !collection.published,
@@ -81,7 +81,7 @@ it('should throw UnauthorizedError when toggling not-owned', async () => {
     ''
   )
 
-  expect(
+  await expect(
     toggleCollectionPublishedController({
       fingerprint: collection.fingerprint,
       checked: !collection.published,
