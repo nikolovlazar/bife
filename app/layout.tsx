@@ -1,3 +1,5 @@
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata, Viewport } from 'next'
 
 import './globals.css'
@@ -38,6 +40,8 @@ export default function RootLayout({
           position="bottom-center"
           toastOptions={{ classNames: { toast: 'rounded-none' } }}
         />
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   )
