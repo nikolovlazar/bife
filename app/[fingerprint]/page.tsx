@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs'
 import NextLink from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 
@@ -12,6 +13,8 @@ export default async function PublicCollectionPage({
 }: {
   params: { fingerprint: string }
 }) {
+  Sentry.getCurrentScope().setTransactionName('/[fingerprint]')
+
   if (!params.fingerprint) {
     return notFound()
   }
