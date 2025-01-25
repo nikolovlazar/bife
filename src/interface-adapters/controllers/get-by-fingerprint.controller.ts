@@ -1,4 +1,5 @@
 import { getCollectionUseCase } from '@/application/use-cases/collections/get-collection.use-case'
+import { getByFingerprintCached } from '@/application/use-cases/general/get-by-fingerprint-cached.use-case'
 import { getLinkUseCase } from '@/application/use-cases/links/get-link.use-case'
 import { getLinksForCollectionUseCase } from '@/application/use-cases/links/get-links-for-collection.use-case'
 
@@ -53,8 +54,23 @@ export async function getByFingerprintController(input: GetByFingerprintInput) {
 
   const { fingerprint } = data
 
+  let link: Link
+  let collection: Collection
+
+  const cached = await getByFingerprintCached(fingerprint)
+
+  if (cached) {
+    if (cached.link) {
+      link = cached.link
+      return presenter({ link })
+    } else if (cached.collection) {
+      collection = cached.collection
+      return returnCollectionWithDisplayLinks(collection)
+    }
+  }
+
   try {
-    const link = await getLinkUseCase(fingerprint)
+    link = await getLinkUseCase(fingerprint)
     return presenter({ link })
   } catch (err) {
     if (!(err instanceof NotFoundError)) {
@@ -62,9 +78,9 @@ export async function getByFingerprintController(input: GetByFingerprintInput) {
     }
   }
 
-  let collection: Collection
   try {
     collection = await getCollectionUseCase(fingerprint)
+    return returnCollectionWithDisplayLinks(collection)
   } catch (err) {
     if (err instanceof NotFoundError) {
       throw new NotFoundError(
@@ -73,10 +89,11 @@ export async function getByFingerprintController(input: GetByFingerprintInput) {
     }
     throw err
   }
+}
 
-  let displayLinks: CollectionLinks = []
+async function returnCollectionWithDisplayLinks(collection: Collection) {
   try {
-    displayLinks = await getLinksForCollectionUseCase(collection)
+    const displayLinks = await getLinksForCollectionUseCase(collection)
     return presenter({ collection, displayLinks })
   } catch (err) {
     if (!(err instanceof NotFoundError)) {

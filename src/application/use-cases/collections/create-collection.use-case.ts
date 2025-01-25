@@ -19,5 +19,8 @@ export async function createCollectionUseCase(
     fingerprint
   )
 
+  const cacheService = getInjection('ICacheService')
+  await cacheService.setCachedCollection(fingerprint, newCollection)
+
   return newCollection
 }

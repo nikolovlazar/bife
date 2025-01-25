@@ -1,6 +1,7 @@
 import { Container } from 'inversify'
 
 import { AuthenticationModule } from './modules/authentication.module'
+import { CacheModule } from './modules/cache.module'
 import { CollectionLinkModule } from './modules/collection-link.module'
 import { CollectionsModule } from './modules/collection.module'
 import { LinksModule } from './modules/links.module'
@@ -15,6 +16,7 @@ export const initializeContainer = () => {
   ApplicationContainer.load(CollectionsModule)
   ApplicationContainer.load(CollectionLinkModule)
   ApplicationContainer.load(LinksModule)
+  ApplicationContainer.load(CacheModule)
 }
 
 export const destroyContainer = () => {
@@ -22,6 +24,7 @@ export const destroyContainer = () => {
   ApplicationContainer.unload(CollectionsModule)
   ApplicationContainer.unload(CollectionLinkModule)
   ApplicationContainer.unload(LinksModule)
+  ApplicationContainer.unload(CacheModule)
 }
 
 if (process.env.NODE_ENV !== 'test') {

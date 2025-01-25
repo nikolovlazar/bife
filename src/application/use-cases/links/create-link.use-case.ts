@@ -13,5 +13,8 @@ export async function createLinkUseCase(data: LinkInsert): Promise<Link> {
   const linksRepository = getInjection('ILinksRepository')
   const newLink = await linksRepository.createLink(data, user.id, fingerprint)
 
+  const cacheService = getInjection('ICacheService')
+  await cacheService.setCachedLink(fingerprint, newLink)
+
   return newLink
 }

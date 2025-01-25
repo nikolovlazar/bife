@@ -20,5 +20,8 @@ export async function deleteCollectionUseCase(
     collection.fingerprint
   )
 
+  const cacheService = getInjection('ICacheService')
+  await cacheService.deleteCachedValue(collection.fingerprint)
+
   return deletedCollection
 }

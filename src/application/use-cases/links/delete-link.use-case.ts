@@ -13,4 +13,7 @@ export async function deleteLinkUseCase(link: Link): Promise<void> {
 
   const linksRepository = getInjection('ILinksRepository')
   await linksRepository.deleteLink(link.fingerprint)
+
+  const cacheService = getInjection('ICacheService')
+  await cacheService.deleteCachedValue(link.fingerprint)
 }
